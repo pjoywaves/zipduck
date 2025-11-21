@@ -822,7 +822,443 @@ ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=prod", "app.jar"]
 
 ---
 
-## 7. Implementation Phases
+## 7. API Documentation with Swagger/OpenAPI
+
+### 7.1 SpringDoc OpenAPI Setup
+
+**Maven Dependency** (`pom.xml`):
+```xml
+<dependency>
+    <groupId>org.springdoc</groupId>
+    <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+    <version>2.2.0</version>
+</dependency>
+```
+
+**Configuration** (`application.yml`):
+```yaml
+springdoc:
+  api-docs:
+    path: /api-docs
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+    operations-sorter: method
+    tags-sorter: alpha
+  show-actuator: false
+```
+
+### 7.2 OpenAPI Configuration Class
+
+```java
+// infrastructure/config/OpenApiConfig.java
+@Configuration
+public class OpenApiConfig {
+
+    @Bean
+    public OpenAPI zipDuckOpenAPI() {
+        return new OpenAPI()
+            .info(new Info()
+                .title("ZipDuck API")
+                .description("청약 AI 추천 서비스 API 문서")
+                .version("v1.0")
+                .contact(new Contact()
+                    .name("ZipDuck Team")
+                    .email("support@zipduck.com"))
+                .license(new License()
+                    .name("MIT License")
+                    .url("https://opensource.org/licenses/MIT")))
+            .servers(List.of(
+                new Server()
+                    .url("http://localhost:8080")
+                    .description("Local Development Server"),
+                new Server()
+                    .url("https://api.zipduck.com")
+                    .description("Production Server")
+            ))
+            .components(new Components()
+                .addSecuritySchemes("bearer-jwt",
+                    new SecurityScheme()
+                        .type(SecurityScheme.Type.HTTP)
+                        .scheme("bearer")
+                        .bearerFormat("JWT")
+                        .description("JWT 토큰을 입력하세요")));
+    }
+}
+```
+
+### 7.3 Controller Documentation Examples
+
+```java
+// api/controller/UserController.java
+@RestController
+@RequestMapping("/api/v1/users")
+@Tag(name = "User", description = "사용자 프로필 관리 API")
+public class UserController {
+
+    @PostMapping("/profile")
+    @Operation(
+        summary = "사용자 프로필 생성",
+        description = "새로운 사용자의 프로필 정보를 생성합니다. 나이, 소득, 세대 정보 등을 입력받아 적격성 판단에 사용됩니다."
+    )
+    @ApiResponses({
+        @ApiResponse(
+            responseCode = "200",
+            description = "프로필 생성 성공",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = UserProfileResponse.class)
+            )
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "잘못된 입력 데이터",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = ErrorResponse.class)
+            )
+        )
+    })
+    public ResponseEntity<UserProfileResponse> createProfile(
+        @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "사용자 프로필 정보",
+            required = true,
+            content = @Content(
+                schema = @Schema(implementation = UserProfileRequest.class)
+            )
+        )
+        @RequestBody @Valid UserProfileRequest request
+    ) {
+        // Implementation
+    }
+
+    @GetMapping("/{userId}/profile")
+    @Operation(
+        summary = "사용자 프로필 조회",
+        description = "userId로 저장된 프로필 정보를 조회합니다."
+    )
+    @Parameter(
+        name = "userId",
+        description = "사용자 ID",
+        required = true,
+        example = "user123"
+    )
+    public ResponseEntity<UserProfileResponse> getProfile(
+        @PathVariable String userId
+    ) {
+        // Implementation
+    }
+}
+```
+
+```java
+// api/controller/SubscriptionController.java
+@RestController
+@RequestMapping("/api/v1/subscriptions")
+@Tag(name = "Subscription", description = "청약 목록 및 추천 API")
+public class SubscriptionController {
+
+    @GetMapping("/recommendations")
+    @Operation(
+        summary = "개인화 청약 추천 목록 조회",
+        description = "사용자 프로필에 맞는 청약 목록을 필터링하여 제공합니다. 공공 데이터와 PDF 분석 결과를 통합하여 표시합니다."
+    )
+    @Parameters({
+        @Parameter(
+            name = "userId",
+            description = "사용자 ID",
+            required = true,
+            example = "user123"
+        ),
+        @Parameter(
+            name = "sourceFilter",
+            description = "데이터 소스 필터 (ALL: 전체, PUBLIC_DB: 공공 데이터만, PDF_UPLOAD: PDF 업로드만)",
+            required = false,
+            schema = @Schema(
+                type = "string",
+                allowableValues = {"ALL", "PUBLIC_DB", "PDF_UPLOAD"},
+                defaultValue = "ALL"
+            )
+        )
+    })
+    @ApiResponses({
+        @ApiResponse(
+            responseCode = "200",
+            description = "추천 목록 조회 성공",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = SubscriptionListResponse.class)
+            )
+        )
+    })
+    public ResponseEntity<SubscriptionListResponse> getRecommendations(
+        @RequestParam String userId,
+        @RequestParam(required = false, defaultValue = "ALL") SourceFilter sourceFilter
+    ) {
+        // Implementation
+    }
+}
+```
+
+```java
+// api/controller/PdfController.java
+@RestController
+@RequestMapping("/api/v1/pdf")
+@Tag(name = "PDF Analysis", description = "PDF 업로드 및 AI 분석 API")
+public class PdfController {
+
+    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(
+        summary = "청약 PDF 업로드",
+        description = "청약 공고 PDF 파일을 업로드하여 AI 분석을 시작합니다. 텍스트 기반 및 이미지 기반(OCR) PDF를 모두 지원합니다."
+    )
+    @Parameters({
+        @Parameter(
+            name = "userId",
+            description = "사용자 ID",
+            required = true
+        ),
+        @Parameter(
+            name = "file",
+            description = "PDF 파일 (최대 10MB, 지원 형식: PDF, JPG, PNG, HEIC)",
+            required = true,
+            content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE)
+        )
+    })
+    @ApiResponses({
+        @ApiResponse(
+            responseCode = "200",
+            description = "업로드 성공 및 분석 시작",
+            content = @Content(
+                schema = @Schema(implementation = PdfUploadResponse.class)
+            )
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "파일 형식 또는 크기 오류"
+        )
+    })
+    public ResponseEntity<PdfUploadResponse> uploadPdf(
+        @RequestParam String userId,
+        @RequestParam MultipartFile file
+    ) {
+        // Implementation
+    }
+
+    @GetMapping("/{pdfId}/status")
+    @Operation(
+        summary = "PDF 분석 상태 조회",
+        description = "업로드된 PDF의 분석 진행 상태를 확인합니다. (PENDING, PROCESSING, COMPLETED, FAILED)"
+    )
+    public ResponseEntity<PdfStatusResponse> getPdfStatus(
+        @PathVariable @Parameter(description = "PDF ID") Long pdfId
+    ) {
+        // Implementation
+    }
+}
+```
+
+### 7.4 DTO Schema Documentation
+
+```java
+// api/dto/request/UserProfileRequest.java
+@Schema(description = "사용자 프로필 생성/수정 요청")
+public class UserProfileRequest {
+
+    @Schema(
+        description = "나이",
+        example = "32",
+        minimum = "19",
+        maximum = "100"
+    )
+    @Min(19)
+    @Max(100)
+    private Integer age;
+
+    @Schema(
+        description = "연 소득 (만원)",
+        example = "6000",
+        minimum = "0"
+    )
+    @Min(0)
+    private BigDecimal annualIncome;
+
+    @Schema(
+        description = "세대 구성원 수",
+        example = "2",
+        minimum = "1"
+    )
+    @Min(1)
+    private Integer householdMembers;
+
+    @Schema(
+        description = "보유 주택 수",
+        example = "0",
+        minimum = "0"
+    )
+    @Min(0)
+    private Integer housingOwned;
+
+    @Schema(
+        description = "선호 지역 목록",
+        example = "[\"서울\", \"경기\"]"
+    )
+    private List<String> locationPreferences;
+
+    // Getters and setters
+}
+```
+
+```java
+// api/dto/response/SubscriptionDto.java
+@Schema(description = "청약 정보")
+public class SubscriptionDto {
+
+    @Schema(description = "청약 ID", example = "123")
+    private Long id;
+
+    @Schema(
+        description = "데이터 소스",
+        example = "PUBLIC_DB",
+        allowableValues = {"PUBLIC_DB", "PDF_UPLOAD", "MERGED"}
+    )
+    private String source;
+
+    @Schema(description = "청약 이름", example = "○○아파트 1단지")
+    private String name;
+
+    @Schema(description = "위치", example = "서울시 강남구")
+    private String location;
+
+    @Schema(description = "주택 유형", example = "아파트")
+    private String housingType;
+
+    @Schema(description = "적격성 점수 (%)", example = "85.5")
+    private BigDecimal matchScore;
+
+    @Schema(description = "신청 시작일", example = "2025-12-01")
+    private LocalDate applicationPeriodStart;
+
+    @Schema(description = "신청 마감일", example = "2025-12-07")
+    private LocalDate applicationPeriodEnd;
+
+    // Getters and setters
+}
+```
+
+### 7.5 Error Response Schema
+
+```java
+// api/dto/response/ErrorResponse.java
+@Schema(description = "에러 응답")
+public class ErrorResponse {
+
+    @Schema(description = "에러 코드", example = "INVALID_INPUT")
+    private String code;
+
+    @Schema(description = "에러 메시지", example = "나이는 19세 이상이어야 합니다.")
+    private String message;
+
+    @Schema(description = "타임스탬프", example = "2025-11-21T15:30:00")
+    private LocalDateTime timestamp;
+
+    @Schema(description = "상세 정보", example = "age: must be greater than or equal to 19")
+    private Map<String, String> details;
+
+    // Constructor, getters and setters
+}
+```
+
+### 7.6 Global Exception Handler Documentation
+
+```java
+// api/exception/GlobalExceptionHandler.java
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @Operation(hidden = true)  // Swagger에서 숨김
+    public ErrorResponse handleValidationException(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getFieldErrors().forEach(error ->
+            errors.put(error.getField(), error.getDefaultMessage())
+        );
+
+        return new ErrorResponse(
+            "VALIDATION_ERROR",
+            "입력 데이터 검증 실패",
+            LocalDateTime.now(),
+            errors
+        );
+    }
+}
+```
+
+### 7.7 Accessing Swagger UI
+
+**개발 환경**:
+- Swagger UI: http://localhost:8080/swagger-ui.html
+- OpenAPI JSON: http://localhost:8080/api-docs
+
+**프로덕션 환경**:
+- Swagger UI: https://api.zipduck.com/swagger-ui.html
+- OpenAPI JSON: https://api.zipduck.com/api-docs
+
+### 7.8 Security Configuration for Swagger
+
+```java
+// infrastructure/config/SecurityConfig.java
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+            .authorizeHttpRequests(auth -> auth
+                // Swagger 엔드포인트 public 접근 허용
+                .requestMatchers("/swagger-ui/**", "/api-docs/**").permitAll()
+                // 나머지는 인증 필요
+                .anyRequest().authenticated()
+            )
+            .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
+
+        return http.build();
+    }
+}
+```
+
+### 7.9 Benefits
+
+1. **자동 문서화**: 코드 변경 시 API 문서 자동 업데이트
+2. **인터랙티브 테스트**: Swagger UI에서 직접 API 호출 가능
+3. **클라이언트 코드 생성**: OpenAPI spec으로 TypeScript 클라이언트 자동 생성 가능
+4. **API 검증**: 요청/응답 스키마 자동 검증
+5. **팀 협업**: 프론트엔드/백엔드 개발자 간 API 계약 명확화
+
+### 7.10 Frontend Code Generation (Optional)
+
+OpenAPI spec에서 TypeScript 클라이언트 자동 생성:
+
+```bash
+# openapi-generator 사용
+npx @openapitools/openapi-generator-cli generate \
+  -i http://localhost:8080/api-docs \
+  -g typescript-axios \
+  -o src/generated/api
+
+# 생성된 클라이언트 사용
+import { UserApi, PdfApi } from '@/generated/api';
+
+const userApi = new UserApi();
+const profile = await userApi.createProfile(profileRequest);
+```
+
+---
+
+## 8. Implementation Phases
 
 ### Phase 1: Foundation (Week 1-2)
 
@@ -968,6 +1404,7 @@ ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=prod", "app.jar"]
 - **Cache**: Redis 7
 - **Async**: Spring @Async (Thread Pool)
 - **Scheduler**: Spring @Scheduled (Cron)
+- **API Documentation**: Swagger/OpenAPI 3.0 (SpringDoc OpenAPI)
 - **AI/OCR**:
   - Google Gemini 2.5 Flash (PDF 분석)
   - Google Vision API (OCR)
