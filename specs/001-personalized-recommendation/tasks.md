@@ -29,12 +29,12 @@ description: "Task list for ZipDuck MVP - Personalized Subscription Recommendati
 
 **Purpose**: Project initialization and basic structure
 
-- [ ] T001 Create project directory structure for monolithic Spring Boot application and React frontend
-- [ ] T002 Initialize Spring Boot project with Maven dependencies in backend/pom.xml (Spring Boot 3.2.1, JPA, Redis, Security, Async)
-- [ ] T003 [P] Initialize React + TypeScript + Vite project in frontend/ with TailwindCSS dependencies
-- [ ] T004 [P] Create Docker Compose configuration in docker-compose.yml for Nginx, Spring Boot, MySQL, Redis
-- [ ] T005 [P] Create Nginx configuration file in nginx.conf for reverse proxy and static file serving
-- [ ] T006 [P] Create Spring Boot Dockerfile in backend/Dockerfile with JDK 17
+- [X] T001 Create project directory structure for monolithic Spring Boot application and React frontend
+- [X] T002 Initialize Spring Boot project with Gradle dependencies in backend/build.gradle.kts (Spring Boot 3.2.1, JPA, Redis, Security, Async)
+- [X] T003 [P] Initialize React + TypeScript + Vite project in frontend/ with TailwindCSS dependencies
+- [X] T004 [P] Create Docker Compose configuration in docker-compose.yml for Nginx, Spring Boot, MySQL, Redis
+- [X] T005 [P] Create Nginx configuration file in nginx.conf for reverse proxy and static file serving
+- [X] T006 [P] Create Spring Boot Dockerfile in backend/Dockerfile with JDK 17
 
 ---
 
