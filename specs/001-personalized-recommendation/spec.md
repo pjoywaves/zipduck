@@ -1,0 +1,393 @@
+# Feature Specification: Personalized Subscription Recommendation Service
+
+**Feature Branch**: `001-personalized-recommendation`
+**Created**: 2025-11-21
+**Status**: Draft
+**Input**: User description: "사용자가 자신의 조건(나이, 소득, 세대 정보, 주택 보유 여부 등)을 입력하면, 신규 분양 및 청약 정보를 개인별 자격 조건에 맞춰 필터링하고 추천하는 서비스"
+
+## User Scenarios & Testing *(mandatory)*
+
+### User Story 1 - Profile Creation and Unified Recommendation View (Priority: P1)
+
+A first-time user visits ZipDuck to find subscription opportunities that match their qualifications. They need to input their personal information (age, income, household information, housing ownership status) and immediately see which new housing subscriptions they are eligible for from both public database sources and any PDF-analyzed subscriptions they've uploaded. All eligible subscriptions appear in a unified view with filtering options by data source.
+
+**Why this priority**: This is the core value proposition of the service. Without this functionality, users cannot receive personalized recommendations from either source, making the service unusable. This represents the minimum viable product with dual-source support.
+
+**Independent Test**: Can be fully tested by creating a user profile with specific criteria, adding both public database subscriptions and uploading PDFs, then verifying that the system displays all eligible opportunities in a unified view with source indicators. Delivers immediate value by showing all eligible housing options regardless of source.
+
+**Acceptance Scenarios**:
+
+1. **Given** a new user visits the service, **When** they complete the profile input form with their personal information (age: 32, income: 60M KRW/year, household members: 2, housing owned: 0), **Then** the system displays a unified list of housing subscriptions from both public database and uploaded PDFs that match their criteria, with each listing showing its data source
+2. **Given** a user with insufficient income for most subscriptions, **When** they complete their profile (age: 28, income: 35M KRW/year, household members: 1, housing owned: 0), **Then** the system shows available subscriptions from all sources within their income range and explains why certain subscriptions are not available
+3. **Given** a user who already owns property, **When** they input their housing ownership status (housing owned: 1), **Then** the system filters out subscriptions from both sources that require zero housing ownership and shows only eligible options
+4. **Given** a user completes their profile, **When** the system has no matching subscriptions from any source, **Then** the system displays a clear message explaining no current matches and offers to notify them when new opportunities arise or suggests uploading PDFs
+5. **Given** a user is viewing the unified subscription list, **When** they apply source filters (show all, public data only, uploaded PDFs only), **Then** the list updates to show only subscriptions from the selected source(s) while maintaining eligibility filtering
+
+---
+
+### User Story 2 - AI-Powered PDF Analysis with OCR (Priority: P1)
+
+A user discovers a housing subscription PDF document (분양 공고) from a developer or government website and wants to quickly understand if they qualify. They upload the PDF to ZipDuck (whether text-based or scanned image), and the AI analyzes the document using OCR if needed to extract eligibility criteria, compare against their profile, calculate a match score, and provide specific recommendations on whether to apply.
+
+**Why this priority**: This is a core differentiator and major value-add. Many users encounter PDF announcements in various formats (digital text, scanned images, photos from mobile) but struggle to understand complex eligibility rules. Universal PDF analysis with OCR makes the service immediately useful for all document types, even subscriptions not yet in the database. This extends the P1 MVP by enabling user-initiated analysis of any subscription document format.
+
+**Independent Test**: Can be fully tested by uploading various subscription PDFs in different formats (text-based PDFs, scanned image PDFs, photo-based PDFs) and verifying that the AI correctly extracts requirements regardless of format, compares with user profile, shows match/no-match status, calculates scores, and provides actionable recommendations. Delivers immediate value by simplifying complex document analysis for all document types.
+
+**Acceptance Scenarios**:
+
+1. **Given** a user with a complete profile uploads a subscription PDF, **When** the AI processes the document, **Then** the system extracts all eligibility criteria (age range, income requirements, housing ownership limits, household composition, special qualifications) and displays them in a structured format
+2. **Given** the AI has extracted eligibility criteria from a PDF, **When** comparing against the user's profile, **Then** the system shows a detailed match analysis indicating which requirements the user meets (✓) and which they fail (✗) with specific values
+3. **Given** a user qualifies for a subscription based on PDF analysis, **When** viewing the results, **Then** the system displays a match score (e.g., 85%), highlights preference points the user has, and recommends applying
+4. **Given** a user does not qualify for a subscription, **When** viewing the results, **Then** the system explains exactly why they don't qualify and what would need to change (e.g., "You need 5M KRW more annual income" or "You exceed housing ownership limit by 1 unit")
+5. **Given** a user uploads a PDF with partial qualification opportunities, **When** the AI analyzes multi-tier eligibility, **Then** the system identifies which specific tiers or categories the user qualifies for (e.g., "You don't qualify for general pool but qualify for special supply pool")
+6. **Given** a user uploads a non-standard or poorly formatted PDF, **When** the AI cannot extract clear eligibility criteria, **Then** the system notifies the user and asks them to verify or manually input key information
+7. **Given** multiple users upload the same popular subscription PDF, **When** the AI processes it, **Then** the system caches the extracted criteria to improve response time for subsequent users
+8. **Given** a user uploads a PDF for a subscription that already exists in the public database, **When** the system detects the duplicate, **Then** it merges the PDF data with the existing database record, enhances the listing with both sources, and displays a single unified entry indicating data from both public database and user's PDF
+9. **Given** a PDF-analyzed subscription has been saved to a user's account, **When** the application deadline passes or the subscription expires, **Then** the system automatically removes it from active recommendations but retains it in the user's history for reference
+10. **Given** a user uploads a scanned image-based PDF (non-text), **When** the system detects it requires OCR processing, **Then** the system applies OCR to extract text content and processes eligibility criteria with the same accuracy as text-based PDFs
+11. **Given** a user uploads a photo of a subscription announcement taken from mobile device, **When** the AI processes the image, **Then** the system applies OCR to extract legible text, analyzes eligibility criteria, and provides the same detailed analysis as standard PDFs
+12. **Given** a user uploads a low-quality or partially obscured image, **When** OCR processing has difficulty extracting clear text, **Then** the system notifies the user of quality issues and requests a clearer image or manual verification of ambiguous sections
+
+---
+
+### User Story 3 - Saved Profiles and Quick Access (Priority: P2)
+
+A returning user wants to quickly check new subscription opportunities without re-entering their information. They should be able to save their profile and access updated recommendations instantly on subsequent visits.
+
+**Why this priority**: This enhances user experience and encourages return visits, but the service can function without it. Users can still manually re-enter information if needed.
+
+**Independent Test**: Can be tested by creating and saving a profile, logging out, logging back in, and verifying the saved profile loads with updated subscription recommendations. Delivers value through time savings and convenience.
+
+**Acceptance Scenarios**:
+
+1. **Given** a user has previously entered their profile information, **When** they return to the service and log in, **Then** their saved profile is automatically loaded and current recommendations are displayed
+2. **Given** a returning user's profile, **When** new housing subscriptions are announced that match their criteria, **Then** these new opportunities appear in their recommendations feed
+3. **Given** a user wants to update their profile, **When** they modify any criteria (e.g., income changes from 60M to 70M KRW/year), **Then** the recommendations refresh to reflect the updated qualifications
+
+---
+
+### User Story 3 - Detailed Eligibility Breakdown (Priority: P2)
+
+A user viewing subscription recommendations wants to understand exactly why they are or aren't eligible for specific housing subscriptions. They should see a detailed breakdown of eligibility requirements and how their profile matches against each criterion.
+
+**Why this priority**: This adds transparency and educational value, helping users understand the complex subscription system. However, basic filtering can work without detailed explanations.
+
+**Independent Test**: Can be tested by selecting any subscription listing and verifying that the system displays a comprehensive eligibility breakdown showing which criteria the user meets or fails. Delivers value through transparency and user education.
+
+**Acceptance Scenarios**:
+
+1. **Given** a user views a subscription opportunity they qualify for, **When** they request detailed eligibility information, **Then** the system displays which requirements they meet (age: , income: , housing ownership: ) and any special preferences they might have
+2. **Given** a user views a subscription they don't qualify for, **When** they request eligibility details, **Then** the system clearly indicates which requirement(s) they fail and by how much (e.g., "Income requirement: 40M KRW, Your income: 35M KRW")
+3. **Given** a user meets basic requirements but lacks special qualifications, **When** viewing eligibility breakdown, **Then** the system explains available preference categories and which ones they qualify for
+
+---
+
+### User Story 5 - Comparison and Favorites (Priority: P3)
+
+A user has multiple eligible subscription opportunities and wants to compare them side-by-side to make an informed decision. They should be able to save favorites and compare key attributes like location, pricing, eligibility scoring, and application deadlines.
+
+**Why this priority**: This is a convenience feature that improves decision-making but isn't essential for the core recommendation functionality. Users can manually compare options without this feature.
+
+**Independent Test**: Can be tested by marking multiple subscriptions as favorites and using the comparison view to see their attributes side-by-side. Delivers value through improved decision-making capabilities.
+
+**Acceptance Scenarios**:
+
+1. **Given** a user is viewing eligible subscriptions, **When** they select multiple subscriptions (up to 5) and click "Compare", **Then** the system displays a comparison table showing key attributes (location, price range, household type, application period, eligibility score)
+2. **Given** a user finds an interesting subscription, **When** they mark it as a favorite, **Then** it is saved to their favorites list for quick access later
+3. **Given** a user has saved favorites, **When** they access their favorites list, **Then** they see all saved subscriptions with status indicators showing which are still open for application
+
+---
+
+### User Story 6 - Notification and Alerts (Priority: P3)
+
+A user wants to be proactively notified when new housing subscriptions matching their profile become available, or when application deadlines are approaching for their saved favorites.
+
+**Why this priority**: This is a retention and engagement feature that adds significant value for active users but isn't required for the basic recommendation service to function.
+
+**Independent Test**: Can be tested by setting up notification preferences, creating conditions that trigger notifications (new matching subscription, upcoming deadline), and verifying notifications are delivered. Delivers value through timely awareness of opportunities.
+
+**Acceptance Scenarios**:
+
+1. **Given** a user has enabled notifications, **When** a new housing subscription is announced that matches their profile, **Then** they receive a notification (email/push) with basic details and a link to view full information
+2. **Given** a user has favorited subscriptions, **When** an application deadline is 3 days away, **Then** they receive a reminder notification
+3. **Given** a user has set location preferences, **When** a highly relevant subscription in their preferred area becomes available, **Then** they receive a priority notification highlighting the match
+
+---
+
+### Edge Cases
+
+- What happens when a user's profile criteria are at the exact boundary of eligibility thresholds (e.g., income exactly at the minimum requirement)?
+- How does the system handle incomplete profile information (e.g., user skips optional fields)?
+- What happens when subscription data sources are temporarily unavailable or out of sync?
+- How does the system handle changes in government subscription policies that affect eligibility criteria?
+- What happens when a user's profile criteria result in hundreds of matches vs. zero matches?
+- How does the system handle subscriptions with complex multi-tier eligibility requirements?
+- What happens when subscription application periods overlap or have very short windows?
+- How does the system handle regional variations in subscription requirements?
+- What happens when a user uploads a file in an completely unsupported format (e.g., video, audio)?
+- What happens when OCR extracts text with low confidence scores?
+- How does the system handle mixed-format PDFs containing both text and images?
+- What happens when uploaded image quality is borderline acceptable for OCR?
+- How does the system handle PDFs with conflicting or ambiguous eligibility information?
+- What happens when a user uploads multiple PDFs simultaneously?
+- How does the system handle PDFs that are missing critical eligibility information (e.g., no income requirements specified)?
+- What happens when the AI extracts criteria that don't match the user's profile structure (e.g., regional-specific requirements)?
+- How does the system detect duplicate subscriptions between public database and uploaded PDFs?
+- What happens when PDF data conflicts with public database data for the same subscription?
+- How does the system handle expired PDF-analyzed subscriptions that are still in the user's history?
+- What happens when source filtering is applied but all results are from the excluded source?
+
+## Requirements *(mandatory)*
+
+### Functional Requirements
+
+- **FR-001**: System MUST allow users to create a profile by inputting age, annual household income, number of household members, current housing ownership count, and location preferences
+- **FR-002**: System MUST validate user input data to ensure it meets required formats (age: positive integer, income: positive number, household members: positive integer, housing owned: non-negative integer)
+- **FR-003**: System MUST retrieve current new housing subscription listings from public data sources
+- **FR-004**: System MUST filter subscription listings based on user profile criteria (age range, income range, household composition, housing ownership requirements)
+- **FR-005**: System MUST display filtered subscription results in a list format showing key information (location, housing type, price range, application period)
+- **FR-006**: System MUST persist user profile data for returning users
+- **FR-007**: Users MUST be able to view detailed eligibility breakdown for each subscription showing which criteria they meet or fail
+- **FR-008**: System MUST calculate and display an eligibility score or match percentage for each subscription opportunity
+- **FR-009**: Users MUST be able to mark subscriptions as favorites for later reference
+- **FR-010**: System MUST provide comparison functionality for up to 5 subscriptions simultaneously
+- **FR-011**: System MUST update subscription listings when new data becomes available from public sources
+- **FR-012**: System MUST handle edge cases where user criteria exactly match eligibility thresholds by including those subscriptions in results
+- **FR-013**: System MUST provide clear messaging when zero subscriptions match user criteria, offering alternative actions
+- **FR-014**: Users MUST be able to update their profile information and see refreshed recommendations immediately
+- **FR-015**: System MUST support notification preferences allowing users to opt-in/opt-out of alerts for new matches and deadlines
+- **FR-016**: Users MUST be able to upload PDF documents containing subscription announcements
+- **FR-017**: System MUST extract eligibility criteria from uploaded PDF documents including age range, income requirements, housing ownership limits, household composition requirements, and special qualifications
+- **FR-018**: System MUST compare extracted PDF criteria against the user's profile and display a detailed match analysis showing which requirements are met and which are failed
+- **FR-019**: System MUST calculate and display a match score or percentage for PDF-based subscriptions
+- **FR-020**: System MUST identify and explain partial qualification opportunities when a user qualifies for specific tiers or categories within a multi-tier subscription
+- **FR-021**: When a user does not qualify for a PDF-based subscription, system MUST explain exactly which requirements failed and what specific changes would be needed to qualify
+- **FR-022**: System MUST handle PDF documents with missing or incomplete eligibility information by notifying users and requesting clarification
+- **FR-023**: System MUST support processing of multiple PDF uploads and maintain a history of analyzed documents per user
+- **FR-024**: System MUST cache commonly uploaded subscription PDFs to improve processing speed for subsequent users
+- **FR-025**: System MUST provide recommendations on whether to apply for PDF-based subscriptions based on match score and qualification status
+- **FR-026**: System MUST display subscriptions from both public database and PDF sources in a unified view with clear source indicators
+- **FR-027**: System MUST provide filtering options allowing users to view all subscriptions, only public database subscriptions, or only PDF-analyzed subscriptions
+- **FR-028**: System MUST detect duplicate subscriptions when a user uploads a PDF for a subscription that already exists in the public database
+- **FR-029**: When duplicate subscriptions are detected, system MUST merge the PDF data with the existing database record and display a single enhanced listing showing both data sources
+- **FR-030**: System MUST automatically expire PDF-analyzed subscriptions when application deadlines pass or after a defined period
+- **FR-031**: System MUST retain expired PDF-analyzed subscriptions in user history for reference purposes
+- **FR-032**: System MUST apply eligibility filtering consistently across both public database and PDF-analyzed subscriptions
+- **FR-033**: System MUST automatically detect whether an uploaded PDF contains text-based content or requires OCR processing
+- **FR-034**: System MUST apply OCR (Optical Character Recognition) to extract text from image-based or scanned PDFs
+- **FR-035**: System MUST process OCR-extracted text with the same eligibility criteria extraction accuracy as text-based PDFs
+- **FR-036**: System MUST support common image formats for subscription announcements (PDF with images, JPG, PNG, HEIC from mobile photos)
+- **FR-037**: System MUST detect and notify users when uploaded images have insufficient quality for reliable OCR processing
+- **FR-038**: When OCR quality is insufficient, system MUST request clearer images or allow manual verification of ambiguous content
+
+### Key Entities
+
+- **User Profile**: Represents a user's personal eligibility information including age, household annual income, number of household members, current housing ownership count, preferred locations, and notification preferences
+- **Subscription Listing**: Represents a housing subscription opportunity with attributes including location, housing type, price range, eligibility requirements (age range, income range, household requirements, housing ownership limits), application period (start/end dates), preference categories, data source (public database, PDF upload, or merged), and merge status indicating if enhanced by multiple sources
+- **Eligibility Match**: Represents the relationship between a User Profile and Subscription Listing, including match score/percentage, which requirements are met, which are failed, and the reason for qualification/disqualification
+- **Favorite**: Represents a user's saved subscription listing for later reference and comparison
+- **PDF Document**: Represents an uploaded subscription announcement PDF with extracted text content, eligibility criteria, processing status, and cache key for duplicate detection
+- **PDF Analysis Result**: Represents the outcome of AI analysis on a PDF document, including extracted eligibility criteria, match analysis against user profile, qualification status, match score, and actionable recommendations
+
+## Success Criteria *(mandatory)*
+
+### Measurable Outcomes
+
+- **SC-001**: Users can complete initial profile creation in under 3 minutes
+- **SC-002**: Users receive personalized subscription recommendations within 5 seconds of profile submission
+- **SC-003**: The system accurately filters subscriptions with 100% precision (no false positives showing ineligible subscriptions)
+- **SC-004**: 90% of users can understand their eligibility status without external help or support
+- **SC-005**: Users can compare up to 5 subscriptions side-by-side and make selection decisions
+- **SC-006**: The system successfully handles at least 10,000 concurrent users during peak announcement periods
+- **SC-007**: Subscription data is updated within 24 hours of new public announcements
+- **SC-008**: Returning users can access their saved profiles and updated recommendations in under 10 seconds
+- **SC-009**: 80% of users who create profiles return within 30 days to check new opportunities
+- **SC-010**: Users receive notifications within 1 hour of new matching subscriptions becoming available
+- **SC-011**: Users can upload a PDF and receive AI analysis results within 30 seconds for text-based documents and 60 seconds for image-based/OCR documents
+- **SC-012**: The AI correctly extracts eligibility criteria from both text-based and image-based subscription PDFs with 95% accuracy for text PDFs and 90% accuracy for OCR-processed documents
+- **SC-013**: Users can understand PDF analysis results and qualification status without external help in 90% of cases
+- **SC-014**: The system processes previously uploaded popular PDFs in under 5 seconds using cached data
+- **SC-015**: 85% of users who upload PDFs find the AI recommendations actionable and helpful
+
+## Assumptions
+
+- Public housing subscription data is available through government APIs or public data sources with reasonable freshness (updated at least daily)
+- User profile data privacy and security requirements will be met according to Korean Personal Information Protection Act standards
+- Eligibility criteria follow standard Korean housing subscription system rules, which may include complex multi-tier requirements
+- Users have basic understanding of housing subscription concepts, though the system should provide educational support
+- Application deadlines and periods are accurately reflected in source data
+- Income verification is self-reported by users; actual verification happens during the official subscription application process
+- The system will initially support Korean language only
+- Notification delivery will use standard email and/or push notification mechanisms
+- Users will create accounts with authentication to save profiles and preferences
+- Subscription PDFs may be either text-based documents or image-based/scanned documents, and the system will handle both formats using OCR when necessary
+- AI analysis will use natural language processing and OCR to extract structured eligibility criteria from both text and image-based documents
+- OCR accuracy will be sufficient for most clearly captured or scanned subscription announcements in Korean language
+- Most subscription PDFs will follow common formatting patterns used in Korean housing announcements
+- Uploaded PDFs will be subject to reasonable file size limits for processing efficiency
+- Users understand that AI analysis provides guidance but official subscription applications require verification through government channels
+- Duplicate detection between public database and PDF sources will use common identifiers such as project name, location, and application dates
+- When merging duplicate subscriptions, the system will prioritize public database data for official information while incorporating PDF insights
+
+## Future Enhancements
+
+This section outlines potential features for subsequent development phases, organized by priority tier based on user value, differentiation potential, and implementation complexity.
+
+### Tier 1: High-Priority Extensions (Natural P1 Feature Enhancements)
+
+#### Enhancement 1: Document Requirements & Risk Analysis
+
+**What**: Extend PDF analysis to provide document preparation guidance and risk assessment.
+
+**Features**:
+- Generate 5-line summary of PDF subscription announcement highlighting key information
+- Identify and flag risk factors: tight deadlines, complex requirements, high competition indicators, ambiguous terms
+- Create personalized required documents checklist based on user profile and subscription requirements
+- Provide document issuance guidance with links for obtaining official documents (주민등록등본, 가족관계증명서, etc.)
+
+**Why This Priority**: Directly builds on existing PDF analysis capability. Addresses critical user need for application preparation. Low additional complexity, high confidence impact.
+
+**User Value**: Reduces application errors, increases confidence, streamlines preparation process.
+
+---
+
+#### Enhancement 2: Condition-Based Auto Monitoring
+
+**What**: Allow users to save custom search criteria and receive automatic notifications when matching subscriptions are announced.
+
+**Features**:
+- Save custom monitoring conditions: area size (평형), price range, specific locations, housing type
+- Automatic scanning of new public database announcements and uploaded PDFs
+- Push notifications and email alerts when conditions are met
+- Multiple saved condition profiles per user
+
+**Why This Priority**: Natural extension of existing notification system (P3). High retention value. Leverages existing filtering and matching logic.
+
+**User Value**: Proactive opportunity discovery, reduced manual checking, no missed opportunities.
+
+---
+
+#### Enhancement 3: Preference Qualification Auto-Verification
+
+**What**: Automatically verify user's eligibility for special preference categories (특별공급).
+
+**Features**:
+- Identify special qualification categories: military service (군복무), youth (청년), newlywed couples (신혼부부), first-time homebuyer (생애최초), etc.
+- Auto-verify user's qualification status based on profile data
+- Highlight applicable preference categories in eligibility breakdowns
+- Calculate preference points (가점) automatically
+
+**Why This Priority**: Directly enhances core eligibility matching. Reduces user confusion about complex preference categories. Uses existing profile data.
+
+**User Value**: Discover hidden opportunities, understand competitive advantages, accurate qualification assessment.
+
+### Tier 2: Strong Value-Add Features
+
+#### Enhancement 4: Calendar Integration
+
+**What**: Integrate subscription application schedules with user's personal calendar.
+
+**Features**:
+- Export to Google Calendar and iOS Calendar
+- Automatically register key dates: application period start, deadline, document submission, lottery date
+- Calendar reminders with customizable advance notice
+- Sync updates when deadlines change
+
+**Why This Priority**: High practical utility, relatively low complexity. Complements existing favorites and notification features.
+
+**User Value**: Never miss deadlines, better time management, reduces cognitive load.
+
+---
+
+#### Enhancement 5: AI Chat-Based Consultation
+
+**What**: Conversational AI interface for personalized subscription guidance and Q&A.
+
+**Features**:
+- Natural language queries about subscriptions and eligibility
+- Condition-based recommendation through chat
+- Side-by-side subscription comparison via conversation
+- Personalized situation analysis and guidance
+
+**Why This Priority**: Natural interface for existing recommendation engine. High differentiation potential. Makes complex information more accessible.
+
+**User Value**: Easier information discovery, personalized guidance, reduced learning curve.
+
+### Tier 3: Advanced Analytics & Integration
+
+#### Enhancement 6: Regional Transaction Data & Future Value Analysis
+
+**What**: Provide market data and future value predictions for subscription locations.
+
+**Features**:
+- Historical transaction prices (실거래가) for the area
+- Incoming supply volume and timeline (입주 물량)
+- Location quality metrics: school district (학군), subway accessibility (역세권), amenities
+- 5-year supply/demand forecast charts
+- Investment potential indicators
+
+**Why This Priority**: Valuable for investment-minded users. Requires significant external data integration. Appeals to specific user segment.
+
+**User Value**: Informed investment decisions, market awareness, long-term value assessment.
+
+---
+
+#### Enhancement 7: Digital Document Assistant
+
+**What**: Streamline document preparation and organization for applications.
+
+**Features**:
+- Direct links to government document issuance services (정부24, 민원24시)
+- Document upload and automatic classification
+- Document validity checking (expiration dates)
+- Application package preparation (all required documents in one place)
+
+**Why This Priority**: Reduces application friction. Moderate complexity. Complements document requirements feature.
+
+**User Value**: Faster preparation, reduced errors, organized application materials.
+
+### Tier 4: Optional/Future Consideration
+
+#### Enhancement 8: Financial Product Integration
+
+**What**: Connect users with relevant mortgage and loan products.
+
+**Features**:
+- LTV/DTI-based loan capacity calculator
+- Comparison of jeonse loan (전세자금) and interim payment loan (중도금 대출) options
+- Connection to financial institution partners
+- Personalized loan recommendations
+
+**Why This Priority**: High complexity, regulatory considerations. Requires financial partnerships. Different from core value proposition.
+
+**User Value**: Financial planning, loan comparison, application readiness.
+
+**Considerations**: Regulatory compliance, partnership development, potential conflicts of interest.
+
+---
+
+#### Enhancement 9: Community Features
+
+**What**: Enable users to share information and experiences about specific subscriptions.
+
+**Features**:
+- Project-specific discussion channels
+- Share competitive scoring information (경쟁 가점)
+- Application experience sharing
+- Q&A between users
+
+**Why This Priority**: Engagement feature but not core differentiator. Significant moderation overhead. Could dilute AI-powered positioning.
+
+**User Value**: Peer insights, competition awareness, shared experiences.
+
+**Considerations**: Content moderation, legal liability for shared information, community management resources.
+
+## Out of Scope (Initial Release)
+
+- Processing actual subscription applications (users will be directed to official government channels)
+- Income or eligibility verification (this occurs through official channels, not our service)
+- Direct communication with housing developers or government agencies
+- Multi-language support beyond Korean (can be added in future iterations)
+- Automatic scraping or downloading of subscription PDFs from external websites (users must manually upload)
+- Legal verification or warranty of AI analysis accuracy (guidance only, not legal advice)
+- Integration with official government subscription application systems
