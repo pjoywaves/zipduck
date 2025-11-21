@@ -1,0 +1,116 @@
+spring:
+  application:
+    name: zipduck-backend
+
+  profiles:
+    active: dev
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/zipduck?useSSL=false&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
+    username: zipduck
+    password: zipduck
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 3000ms
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080
+
+# Async Configuration
+spring.task.execution:
+  pool:
+    core-size: 10
+    max-size: 50
+    queue-capacity: 100
+  thread-name-prefix: async-
+
+# Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+
+# SpringDoc OpenAPI
+springdoc:
+  api-docs:
+    path: /api-docs
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+    operations-sorter: method
+    tags-sorter: alpha
+  show-actuator: false
+
+# Application Properties
+app:
+  jwt:
+    secret: your-secret-key-change-this-in-production
+    expiration: 86400000 # 24 hours
+
+  google:
+    gemini:
+      api-key: ${GOOGLE_GEMINI_API_KEY:}
+      model: gemini-2.5-flash
+    vision:
+      api-key: ${GOOGLE_VISION_API_KEY:}
+
+  public-data:
+    base-url: https://api.data.go.kr
+    api-key: ${PUBLIC_DATA_API_KEY:}
+
+  pdf:
+    storage-path: /app/pdfs
+    max-size: 10485760 # 10MB
+
+  cache:
+    ttl: 3600 # 1 hour in seconds
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  datasource:
+    url: jdbc:mysql://mysql:3306/zipduck?useSSL=false&serverTimezone=Asia/Seoul
+    username: zipduck
+    password: ${DB_PASSWORD}
+
+  jpa:
+    show-sql: false
+
+  data:
+    redis:
+      host: redis
+      port: 6379

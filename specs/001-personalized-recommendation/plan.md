@@ -803,12 +803,29 @@ server {
 
 ```dockerfile
 # backend/Dockerfile
+FROM openjdk:17-jdk-slim AS builder
+
+WORKDIR /app
+
+# Copy Gradle wrapper and build files
+COPY gradlew .
+COPY gradle gradle
+COPY build.gradle.kts .
+COPY settings.gradle.kts .
+
+# Copy source code
+COPY src src
+
+# Build application
+RUN chmod +x gradlew && ./gradlew bootJar --no-daemon
+
+# Runtime stage
 FROM openjdk:17-jdk-slim
 
 WORKDIR /app
 
-# Copy application JAR
-COPY target/zipduck-0.0.1-SNAPSHOT.jar app.jar
+# Copy JAR from builder
+COPY --from=builder /app/build/libs/*.jar app.jar
 
 # Create directory for PDF storage
 RUN mkdir -p /app/pdfs
@@ -826,13 +843,11 @@ ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=prod", "app.jar"]
 
 ### 7.1 SpringDoc OpenAPI Setup
 
-**Maven Dependency** (`pom.xml`):
-```xml
-<dependency>
-    <groupId>org.springdoc</groupId>
-    <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-    <version>2.2.0</version>
-</dependency>
+**Gradle Dependency** (`build.gradle.kts`):
+```kotlin
+dependencies {
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
+}
 ```
 
 **Configuration** (`application.yml`):
@@ -1409,7 +1424,7 @@ const profile = await userApi.createProfile(profileRequest);
   - Google Gemini 2.5 Flash (PDF 분석)
   - Google Vision API (OCR)
   - Scikit-learn (적격성 점수 계산 - Python 연동)
-- **Build**: Maven
+- **Build**: Gradle (Kotlin DSL)
 
 ### Frontend
 - **Framework**: React 18
