@@ -1,0 +1,8 @@
+@import "./globals.css";
+@import "tailwindcss";
+
+@config "../../tailwind.config.ts";
+
+body {
+  font-family: var(--font-primary);
+}
