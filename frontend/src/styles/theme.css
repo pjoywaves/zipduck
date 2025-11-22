@@ -1,0 +1,59 @@
+:root {
+  --surface-background: #FFFFFF;
+  --surface-background-soft: #F8FAFC;
+  --surface-card: #FFFFFF;
+  --surface-popover: #FFFFFF;
+  --surface-muted: #F8FAFC;
+  --surface-accent: #EFF6FF;
+
+  --font-primary: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
+  --text-muted: #64748B;
+  --text-on-primary: #FFFFFF;
+
+  --border-default: #E2E8F0;
+  --border-input: #E2E8F0;
+  --border-focus: #3B82F6;
+
+  --interactive-primary: #3B82F6;
+  --interactive-primary-hover: #2563EB;
+  --interactive-success: #34D399;
+  --interactive-warning: #FACC15;
+  --interactive-error: #EF4444;
+
+  --shadow-sm: 0px 1px 2px 0px rgba(15, 23, 42, 0.05);
+  --shadow-md: 0px 4px 6px -1px rgba(15, 23, 42, 0.1), 0px 2px 4px -2px rgba(15, 23, 42, 0.1);
+  --shadow-lg: 0px 10px 15px -3px rgba(15, 23, 42, 0.1), 0px 4px 6px -4px rgba(15, 23, 42, 0.1);
+  --shadow-xl: 0px 20px 25px -5px rgba(15, 23, 42, 0.1), 0px 8px 10px -6px rgba(15, 23, 42, 0.1);
+}
+
+.dark {
+  --surface-background: #0F172A;
+  --surface-background-soft: #1E293B;
+  --surface-card: #1E293B;
+  --surface-popover: #1E293B;
+  --surface-muted: #1E293B;
+  --surface-accent: #334155;
+
+  --text-primary: #F8FAFC;
+  --text-secondary: #CBD5E1;
+  --text-muted: #94A3B8;
+  --text-on-primary: #FFFFFF;
+
+  --border-default: #334155;
+  --border-input: #334155;
+  --border-focus: #3B82F6;
+
+  --interactive-primary: #3B82F6;
+  --interactive-primary-hover: #2563EB;
+  --interactive-success: #34D399;
+  --interactive-warning: #FACC15;
+  --interactive-error: #EF4444;
+
+  --shadow-sm: 0px 1px 2px 0px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0px 4px 6px -1px rgba(0, 0, 0, 0.3), 0px 2px 4px -2px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0px 10px 15px -3px rgba(0, 0, 0, 0.3), 0px 4px 6px -4px rgba(0, 0, 0, 0.2);
+  --shadow-xl: 0px 20px 25px -5px rgba(0, 0, 0, 0.4), 0px 8px 10px -6px rgba(0, 0, 0, 0.3);
+}

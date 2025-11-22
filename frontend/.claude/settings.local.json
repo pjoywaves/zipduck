@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run build:*)",
+      "Bash(cat:*)",
+      "Bash(timeout 5 npm run dev)",
+      "Bash(npx tsc --noEmit)",
+      "Bash(npx tsc:*)",
+      "Bash(pnpm add:*)",
+      "Bash(@radix-ui/react-accordion @radix-ui/react-alert-dialog @radix-ui/react-aspect-ratio )",
+      "Bash(@radix-ui/react-avatar @radix-ui/react-checkbox @radix-ui/react-collapsible )",
+      "Bash(@radix-ui/react-context-menu @radix-ui/react-dialog @radix-ui/react-dropdown-menu )",
+      "Bash(@radix-ui/react-hover-card @radix-ui/react-label @radix-ui/react-menubar )",
+      "Bash(@radix-ui/react-navigation-menu @radix-ui/react-popover @radix-ui/react-progress )",
+      "Bash(@radix-ui/react-radio-group @radix-ui/react-scroll-area @radix-ui/react-select )",
+      "Bash(@radix-ui/react-separator @radix-ui/react-slider @radix-ui/react-slot )",
+      "Bash(@radix-ui/react-switch @radix-ui/react-tabs @radix-ui/react-toggle )",
+      "Bash(@radix-ui/react-toggle-group @radix-ui/react-tooltip )",
+      "Bash(react-day-picker embla-carousel-react recharts cmdk vaul input-otp )",
+      "Bash(react-hook-form react-resizable-panels sonner)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
