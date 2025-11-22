@@ -44,18 +44,18 @@ description: "Task list for ZipDuck MVP - Personalized Subscription Recommendati
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T007 Create MySQL schema migration scripts in backend/src/main/resources/db/migration/ for user_profile, subscription, pdf_document, pdf_analysis_result, eligibility_match, favorite tables
-- [ ] T008 [P] Configure JPA and create base entity classes in backend/src/main/java/com/zipduck/domain/
-- [ ] T009 [P] Setup Redis cache configuration in backend/src/main/java/com/zipduck/infrastructure/cache/RedisCacheConfig.java
-- [ ] T010 [P] Configure Spring Security with JWT authentication in backend/src/main/java/com/zipduck/infrastructure/config/SecurityConfig.java
-- [ ] T011 [P] Setup async processing configuration in backend/src/main/java/com/zipduck/infrastructure/config/AsyncConfig.java
-- [ ] T012 [P] Create global exception handler in backend/src/main/java/com/zipduck/api/exception/GlobalExceptionHandler.java
-- [ ] T013 [P] Setup environment configuration in backend/src/main/resources/application.yml for dev and prod profiles
-- [ ] T014 [P] Configure Google Gemini API client in backend/src/main/java/com/zipduck/infrastructure/external/GeminiClient.java
-- [ ] T015 [P] Configure Google Vision API client in backend/src/main/java/com/zipduck/infrastructure/external/VisionClient.java
-- [ ] T016 [P] Configure 공공데이터포털 API client in backend/src/main/java/com/zipduck/infrastructure/external/PublicDataClient.java
-- [ ] T017 [P] Setup SpringDoc OpenAPI configuration in backend/src/main/java/com/zipduck/infrastructure/config/OpenApiConfig.java
-- [ ] T018 [P] Create base API response DTOs in backend/src/main/java/com/zipduck/api/dto/response/
+- [X] T007 Create MySQL schema migration scripts in backend/src/main/resources/db/migration/ for user_profile, subscription, pdf_document, pdf_analysis_result, eligibility_match, favorite tables
+- [X] T008 [P] Configure JPA and create base entity classes in backend/src/main/java/com/zipduck/domain/
+- [X] T009 [P] Setup Redis cache configuration in backend/src/main/java/com/zipduck/infrastructure/cache/RedisCacheConfig.java
+- [X] T010 [P] Configure Spring Security with JWT authentication in backend/src/main/java/com/zipduck/infrastructure/config/SecurityConfig.java
+- [X] T011 [P] Setup async processing configuration in backend/src/main/java/com/zipduck/infrastructure/config/AsyncConfig.java
+- [X] T012 [P] Create global exception handler in backend/src/main/java/com/zipduck/api/exception/GlobalExceptionHandler.java
+- [X] T013 [P] Setup environment configuration in backend/src/main/resources/application.yml for dev and prod profiles
+- [X] T014 [P] Configure Google Gemini API client in backend/src/main/java/com/zipduck/infrastructure/external/GeminiClient.java
+- [X] T015 [P] Configure Google Vision API client in backend/src/main/java/com/zipduck/infrastructure/external/VisionClient.java
+- [X] T016 [P] Configure 공공데이터포털 API client in backend/src/main/java/com/zipduck/infrastructure/external/PublicDataClient.java
+- [X] T017 [P] Setup SpringDoc OpenAPI configuration in backend/src/main/java/com/zipduck/infrastructure/config/OpenApiConfig.java
+- [X] T018 [P] Create base API response DTOs in backend/src/main/java/com/zipduck/api/dto/response/
 - [ ] T019 [P] Setup Axios HTTP client configuration in frontend/src/services/api.ts
 - [ ] T020 [P] Setup React Router configuration in frontend/src/App.tsx
 - [ ] T021 [P] Create base TypeScript types in frontend/src/types/
