@@ -1,0 +1,55 @@
+# Resilience4j Configuration for Circuit Breaker and Retry
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 5s
+        failureRateThreshold: 50
+        eventConsumerBufferSize: 10
+    instances:
+      gemini:
+        baseConfig: default
+        waitDurationInOpenState: 10s
+      vision:
+        baseConfig: default
+        waitDurationInOpenState: 10s
+      publicData:
+        baseConfig: default
+        waitDurationInOpenState: 10s
+
+  retry:
+    configs:
+      default:
+        maxAttempts: 3
+        waitDuration: 1s
+        enableExponentialBackoff: true
+        exponentialBackoffMultiplier: 2
+        retryExceptions:
+          - org.springframework.web.reactive.function.client.WebClientRequestException
+          - java.net.ConnectException
+          - java.net.SocketTimeoutException
+    instances:
+      gemini:
+        baseConfig: default
+      vision:
+        baseConfig: default
+      publicData:
+        baseConfig: default
+
+  timelimiter:
+    configs:
+      default:
+        timeoutDuration: 30s
+    instances:
+      gemini:
+        timeoutDuration: 30s
+      vision:
+        timeoutDuration: 60s
+      publicData:
+        timeoutDuration: 10s
