@@ -1,3 +1,4 @@
+import logo from "@/assets/img/logo.svg";
 import { Bell, ChevronRight, Home } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 
@@ -57,7 +58,7 @@ export function HomeScreen({ onNavigateToDetail, onNavigateToAI, onNavigateToCha
       <div className="bg-card border-b border-border px-6 pt-6 pb-4">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center"><Home size={20} className="text-white" /></div>
+            <img src={logo} alt="ZipDuck Logo" className="w-10 h-10 object-contain" />
             <h2 className="font-bold">집덕</h2>
           </div>
           <button className="relative p-2 hover:bg-muted rounded-xl transition-colors">

@@ -1,3 +1,4 @@
+import logo from "@/assets/img/logo.svg";
 import { useState } from "react";
 import { ChevronLeft, Mail, Lock, User, MapPin, Baby, Home } from "lucide-react";
 import { Input } from "./ui/input";
@@ -32,9 +33,9 @@ export function NewSignUpScreen({ onBack, onSignUp }: NewSignUpScreenProps) {
       <div className="px-6 py-6 space-y-6">
         {/* Logo & Welcome */}
         <div className="text-center mb-8">
-          <div className="w-24 h-24 flex items-center justify-center mx-auto mb-4">
-            <img src="@/assets/img/logo.svg" alt="집덕로고"/>
-            <div className="w-full h-full bg-primary rounded-2xl flex items-center justify-center"><Home size={48} className="text-white" /></div>
+          <div className="w-24 h-24 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+            
+            <img src={logo} alt="ZipDuck Logo" className="w-full h-full object-contain" />
           </div>
           <h1 className="font-bold mb-2">집덕과 함께</h1>
           <p className="text-muted-foreground">청약을 더 쉽고 빠르게 시작하세요</p>

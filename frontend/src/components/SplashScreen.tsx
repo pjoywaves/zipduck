@@ -1,3 +1,4 @@
+import logo from "@/assets/img/logo.svg";
 import { useEffect } from "react";
 import { Home } from "lucide-react";
 
@@ -26,8 +27,8 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
       {/* Logo Container */}
       <div className="relative z-10 animate-[fadeInScale_1s_ease-out]">
         <div className="mb-8 relative flex items-center justify-center">
-          <div className="w-32 h-32 bg-primary rounded-3xl flex items-center justify-center shadow-2xl">
-            <Home className="w-16 h-16 text-white" />
+          <div className="w-32 h-32 bg-white rounded-3xl flex items-center justify-center shadow-2xl">
+            <img src={logo} alt="ZipDuck Logo" className="w-full h-full object-contain" />
           </div>
         </div>
         

@@ -1,3 +1,4 @@
+import duckImg from "@/assets/img/duck.png";
 import { ChevronLeft, Sparkles, TrendingUp, MapPin, Home, Award } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { Button } from "./ui/button";
