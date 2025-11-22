@@ -1,3 +1,4 @@
+import logo from "@/assets/img/logo.svg";
 import { useState } from "react";
 import { Button } from "./ui/button";
 import { Eye, EyeOff, Mail, Lock, Home } from "lucide-react";
@@ -30,8 +31,8 @@ export function LoginScreen({ onLogin, onNavigateToSignUp }: LoginScreenProps) {
         {/* Logo & Title */}
         <div className="text-center mb-8">
           <div className="inline-block mb-6">
-            <div className="w-24 h-24 bg-primary rounded-2xl flex items-center justify-center shadow-lg">
-              <Home size={48} className="text-white" />
+            <div className="w-24 h-24 bg-white rounded-2xl flex items-center justify-center shadow-lg">
+              <img src={logo} alt="ZipDuck Logo" className="w-full h-full object-contain" />
             </div>
           </div>
           <h1 className="mb-2 font-bold text-foreground">집덕</h1>

@@ -1,3 +1,4 @@
+import duckImg from "@/assets/img/duck.png";
 import { useState } from "react";
 import { ChevronLeft, Send, Upload, Camera, Sparkles } from "lucide-react";
 import { Input } from "./ui/input";

@@ -1,3 +1,4 @@
+import logo from "@/assets/img/logo.svg";
 import { ChevronRight, User, MapPin, Bell, Settings, HelpCircle, LogOut, Home } from "lucide-react";
 
 interface MyPageScreenProps {
@@ -41,7 +42,7 @@ export function MyPageScreen({ onNavigateToSettings }: MyPageScreenProps) {
       {/* Header */}
       <div className="bg-card border-b border-border px-6 pt-6 pb-4 mb-4">
         <div className="flex items-center gap-3 mb-2">
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center"><Home size={16} className="text-white" /></div>
+          <img src={logo} alt="ZipDuck Logo" className="w-8 h-8 object-contain" />
           <h2 className="font-bold">마이페이지</h2>
         </div>
       </div>
