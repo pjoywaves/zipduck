@@ -120,7 +120,7 @@ export function PasswordChangeScreen({ onBack }: PasswordChangeScreenProps) {
 
       <div className="p-6 space-y-6">
         {/* Info Notice */}
-        <div className="bg-[#EFF6FF] dark:bg-[#1E293B] rounded-xl p-4 border border-primary/20">
+        <div className="bg-blue-soft-bg dark:bg-card rounded-xl p-4 border border-primary/20">
           <div className="flex gap-3">
             <Lock size={20} className="text-primary flex-shrink-0 mt-0.5" />
             <div className="flex-1">
@@ -161,7 +161,7 @@ export function PasswordChangeScreen({ onBack }: PasswordChangeScreenProps) {
             </button>
           </div>
           {touched.current && errors.current && (
-            <p className="text-sm text-[#EF4444] flex items-center gap-1">
+            <p className="text-sm text-destructive flex items-center gap-1">
               <AlertCircle size={14} />
               {errors.current}
             </p>
@@ -202,7 +202,7 @@ export function PasswordChangeScreen({ onBack }: PasswordChangeScreenProps) {
             <div className="space-y-2">
               <div className="flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">비밀번호 강도</span>
-                <span style={{ color: passwordStrength.color }} className="font-semibold">
+                <span style={{ color: passwordStrength.color }} className="font-semibold text-foreground">
                   {passwordStrength.label}
                 </span>
               </div>
@@ -219,7 +219,7 @@ export function PasswordChangeScreen({ onBack }: PasswordChangeScreenProps) {
           )}
           
           {touched.newPassword && errors.newPassword && (
-            <p className="text-sm text-[#EF4444] flex items-center gap-1">
+            <p className="text-sm text-destructive flex items-center gap-1">
               <AlertCircle size={14} />
               {errors.newPassword}
             </p>
@@ -255,13 +255,13 @@ export function PasswordChangeScreen({ onBack }: PasswordChangeScreenProps) {
             </button>
           </div>
           {touched.confirmPassword && errors.confirmPassword && (
-            <p className="text-sm text-[#EF4444] flex items-center gap-1">
+            <p className="text-sm text-destructive flex items-center gap-1">
               <AlertCircle size={14} />
               {errors.confirmPassword}
             </p>
           )}
           {touched.confirmPassword && isPasswordMatch && !errors.confirmPassword && (
-            <p className="text-sm text-[#34D399] flex items-center gap-1">
+            <p className="text-sm text-success flex items-center gap-1">
               <CheckCircle2 size={14} />
               비밀번호가 일치합니다
             </p>
@@ -273,26 +273,26 @@ export function PasswordChangeScreen({ onBack }: PasswordChangeScreenProps) {
           <h4 className="font-semibold text-foreground">안전한 비밀번호 규칙</h4>
           <ul className="text-sm text-muted-foreground space-y-2">
             <li className="flex items-start gap-2">
-              <span className={newPassword.length >= 8 ? "text-[#34D399]" : "text-primary"}>•</span>
-              <span className={newPassword.length >= 8 ? "text-[#34D399]" : ""}>
+              <span className={newPassword.length >= 8 ? "text-success" : "text-primary"}>•</span>
+              <span className={newPassword.length >= 8 ? "text-success" : ""}>
                 8자 이상 입력 (권장: 12자 이상)
               </span>
             </li>
             <li className="flex items-start gap-2">
-              <span className={/[A-Za-z]/.test(newPassword) ? "text-[#34D399]" : "text-primary"}>•</span>
-              <span className={/[A-Za-z]/.test(newPassword) ? "text-[#34D399]" : ""}>
+              <span className={/[A-Za-z]/.test(newPassword) ? "text-success" : "text-primary"}>•</span>
+              <span className={/[A-Za-z]/.test(newPassword) ? "text-success" : ""}>
                 영문자 포함
               </span>
             </li>
             <li className="flex items-start gap-2">
-              <span className={/[0-9]/.test(newPassword) ? "text-[#34D399]" : "text-primary"}>•</span>
-              <span className={/[0-9]/.test(newPassword) ? "text-[#34D399]" : ""}>
+              <span className={/[0-9]/.test(newPassword) ? "text-success" : "text-primary"}>•</span>
+              <span className={/[0-9]/.test(newPassword) ? "text-success" : ""}>
                 숫자 포함
               </span>
             </li>
             <li className="flex items-start gap-2">
-              <span className={/[!@#$%^&*(),.?":{}|<>]/.test(newPassword) ? "text-[#34D399]" : "text-primary"}>•</span>
-              <span className={/[!@#$%^&*(),.?":{}|<>]/.test(newPassword) ? "text-[#34D399]" : ""}>
+              <span className={/[!@#$%^&*(),.?":{}|<>]/.test(newPassword) ? "text-success" : "text-primary"}>•</span>
+              <span className={/[!@#$%^&*(),.?":{}|<>]/.test(newPassword) ? "text-success" : ""}>
                 특수문자 포함 (권장)
               </span>
             </li>
@@ -303,7 +303,7 @@ export function PasswordChangeScreen({ onBack }: PasswordChangeScreenProps) {
         <Button
           onClick={handleSubmit}
           disabled={!isValid}
-          className="w-full h-12 bg-primary hover:bg-primary/90 dark:bg-[#2563EB] dark:hover:bg-[#2563EB]/90 text-white rounded-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full h-12 bg-primary hover:bg-primary/90 dark:bg-primary-hover dark:hover:bg-primary-hover/90 text-white rounded-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
         >
           비밀번호 변경하기
         </Button>
@@ -311,7 +311,7 @@ export function PasswordChangeScreen({ onBack }: PasswordChangeScreenProps) {
         {/* Last Changed Info */}
         <div className="text-center pt-2">
           <p className="text-sm text-muted-foreground">
-            마지막 변경: <span className="font-medium">2025.10.15</span>
+            마지막 변경: <span className="font-medium text-foreground">2025.10.15</span>
           </p>
         </div>
       </div>

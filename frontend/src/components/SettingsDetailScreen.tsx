@@ -123,8 +123,8 @@ export function SettingsDetailScreen({
 
         {/* Logout Button */}
         <button className="w-full bg-card border border-border rounded-2xl p-5 hover:bg-muted transition-colors flex items-center justify-center gap-2">
-          <LogOut size={20} className="text-red-500" />
-          <span className="font-semibold text-red-500">로그아웃</span>
+          <LogOut size={20} className="text-destructive" />
+          <span className="font-semibold text-destructive">로그아웃</span>
         </button>
       </div>
     </div>

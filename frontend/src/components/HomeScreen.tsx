@@ -1,5 +1,6 @@
 import logo from "@/assets/img/logo.svg";
-import { Bell, ChevronRight, Home } from "lucide-react";
+import { useState } from "react";
+import { Bell, ChevronRight, MessageCircle, Sparkles, Calculator, X, Plus } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 
 interface HomeScreenProps {
@@ -9,6 +10,14 @@ interface HomeScreenProps {
 }
 
 export function HomeScreen({ onNavigateToDetail, onNavigateToAI, onNavigateToChat }: HomeScreenProps) {
+  const [isFabOpen, setIsFabOpen] = useState(false);
+
+  const fabMenuItems = [
+    { icon: MessageCircle, label: "AI 상담", action: onNavigateToChat, color: "bg-primary" },
+    { icon: Sparkles, label: "AI 추천", action: onNavigateToAI, color: "bg-mint" },
+    { icon: Calculator, label: "계산기", action: () => {}, color: "bg-warning" },
+  ];
+
   const apartments = [
     {
       id: 1,
@@ -59,7 +68,7 @@ export function HomeScreen({ onNavigateToDetail, onNavigateToAI, onNavigateToCha
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <img src={logo} alt="ZipDuck Logo" className="w-10 h-10 object-contain" />
-            <h2 className="font-bold">집덕</h2>
+            <h2 className="font-bold text-foreground">집덕</h2>
           </div>
           <button className="relative p-2 hover:bg-muted rounded-xl transition-colors">
             <Bell size={24} className="text-foreground" />
@@ -122,7 +131,7 @@ export function HomeScreen({ onNavigateToDetail, onNavigateToAI, onNavigateToCha
                   <div className="flex items-start justify-between mb-1">
                     <p className="text-foreground line-clamp-1 font-semibold">{apt.name}</p>
                     {apt.dday <= 7 && (
-                      <span className="bg-[#EFF6FF] dark:bg-[#1E293B] text-[#2563EB] dark:text-primary text-xs px-3 py-1 rounded-2xl ml-2 whitespace-nowrap font-semibold">
+                      <span className="bg-blue-soft-bg dark:bg-card text-primary text-xs px-3 py-1 rounded-2xl ml-2 whitespace-nowrap font-semibold">
                         D-{apt.dday}
                       </span>
                     )}
@@ -186,13 +195,47 @@ export function HomeScreen({ onNavigateToDetail, onNavigateToAI, onNavigateToCha
         </div>
       </div>
       
-      {/* Fixed AI Chat Button */}
-      <button
-        onClick={onNavigateToChat}
-        className="fixed bottom-24 right-6 w-14 h-14 rounded-full bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all flex items-center justify-center z-20 border-4 border-background"
+      {/* FAB Menu */}
+      <div
+        className="fixed bottom-24 right-6 z-20"
+        onMouseEnter={() => setIsFabOpen(true)}
+        onMouseLeave={() => setIsFabOpen(false)}
       >
-        <span className="text-2xl">✨</span>
-      </button>
+        {/* Overlay */}
+        {isFabOpen && (
+          <div
+            className="fixed inset-0 bg-black/20 -z-10"
+            onClick={() => setIsFabOpen(false)}
+          />
+        )}
+
+        {/* Menu Items */}
+        <div className={`absolute bottom-16 right-0 flex flex-col items-end gap-3 transition-all duration-300 ${isFabOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
+          {fabMenuItems.map((item, index) => {
+            const Icon = item.icon;
+            return (
+              <button
+                key={item.label}
+                onClick={item.action}
+                className={`flex items-center gap-3 pl-4 pr-3 py-2 rounded-full ${item.color} text-white shadow-lg hover:shadow-xl transition-all`}
+                style={{ transitionDelay: `${index * 50}ms` }}
+              >
+                <span className="text-sm font-semibold whitespace-nowrap">{item.label}</span>
+                <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                  <Icon size={20} />
+                </div>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Main FAB Button */}
+        <button
+          className={`w-14 h-14 rounded-full bg-primary shadow-lg hover:shadow-xl transition-all flex items-center justify-center border-4 border-background ${isFabOpen ? 'rotate-45' : ''}`}
+        >
+          <Plus size={24} className="text-white" />
+        </button>
+      </div>
     </div>
   );
 }

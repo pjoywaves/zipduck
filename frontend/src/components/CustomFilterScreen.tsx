@@ -43,7 +43,7 @@ export function CustomFilterScreen({ onBack }: CustomFilterScreenProps) {
             <button onClick={onBack} className="p-2 -ml-2">
               <ChevronLeft size={24} />
             </button>
-            <h2 className="font-bold ml-4">맞춤 필터</h2>
+            <h2 className="font-bold ml-4 text-muted-foreground">맞춤 필터</h2>
           </div>
           <button onClick={clearAll} className="text-sm text-primary font-semibold">
             전체 초기화
@@ -54,7 +54,7 @@ export function CustomFilterScreen({ onBack }: CustomFilterScreenProps) {
       <div className="px-6 py-6 space-y-8">
         {/* Region Filter */}
         <div>
-          <h3 className="font-semibold mb-3 flex items-center gap-2">
+          <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2">
             <span className="text-xl">📍</span>
             지역
           </h3>
@@ -77,7 +77,7 @@ export function CustomFilterScreen({ onBack }: CustomFilterScreenProps) {
 
         {/* Supply Type Filter */}
         <div>
-          <h3 className="font-semibold mb-3 flex items-center gap-2">
+          <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2">
             <span className="text-xl">🏠</span>
             공급 유형
           </h3>
@@ -100,7 +100,7 @@ export function CustomFilterScreen({ onBack }: CustomFilterScreenProps) {
 
         {/* Size Filter */}
         <div>
-          <h3 className="font-semibold mb-3 flex items-center gap-2">
+          <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2">
             <span className="text-xl">📐</span>
             면적
           </h3>
@@ -123,7 +123,7 @@ export function CustomFilterScreen({ onBack }: CustomFilterScreenProps) {
 
         {/* Income Range */}
         <div>
-          <h3 className="font-semibold mb-3 flex items-center gap-2">
+          <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2">
             <span className="text-xl">💰</span>
             소득 기준 (도시근로자 월평균 소득)
           </h3>
@@ -141,7 +141,7 @@ export function CustomFilterScreen({ onBack }: CustomFilterScreenProps) {
 
         {/* Status Filter */}
         <div>
-          <h3 className="font-semibold mb-3 flex items-center gap-2">
+          <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2">
             <span className="text-xl">⏰</span>
             청약 단계
           </h3>
@@ -164,17 +164,17 @@ export function CustomFilterScreen({ onBack }: CustomFilterScreenProps) {
 
         {/* Saved Filters */}
         <div className="bg-card border border-border rounded-2xl p-5">
-          <h3 className="font-semibold mb-3 flex items-center gap-2">
+          <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2">
             <Upload size={20} className="text-primary" />
             저장된 조건
           </h3>
           <div className="space-y-2">
             <button className="w-full p-3 bg-muted rounded-xl text-left hover:bg-muted/80 transition-colors">
-              <p className="font-medium mb-1">나의 신혼부부 조건</p>
+              <p className="font-medium mb-1 text-foreground">나의 신혼부부 조건</p>
               <p className="text-xs text-muted-foreground">서울·경기 / 특별공급 / 59㎡·84㎡</p>
             </button>
             <button className="w-full p-3 bg-muted rounded-xl text-left hover:bg-muted/80 transition-colors">
-              <p className="font-medium mb-1">강남 선호 조건</p>
+              <p className="font-medium mb-1 text-foreground">강남 선호 조건</p>
               <p className="text-xs text-muted-foreground">서울 / 일반공급 / 84㎡·101㎡</p>
             </button>
           </div>

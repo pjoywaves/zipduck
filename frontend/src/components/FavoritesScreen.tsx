@@ -31,11 +31,11 @@ export function FavoritesScreen({ onNavigateToDetail }: FavoritesScreenProps) {
   ]);
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20 max-w-md mx-auto">
+    <div className="min-h-screen bg-secondary pb-20 max-w-md mx-auto">
       {/* Header */}
-      <div className="bg-white px-6 pt-6 pb-4 mb-4">
+      <div className="bg-background px-6 pt-6 pb-4 mb-4">
         <h2 className="mb-2">관심 단지</h2>
-        <p className="text-sm text-gray-600">{favorites.length}개의 관심 단지</p>
+        <p className="text-sm text-muted-foreground">{favorites.length}개의 관심 단지</p>
       </div>
 
       {favorites.length > 0 ? (
@@ -44,7 +44,7 @@ export function FavoritesScreen({ onNavigateToDetail }: FavoritesScreenProps) {
             <button
               key={apt.id}
               onClick={onNavigateToDetail}
-              className="w-full bg-white rounded-xl overflow-hidden border border-gray-200 hover:border-[#FCD34D] transition-colors"
+              className="w-full bg-background rounded-xl overflow-hidden border border-border hover:border-[#FCD34D] transition-colors"
             >
               <div className="flex gap-3 p-3">
                 <ImageWithFallback
@@ -54,22 +54,22 @@ export function FavoritesScreen({ onNavigateToDetail }: FavoritesScreenProps) {
                 />
                 <div className="flex-1 text-left">
                   <div className="flex items-start justify-between mb-1">
-                    <p className="text-gray-900 line-clamp-1">{apt.name}</p>
+                    <p className="text-foreground line-clamp-1">{apt.name}</p>
                     {apt.dday <= 7 && (
-                      <span className="bg-[#FCD34D] text-gray-900 text-xs px-2 py-1 rounded-md ml-2 whitespace-nowrap">
+                      <span className="bg-warning text-foreground text-xs px-2 py-1 rounded-md ml-2 whitespace-nowrap">
                         D-{apt.dday}
                       </span>
                     )}
                   </div>
-                  <p className="text-sm text-gray-600 mb-2">{apt.location}</p>
+                  <p className="text-sm text-muted-foreground mb-2">{apt.location}</p>
                   <div className="flex flex-wrap gap-1 mb-2">
                     {apt.tags.map((tag) => (
-                      <span key={tag} className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">
+                      <span key={tag} className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded">
                         {tag}
                       </span>
                     ))}
                   </div>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-muted-foreground">
                     {apt.types} · {apt.totalUnits}세대
                   </p>
                 </div>
@@ -82,8 +82,8 @@ export function FavoritesScreen({ onNavigateToDetail }: FavoritesScreenProps) {
           <div className="mb-4">
             <span className="text-5xl">💛</span>
           </div>
-          <h3 className="text-gray-900 mb-2 font-semibold">아직 관심 단지가 없어요</h3>
-          <p className="text-sm text-gray-600 text-center">
+          <h3 className="text-foreground mb-2 font-semibold">아직 관심 단지가 없어요</h3>
+          <p className="text-sm text-muted-foreground text-center">
             마음에 드는 단지를 찾아<br />관심 단지로 등록해보세요
           </p>
         </div>

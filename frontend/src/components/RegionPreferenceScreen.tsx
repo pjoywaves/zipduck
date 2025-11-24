@@ -62,7 +62,7 @@ export function RegionPreferenceScreen({ onBack }: RegionPreferenceScreenProps) 
                   className="bg-primary text-white px-4 py-2 rounded-2xl flex items-center gap-2 group hover:bg-primary/90 transition-colors"
                 >
                   <MapPin size={14} />
-                  <span className="text-sm font-medium">{region}</span>
+                  <span className="text-sm font-medium text-muted-foreground">{region}</span>
                   <button
                     onClick={() => toggleRegion(region)}
                     className="hover:scale-110 transition-transform"
@@ -104,12 +104,12 @@ export function RegionPreferenceScreen({ onBack }: RegionPreferenceScreenProps) 
                   onClick={() => toggleRegion(region)}
                   className={`px-4 py-3 rounded-xl text-sm font-medium transition-all border-2 ${
                     isSelected
-                      ? "bg-[#EFF6FF] dark:bg-[#1E293B] text-[#2563EB] dark:text-primary border-primary"
+                      ? "bg-blue-soft-bg dark:bg-card text-primary border-primary"
                       : "bg-card text-foreground border-border hover:border-primary/50"
                   }`}
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <span className="truncate">{region}</span>
+                    <span className="truncate text-foreground">{region}</span>
                     {isSelected && <Plus size={16} className="rotate-45 flex-shrink-0" />}
                   </div>
                 </button>
@@ -119,7 +119,7 @@ export function RegionPreferenceScreen({ onBack }: RegionPreferenceScreenProps) 
         </div>
 
         {/* Info */}
-        <div className="bg-[#EFF6FF] dark:bg-[#1E293B] rounded-xl p-4 border border-primary/20">
+        <div className="bg-blue-soft-bg dark:bg-card rounded-xl p-4 border border-primary/20">
           <p className="text-sm text-muted-foreground leading-relaxed">
             💡 <span className="font-semibold text-foreground">관심 지역</span>을 설정하면 해당 지역의 새로운 청약 정보를 
             빠르게 받아볼 수 있습니다.

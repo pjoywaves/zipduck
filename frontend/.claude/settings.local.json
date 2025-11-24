@@ -17,7 +17,11 @@
       "Bash(@radix-ui/react-switch @radix-ui/react-tabs @radix-ui/react-toggle )",
       "Bash(@radix-ui/react-toggle-group @radix-ui/react-tooltip )",
       "Bash(react-day-picker embla-carousel-react recharts cmdk vaul input-otp )",
-      "Bash(react-hook-form react-resizable-panels sonner)"
+      "Bash(react-hook-form react-resizable-panels sonner)",
+      "Bash(head -20 echo \"---\" grep -n \"ZipDuck\\|집덕\\|text-\" \"D:/joy/zipduck/frontend/src/components/SplashScreen.tsx\")",
+      "Bash(head -20 echo \"---\" grep -n \"ZipDuck\\|집덕\\|text-\" \"D:/joy/zipduck/frontend/src/components/NewSignUpScreen.tsx\")",
+      "Bash(npm install:*)",
+      "Bash(npm ls:*)"
     ],
     "deny": [],
     "ask": []

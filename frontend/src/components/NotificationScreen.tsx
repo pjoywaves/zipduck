@@ -87,7 +87,7 @@ export function NotificationScreen({ onBack }: NotificationScreenProps) {
             <button onClick={onBack} className="p-2 -ml-2">
               <ChevronLeft size={24} />
             </button>
-            <h2 className="font-bold ml-4">알림</h2>
+            <h2 className="font-bold ml-4 text-foreground">알림</h2>
             {unreadCount > 0 && (
               <span className="ml-2 px-2 py-1 bg-primary text-primary-foreground text-xs font-bold rounded-full">
                 {unreadCount}
@@ -115,7 +115,7 @@ export function NotificationScreen({ onBack }: NotificationScreenProps) {
             <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mb-4">
               <Bell size={32} className="text-muted-foreground" />
             </div>
-            <h3 className="font-semibold mb-2">알림이 없습니다</h3>
+            <h3 className="font-semibold text-foreground mb-2">알림이 없습니다</h3>
             <p className="text-sm text-muted-foreground text-center">
               새로운 청약 소식이 있으면<br />여기에 표시됩니다
             </p>

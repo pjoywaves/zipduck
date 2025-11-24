@@ -40,7 +40,7 @@ export function AnalyticsScreen({ onBack }: AnalyticsScreenProps) {
             <ChevronLeft size={24} />
           </button>
           <div className="ml-4">
-            <h2 className="font-bold">데이터 분석</h2>
+            <h2 className="font-bold text-foreground">데이터 분석</h2>
             <p className="text-xs text-muted-foreground">힐스테이트 송파 헬리오시티</p>
           </div>
         </div>
@@ -54,7 +54,7 @@ export function AnalyticsScreen({ onBack }: AnalyticsScreenProps) {
               <TrendingUp size={18} className="text-primary" />
               <p className="text-sm font-medium text-muted-foreground">평균 경쟁률</p>
             </div>
-            <p className="font-bold">17.1:1</p>
+            <p className="font-bold text-foreground">17.1:1</p>
             <p className="text-xs text-muted-foreground mt-1">최근 1년</p>
           </div>
 
@@ -93,7 +93,7 @@ export function AnalyticsScreen({ onBack }: AnalyticsScreenProps) {
               <span className="text-xl">✨</span>
             </div>
             <div>
-              <h3 className="font-bold mb-1">집덕 AI 인사이트</h3>
+              <h3 className="font-bold text-foreground mb-1">집덕 AI 인사이트</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 이 단지는 최근 6개월간 <span className="font-semibold text-primary">경쟁률이 18.5% 상승</span>하는 추세입니다. 
                 교통 인프라가 개선되면서 <span className="font-semibold text-foreground">관심도가 급증</span>하고 있어, 
@@ -105,7 +105,7 @@ export function AnalyticsScreen({ onBack }: AnalyticsScreenProps) {
 
         {/* Competition Trend Chart */}
         <div className="bg-card border border-border rounded-2xl p-5">
-          <h3 className="font-semibold mb-4 flex items-center gap-2">
+          <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2">
             <TrendingUp size={20} className="text-primary" />
             청약 경쟁률 트렌드
           </h3>
@@ -138,7 +138,7 @@ export function AnalyticsScreen({ onBack }: AnalyticsScreenProps) {
 
         {/* Price Chart */}
         <div className="bg-card border border-border rounded-2xl p-5">
-          <h3 className="font-semibold mb-4 flex items-center gap-2">
+          <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2">
             <BarChart3 size={20} className="text-primary" />
             분양가 변화 (백만원)
           </h3>
@@ -164,7 +164,7 @@ export function AnalyticsScreen({ onBack }: AnalyticsScreenProps) {
 
         {/* Location Score Radar */}
         <div className="bg-card border border-border rounded-2xl p-5">
-          <h3 className="font-semibold mb-4 flex items-center gap-2">
+          <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2">
             <Target size={20} className="text-primary" />
             입지 분석 (100점 만점)
           </h3>
@@ -190,7 +190,7 @@ export function AnalyticsScreen({ onBack }: AnalyticsScreenProps) {
             {locationData.map((item) => (
               <div key={item.subject} className="text-center">
                 <p className="text-xs text-muted-foreground mb-1">{item.subject}</p>
-                <p className="font-semibold text-sm">{item.value}점</p>
+                <p className="font-semibold text-sm text-foreground">{item.value}점</p>
               </div>
             ))}
           </div>
@@ -198,18 +198,18 @@ export function AnalyticsScreen({ onBack }: AnalyticsScreenProps) {
 
         {/* Comparison */}
         <div className="bg-card border border-border rounded-2xl p-5">
-          <h3 className="font-semibold mb-4">비슷한 단지와 비교</h3>
+          <h3 className="font-semibold text-foreground mb-4">비슷한 단지와 비교</h3>
           <div className="space-y-3">
             <div className="flex items-center justify-between p-3 bg-muted rounded-xl">
               <div>
-                <p className="font-medium mb-1">래미안 강남 포레스티지</p>
+                <p className="font-medium mb-1 text-foreground">래미안 강남 포레스티지</p>
                 <p className="text-xs text-muted-foreground">서울 강남구 · 경쟁률 19.2:1</p>
               </div>
-              <span className="text-xs font-semibold text-red-500">+2.1</span>
+              <span className="text-xs font-semibold text-destructive">+2.1</span>
             </div>
             <div className="flex items-center justify-between p-3 bg-muted rounded-xl">
               <div>
-                <p className="font-medium mb-1">e편한세상 용산 센트럴</p>
+                <p className="font-medium mb-1 text-foreground">e편한세상 용산 센트럴</p>
                 <p className="text-xs text-muted-foreground">서울 용산구 · 경쟁률 15.8:1</p>
               </div>
               <span className="text-xs font-semibold text-blue-500">-1.3</span>
