@@ -56,9 +56,9 @@ description: "Task list for ZipDuck MVP - Personalized Subscription Recommendati
 - [X] T016 [P] Configure 공공데이터포털 API client in backend/src/main/java/com/zipduck/infrastructure/external/PublicDataClient.java
 - [X] T017 [P] Setup SpringDoc OpenAPI configuration in backend/src/main/java/com/zipduck/infrastructure/config/OpenApiConfig.java
 - [X] T018 [P] Create base API response DTOs in backend/src/main/java/com/zipduck/api/dto/response/
-- [ ] T019 [P] Setup Axios HTTP client configuration in frontend/src/services/api.ts
-- [ ] T020 [P] Setup React Router configuration in frontend/src/App.tsx
-- [ ] T021 [P] Create base TypeScript types in frontend/src/types/
+- [X] T019 [P] Setup Axios HTTP client configuration in frontend/src/services/api.ts
+- [X] T020 [P] Setup React Router configuration in frontend/src/App.tsx
+- [X] T021 [P] Create base TypeScript types in frontend/src/types/
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -103,23 +103,23 @@ description: "Task list for ZipDuck MVP - Personalized Subscription Recommendati
 
 #### Frontend - User Profile (FR-001, FR-002, FR-006, FR-014)
 
-- [ ] T042 [P] [US1] Create User TypeScript types in frontend/src/types/User.ts
-- [ ] T043 [P] [US1] Create userService for API calls in frontend/src/services/userService.ts
-- [ ] T044 [P] [US1] Create useProfile custom hook in frontend/src/hooks/useProfile.ts
-- [ ] T045 [US1] Implement ProfileForm component in frontend/src/components/profile/ProfileForm.tsx with validation
-- [ ] T046 [US1] Implement ProfileDisplay component in frontend/src/components/profile/ProfileDisplay.tsx
-- [ ] T047 [US1] Create ProfilePage in frontend/src/pages/ProfilePage.tsx
+- [X] T042 [P] [US1] Create User TypeScript types in frontend/src/types/User.ts
+- [X] T043 [P] [US1] Create userService for API calls in frontend/src/services/userService.ts
+- [X] T044 [P] [US1] Create useProfile custom hook in frontend/src/hooks/useProfile.ts
+- [X] T045 [US1] Implement ProfileForm component in frontend/src/components/profile/ProfileForm.tsx with validation
+- [X] T046 [US1] Implement ProfileDisplay component in frontend/src/components/profile/ProfileDisplay.tsx
+- [X] T047 [US1] Create ProfilePage in frontend/src/pages/ProfilePage.tsx
 
 #### Frontend - Unified Subscription View (FR-004, FR-005, FR-026, FR-027)
 
-- [ ] T048 [P] [US1] Create Subscription TypeScript types in frontend/src/types/Subscription.ts
-- [ ] T049 [P] [US1] Create subscriptionService for API calls in frontend/src/services/subscriptionService.ts
-- [ ] T050 [P] [US1] Create useSubscriptions custom hook in frontend/src/hooks/useSubscriptions.ts
-- [ ] T051 [US1] Implement SourceFilter component in frontend/src/components/subscriptions/SourceFilter.tsx (ALL, PUBLIC_DB, PDF_UPLOAD filters)
-- [ ] T052 [US1] Implement SubscriptionCard component with source badges in frontend/src/components/subscriptions/SubscriptionCard.tsx
-- [ ] T053 [US1] Implement SubscriptionList component in frontend/src/components/subscriptions/SubscriptionList.tsx
-- [ ] T054 [US1] Create SubscriptionsPage in frontend/src/pages/SubscriptionsPage.tsx with unified view and source filtering
-- [ ] T055 [US1] Create HomePage in frontend/src/pages/HomePage.tsx
+- [X] T048 [P] [US1] Create Subscription TypeScript types in frontend/src/types/Subscription.ts
+- [X] T049 [P] [US1] Create subscriptionService for API calls in frontend/src/services/subscriptionService.ts
+- [X] T050 [P] [US1] Create useSubscriptions custom hook in frontend/src/hooks/useSubscriptions.ts
+- [X] T051 [US1] Implement SourceFilter component in frontend/src/components/subscriptions/SourceFilter.tsx (ALL, PUBLIC_DB, PDF_UPLOAD filters)
+- [X] T052 [US1] Implement SubscriptionCard component with source badges in frontend/src/components/subscriptions/SubscriptionCard.tsx
+- [X] T053 [US1] Implement SubscriptionList component in frontend/src/components/subscriptions/SubscriptionList.tsx
+- [X] T054 [US1] Create SubscriptionsPage in frontend/src/pages/SubscriptionsPage.tsx with unified view and source filtering
+- [X] T055 [US1] Create HomePage in frontend/src/pages/HomePage.tsx
 
 **Checkpoint**: At this point, User Story 1 should be fully functional - users can create profiles and see unified recommendations from all sources with filtering
 
@@ -175,20 +175,20 @@ description: "Task list for ZipDuck MVP - Personalized Subscription Recommendati
 
 #### Frontend - PDF Upload & Analysis (FR-016, FR-022, FR-036, FR-037, FR-038)
 
-- [ ] T081 [P] [US2] Create Pdf TypeScript types in frontend/src/types/Pdf.ts
-- [ ] T082 [P] [US2] Create pdfService for API calls in frontend/src/services/pdfService.ts
-- [ ] T083 [P] [US2] Create usePdfUpload custom hook in frontend/src/hooks/usePdfUpload.ts
-- [ ] T084 [P] [US2] Create usePdfStatus polling hook in frontend/src/hooks/usePdfStatus.ts with 2-second intervals
-- [ ] T085 [US2] Implement PdfUploader component with file validation in frontend/src/components/pdf/PdfUploader.tsx
-- [ ] T086 [US2] Implement PdfStatusPoller component with loading states in frontend/src/components/pdf/PdfStatusPoller.tsx
-- [ ] T087 [US2] Implement AnalysisResultDisplay component showing match scores and recommendations in frontend/src/components/pdf/AnalysisResultDisplay.tsx
+- [X] T081 [P] [US2] Create Pdf TypeScript types in frontend/src/types/Pdf.ts
+- [X] T082 [P] [US2] Create pdfService for API calls in frontend/src/services/pdfService.ts
+- [X] T083 [P] [US2] Create usePdfUpload custom hook in frontend/src/hooks/usePdfUpload.ts
+- [X] T084 [P] [US2] Create usePdfStatus polling hook in frontend/src/hooks/usePdfStatus.ts with 2-second intervals
+- [X] T085 [US2] Implement PdfUploader component with file validation in frontend/src/components/pdf/PdfUploader.tsx
+- [X] T086 [US2] Implement PdfStatusPoller component with loading states in frontend/src/components/pdf/PdfStatusPoller.tsx
+- [X] T087 [US2] Implement AnalysisResultDisplay component showing match scores and recommendations in frontend/src/components/pdf/AnalysisResultDisplay.tsx
 
 #### Frontend - Eligibility Breakdown (FR-007, FR-018, FR-019, FR-020, FR-021)
 
-- [ ] T088 [P] [US2] Create Eligibility TypeScript types in frontend/src/types/Eligibility.ts
-- [ ] T089 [P] [US2] Create eligibilityService for API calls in frontend/src/services/eligibilityService.ts
-- [ ] T090 [US2] Implement EligibilityBreakdown component showing met/failed requirements in frontend/src/components/subscriptions/EligibilityBreakdown.tsx
-- [ ] T091 [US2] Add match score badges to SubscriptionCard component in frontend/src/components/subscriptions/SubscriptionCard.tsx
+- [X] T088 [P] [US2] Create Eligibility TypeScript types in frontend/src/types/Eligibility.ts
+- [X] T089 [P] [US2] Create eligibilityService for API calls in frontend/src/services/eligibilityService.ts
+- [X] T090 [US2] Implement EligibilityBreakdown component showing met/failed requirements in frontend/src/components/subscriptions/EligibilityBreakdown.tsx
+- [X] T091 [US2] Add match score badges to SubscriptionCard component in frontend/src/components/subscriptions/SubscriptionCard.tsx
 
 **Checkpoint**: At this point, User Story 2 should be fully functional - users can upload PDFs in any format, OCR processes images, AI analyzes eligibility, and results appear in unified view
 
@@ -202,10 +202,10 @@ description: "Task list for ZipDuck MVP - Personalized Subscription Recommendati
 
 ### Implementation for User Story 3
 
-- [ ] T092 [US3] Add profile persistence logic to UserCommandService.updateProfile() with automatic recommendation refresh (FR-014)
-- [ ] T093 [US3] Implement profile auto-loading on user login in UserQueryService
-- [ ] T094 [US3] Update ProfilePage to support profile editing with real-time recommendation updates in frontend/src/pages/ProfilePage.tsx
-- [ ] T095 [US3] Add profile update notification UI feedback in ProfileForm component
+- [X] T092 [US3] Add profile persistence logic to UserCommandService.updateProfile() with automatic recommendation refresh (FR-014)
+- [X] T093 [US3] Implement profile auto-loading on user login in UserQueryService
+- [X] T094 [US3] Update ProfilePage to support profile editing with real-time recommendation updates in frontend/src/pages/ProfilePage.tsx
+- [X] T095 [US3] Add profile update notification UI feedback in ProfileForm component
 
 **Checkpoint**: At this point, User Story 3 should work - returning users see saved profiles and updated recommendations instantly
 
@@ -221,18 +221,18 @@ description: "Task list for ZipDuck MVP - Personalized Subscription Recommendati
 
 #### Backend - Eligibility Breakdown & Favorites
 
-- [ ] T096 [P] Create Favorite entity in backend/src/main/java/com/zipduck/domain/favorite/Favorite.java
-- [ ] T097 [P] Create FavoriteRepository interface in backend/src/main/java/com/zipduck/domain/favorite/FavoriteRepository.java
-- [ ] T098 Create EligibilityController in backend/src/main/java/com/zipduck/api/controller/EligibilityController.java (GET /api/v1/eligibility/{subscriptionId})
-- [ ] T099 Create FavoriteController in backend/src/main/java/com/zipduck/api/controller/FavoriteController.java (POST /api/v1/favorites, GET /api/v1/users/{userId}/favorites)
-- [ ] T100 Implement comparison endpoint in SubscriptionController (POST /api/v1/subscriptions/compare) supporting up to 5 subscriptions
+- [X] T096 [P] Create Favorite entity in backend/src/main/java/com/zipduck/domain/favorite/Favorite.java
+- [X] T097 [P] Create FavoriteRepository interface in backend/src/main/java/com/zipduck/domain/favorite/FavoriteRepository.java
+- [X] T098 Create EligibilityController in backend/src/main/java/com/zipduck/api/controller/EligibilityController.java (GET /api/v1/eligibility/{subscriptionId})
+- [X] T099 Create FavoriteController in backend/src/main/java/com/zipduck/api/controller/FavoriteController.java (POST /api/v1/favorites, GET /api/v1/users/{userId}/favorites)
+- [X] T100 Implement comparison endpoint in SubscriptionController (POST /api/v1/subscriptions/compare) supporting up to 5 subscriptions
 
 #### Frontend - Favorites & Comparison
 
-- [ ] T101 [P] Create FavoritesList component in frontend/src/components/favorites/FavoritesList.tsx
-- [ ] T102 [P] Create ComparisonView component in frontend/src/components/subscriptions/ComparisonView.tsx
-- [ ] T103 Add favorites management UI to SubscriptionCard component
-- [ ] T104 Create ComparisonPage in frontend/src/pages/ComparisonPage.tsx with side-by-side comparison table
+- [X] T101 [P] Create FavoritesList component in frontend/src/components/favorites/FavoritesList.tsx
+- [X] T102 [P] Create ComparisonView component in frontend/src/components/subscriptions/ComparisonView.tsx
+- [X] T103 Add favorites management UI to SubscriptionCard component
+- [X] T104 Create ComparisonPage in frontend/src/pages/ComparisonPage.tsx with side-by-side comparison table
 
 **Checkpoint**: All P1 features complete - full eligibility transparency, favorites, and comparison functionality working
 
@@ -242,16 +242,16 @@ description: "Task list for ZipDuck MVP - Personalized Subscription Recommendati
 
 **Purpose**: Improvements that affect multiple user stories and production readiness
 
-- [ ] T105 [P] Add comprehensive error handling and user-friendly error messages across all controllers
-- [ ] T106 [P] Add logging for critical operations (profile creation, PDF analysis, data collection) across all services
-- [ ] T107 [P] Optimize MySQL queries with proper indexes in migration scripts
-- [ ] T108 [P] Configure Redis TTL settings for PDF cache (FR-024)
-- [ ] T109 [P] Add retry logic with Spring Retry for external API calls (Gemini, Vision, PublicData)
-- [ ] T110 [P] Implement circuit breaker with Resilience4j for external services
-- [ ] T111 [P] Add responsive design polish to all frontend components with TailwindCSS
-- [ ] T112 [P] Create loading skeletons for all async operations in frontend
-- [ ] T113 Configure production environment variables in .env.prod
-- [ ] T114 Add health check endpoints in Spring Boot Actuator
+- [X] T105 [P] Add comprehensive error handling and user-friendly error messages across all controllers
+- [X] T106 [P] Add logging for critical operations (profile creation, PDF analysis, data collection) across all services
+- [X] T107 [P] Optimize MySQL queries with proper indexes in migration scripts
+- [X] T108 [P] Configure Redis TTL settings for PDF cache (FR-024)
+- [X] T109 [P] Add retry logic with Spring Retry for external API calls (Gemini, Vision, PublicData)
+- [X] T110 [P] Implement circuit breaker with Resilience4j for external services
+- [X] T111 [P] Add responsive design polish to all frontend components with TailwindCSS
+- [X] T112 [P] Create loading skeletons for all async operations in frontend
+- [X] T113 Configure production environment variables in .env.prod
+- [X] T114 Add health check endpoints in Spring Boot Actuator
 - [ ] T115 Create deployment scripts for AWS EC2 in deploy/
 - [ ] T116 Add monitoring and alerting configuration
 - [ ] T117 Perform security audit and hardening (SQL injection, XSS, CSRF protection)
