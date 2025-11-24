@@ -62,7 +62,7 @@ export function TermsOfServiceScreen({ onBack }: TermsOfServiceScreenProps) {
                 onClick={() => scrollToSection(item.id)}
                 className={`w-full flex items-center justify-between p-4 hover:bg-muted transition-colors ${
                   index !== tableOfContents.length - 1 ? "border-b border-border" : ""
-                } ${activeSection === item.id ? "bg-[#EFF6FF] dark:bg-[#1E293B]" : ""}`}
+                } ${activeSection === item.id ? "bg-blue-soft-bg dark:bg-card" : ""}`}
               >
                 <span className={`text-sm font-medium ${
                   activeSection === item.id ? "text-primary" : "text-foreground"
@@ -77,7 +77,7 @@ export function TermsOfServiceScreen({ onBack }: TermsOfServiceScreenProps) {
 
         {/* Section 1 */}
         <section id="section1" className="scroll-mt-20">
-          <div className="bg-[#EFF6FF] dark:bg-[#1E293B] rounded-xl px-4 py-3 mb-3">
+          <div className="bg-blue-soft-bg dark:bg-card rounded-xl px-4 py-3 mb-3">
             <h3 className="font-bold text-foreground">제1조 (목적)</h3>
           </div>
           <div className="text-sm text-muted-foreground leading-relaxed px-1">
@@ -90,7 +90,7 @@ export function TermsOfServiceScreen({ onBack }: TermsOfServiceScreenProps) {
 
         {/* Section 2 */}
         <section id="section2" className="scroll-mt-20">
-          <div className="bg-[#EFF6FF] dark:bg-[#1E293B] rounded-xl px-4 py-3 mb-3">
+          <div className="bg-blue-soft-bg dark:bg-card rounded-xl px-4 py-3 mb-3">
             <h3 className="font-bold text-foreground">제2조 (정의)</h3>
           </div>
           <div className="text-sm text-muted-foreground leading-relaxed space-y-3 px-1">
@@ -106,7 +106,7 @@ export function TermsOfServiceScreen({ onBack }: TermsOfServiceScreenProps) {
 
         {/* Section 3 */}
         <section id="section3" className="scroll-mt-20">
-          <div className="bg-[#EFF6FF] dark:bg-[#1E293B] rounded-xl px-4 py-3 mb-3">
+          <div className="bg-blue-soft-bg dark:bg-card rounded-xl px-4 py-3 mb-3">
             <h3 className="font-bold text-foreground">제3조 (약관의 효력 및 변경)</h3>
           </div>
           <div className="text-sm text-muted-foreground leading-relaxed space-y-3 px-1">
@@ -127,7 +127,7 @@ export function TermsOfServiceScreen({ onBack }: TermsOfServiceScreenProps) {
 
         {/* Section 4 */}
         <section id="section4" className="scroll-mt-20">
-          <div className="bg-[#EFF6FF] dark:bg-[#1E293B] rounded-xl px-4 py-3 mb-3">
+          <div className="bg-blue-soft-bg dark:bg-card rounded-xl px-4 py-3 mb-3">
             <h3 className="font-bold text-foreground">제4조 (회원가입)</h3>
           </div>
           <div className="text-sm text-muted-foreground leading-relaxed space-y-3 px-1">
@@ -158,7 +158,7 @@ export function TermsOfServiceScreen({ onBack }: TermsOfServiceScreenProps) {
 
         {/* Section 5 */}
         <section id="section5" className="scroll-mt-20">
-          <div className="bg-[#EFF6FF] dark:bg-[#1E293B] rounded-xl px-4 py-3 mb-3">
+          <div className="bg-blue-soft-bg dark:bg-card rounded-xl px-4 py-3 mb-3">
             <h3 className="font-bold text-foreground">제5조 (서비스의 제공 및 변경)</h3>
           </div>
           <div className="text-sm text-muted-foreground leading-relaxed space-y-3 px-1">
@@ -178,7 +178,7 @@ export function TermsOfServiceScreen({ onBack }: TermsOfServiceScreenProps) {
 
         {/* Section 6 */}
         <section id="section6" className="scroll-mt-20">
-          <div className="bg-[#EFF6FF] dark:bg-[#1E293B] rounded-xl px-4 py-3 mb-3">
+          <div className="bg-blue-soft-bg dark:bg-card rounded-xl px-4 py-3 mb-3">
             <h3 className="font-bold text-foreground">제6조 (서비스의 중단)</h3>
           </div>
           <div className="text-sm text-muted-foreground leading-relaxed space-y-3 px-1">
@@ -195,7 +195,7 @@ export function TermsOfServiceScreen({ onBack }: TermsOfServiceScreenProps) {
 
         {/* Section 7 */}
         <section id="section7" className="scroll-mt-20">
-          <div className="bg-[#EFF6FF] dark:bg-[#1E293B] rounded-xl px-4 py-3 mb-3">
+          <div className="bg-blue-soft-bg dark:bg-card rounded-xl px-4 py-3 mb-3">
             <h3 className="font-bold text-foreground">제7조 (회원 탈퇴 및 자격 상실)</h3>
           </div>
           <div className="text-sm text-muted-foreground leading-relaxed space-y-3 px-1">
@@ -215,7 +215,7 @@ export function TermsOfServiceScreen({ onBack }: TermsOfServiceScreenProps) {
 
         {/* Section 8 */}
         <section id="section8" className="scroll-mt-20">
-          <div className="bg-[#EFF6FF] dark:bg-[#1E293B] rounded-xl px-4 py-3 mb-3">
+          <div className="bg-blue-soft-bg dark:bg-card rounded-xl px-4 py-3 mb-3">
             <h3 className="font-bold text-foreground">제8조 (회원에 대한 통지)</h3>
           </div>
           <div className="text-sm text-muted-foreground leading-relaxed space-y-3 px-1">
@@ -232,7 +232,7 @@ export function TermsOfServiceScreen({ onBack }: TermsOfServiceScreenProps) {
 
         {/* Section 9 */}
         <section id="section9" className="scroll-mt-20">
-          <div className="bg-[#EFF6FF] dark:bg-[#1E293B] rounded-xl px-4 py-3 mb-3">
+          <div className="bg-blue-soft-bg dark:bg-card rounded-xl px-4 py-3 mb-3">
             <h3 className="font-bold text-foreground">제9조 (책임제한)</h3>
           </div>
           <div className="text-sm text-muted-foreground leading-relaxed space-y-3 px-1">

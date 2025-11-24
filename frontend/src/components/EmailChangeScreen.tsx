@@ -68,7 +68,7 @@ export function EmailChangeScreen({ onBack }: EmailChangeScreenProps) {
 
       <div className="p-6 space-y-6">
         {/* Info Notice */}
-        <div className="bg-[#EFF6FF] dark:bg-[#1E293B] rounded-xl p-4 border border-primary/20">
+        <div className="bg-blue-soft-bg dark:bg-card rounded-xl p-4 border border-primary/20">
           <div className="flex gap-3">
             <Mail size={20} className="text-primary flex-shrink-0 mt-0.5" />
             <div className="flex-1">
@@ -111,15 +111,15 @@ export function EmailChangeScreen({ onBack }: EmailChangeScreenProps) {
             {touched.newEmail && newEmail && (
               <div className="absolute right-4 top-1/2 -translate-y-1/2">
                 {errors.newEmail ? (
-                  <AlertCircle size={20} className="text-[#EF4444]" />
+                  <AlertCircle size={20} className="text-destructive" />
                 ) : (
-                  <CheckCircle2 size={20} className="text-[#34D399]" />
+                  <CheckCircle2 size={20} className="text-success" />
                 )}
               </div>
             )}
           </div>
           {touched.newEmail && errors.newEmail && (
-            <p className="text-sm text-[#EF4444] flex items-center gap-1">
+            <p className="text-sm text-destructive flex items-center gap-1">
               <AlertCircle size={14} />
               {errors.newEmail}
             </p>
@@ -149,21 +149,21 @@ export function EmailChangeScreen({ onBack }: EmailChangeScreenProps) {
             {touched.confirmEmail && confirmEmail && (
               <div className="absolute right-4 top-1/2 -translate-y-1/2">
                 {errors.confirmEmail ? (
-                  <AlertCircle size={20} className="text-[#EF4444]" />
+                  <AlertCircle size={20} className="text-destructive" />
                 ) : isEmailMatch ? (
-                  <CheckCircle2 size={20} className="text-[#34D399]" />
+                  <CheckCircle2 size={20} className="text-success" />
                 ) : null}
               </div>
             )}
           </div>
           {touched.confirmEmail && errors.confirmEmail && (
-            <p className="text-sm text-[#EF4444] flex items-center gap-1">
+            <p className="text-sm text-destructive flex items-center gap-1">
               <AlertCircle size={14} />
               {errors.confirmEmail}
             </p>
           )}
           {touched.confirmEmail && isEmailMatch && !errors.confirmEmail && (
-            <p className="text-sm text-[#34D399] flex items-center gap-1">
+            <p className="text-sm text-success flex items-center gap-1">
               <CheckCircle2 size={14} />
               이메일이 일치합니다
             </p>
@@ -197,7 +197,7 @@ export function EmailChangeScreen({ onBack }: EmailChangeScreenProps) {
         <Button
           onClick={handleSubmit}
           disabled={!isValid}
-          className="w-full h-12 bg-primary hover:bg-primary/90 dark:bg-[#2563EB] dark:hover:bg-[#2563EB]/90 text-white rounded-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full h-12 bg-primary hover:bg-primary/90 dark:bg-primary-hover dark:hover:bg-primary-hover/90 text-white rounded-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
         >
           이메일 변경하기
         </Button>

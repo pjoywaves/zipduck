@@ -33,7 +33,7 @@ export function PrivacyPolicyScreen({ onBack }: PrivacyPolicyScreenProps) {
 
         {/* Section 1 */}
         <section>
-          <div className="bg-[#EFF6FF] dark:bg-[#1E293B] rounded-xl px-4 py-3 mb-3">
+          <div className="bg-blue-soft-bg dark:bg-card rounded-xl px-4 py-3 mb-3">
             <h3 className="font-bold text-foreground">제1조 (개인정보의 처리 목적)</h3>
           </div>
           <div className="text-sm text-muted-foreground leading-relaxed space-y-3 px-1">
@@ -60,7 +60,7 @@ export function PrivacyPolicyScreen({ onBack }: PrivacyPolicyScreenProps) {
 
         {/* Section 2 */}
         <section>
-          <div className="bg-[#EFF6FF] dark:bg-[#1E293B] rounded-xl px-4 py-3 mb-3">
+          <div className="bg-blue-soft-bg dark:bg-card rounded-xl px-4 py-3 mb-3">
             <h3 className="font-bold text-foreground">제2조 (개인정보의 처리 및 보유 기간)</h3>
           </div>
           <div className="text-sm text-muted-foreground leading-relaxed space-y-3 px-1">
@@ -71,15 +71,15 @@ export function PrivacyPolicyScreen({ onBack }: PrivacyPolicyScreenProps) {
             <div className="bg-card border border-border rounded-xl p-4 space-y-2">
               <div>
                 <p className="font-semibold text-foreground">• 회원 가입 정보</p>
-                <p className="text-xs">보유기간: 회원 탈퇴 시까지</p>
+                <p className="text-xs text-muted-foreground">보유기간: 회원 탈퇴 시까지</p>
               </div>
               <div>
                 <p className="font-semibold text-foreground">• 서비스 이용 기록</p>
-                <p className="text-xs">보유기간: 3년 (통신비밀보호법)</p>
+                <p className="text-xs text-muted-foreground">보유기간: 3년 (통신비밀보호법)</p>
               </div>
               <div>
                 <p className="font-semibold text-foreground">• 결제 정보</p>
-                <p className="text-xs">보유기간: 5년 (전자상거래법)</p>
+                <p className="text-xs text-muted-foreground">보유기간: 5년 (전자상거래법)</p>
               </div>
             </div>
           </div>
@@ -87,7 +87,7 @@ export function PrivacyPolicyScreen({ onBack }: PrivacyPolicyScreenProps) {
 
         {/* Section 3 */}
         <section>
-          <div className="bg-[#EFF6FF] dark:bg-[#1E293B] rounded-xl px-4 py-3 mb-3">
+          <div className="bg-blue-soft-bg dark:bg-card rounded-xl px-4 py-3 mb-3">
             <h3 className="font-bold text-foreground">제3조 (처리하는 개인정보 항목)</h3>
           </div>
           <div className="text-sm text-muted-foreground leading-relaxed space-y-3 px-1">
@@ -109,7 +109,7 @@ export function PrivacyPolicyScreen({ onBack }: PrivacyPolicyScreenProps) {
 
         {/* Section 4 */}
         <section>
-          <div className="bg-[#EFF6FF] dark:bg-[#1E293B] rounded-xl px-4 py-3 mb-3">
+          <div className="bg-blue-soft-bg dark:bg-card rounded-xl px-4 py-3 mb-3">
             <h3 className="font-bold text-foreground">제4조 (개인정보의 제3자 제공)</h3>
           </div>
           <div className="text-sm text-muted-foreground leading-relaxed px-1">
@@ -123,7 +123,7 @@ export function PrivacyPolicyScreen({ onBack }: PrivacyPolicyScreenProps) {
 
         {/* Section 5 */}
         <section>
-          <div className="bg-[#EFF6FF] dark:bg-[#1E293B] rounded-xl px-4 py-3 mb-3">
+          <div className="bg-blue-soft-bg dark:bg-card rounded-xl px-4 py-3 mb-3">
             <h3 className="font-bold text-foreground">제5조 (정보주체의 권리·의무 및 행사방법)</h3>
           </div>
           <div className="text-sm text-muted-foreground leading-relaxed space-y-3 px-1">
@@ -134,7 +134,7 @@ export function PrivacyPolicyScreen({ onBack }: PrivacyPolicyScreenProps) {
               <p>3. 개인정보 삭제 요구</p>
               <p>4. 개인정보 처리정지 요구</p>
             </div>
-            <p className="text-xs">
+            <p className="text-xs text-muted-foreground">
               권리 행사는 회사에 대해 서면, 전화, 전자우편 등을 통하여 하실 수 있으며 
               회사는 이에 대해 지체없이 조치하겠습니다.
             </p>
@@ -143,7 +143,7 @@ export function PrivacyPolicyScreen({ onBack }: PrivacyPolicyScreenProps) {
 
         {/* Section 6 */}
         <section>
-          <div className="bg-[#EFF6FF] dark:bg-[#1E293B] rounded-xl px-4 py-3 mb-3">
+          <div className="bg-blue-soft-bg dark:bg-card rounded-xl px-4 py-3 mb-3">
             <h3 className="font-bold text-foreground">제6조 (개인정보 보호책임자)</h3>
           </div>
           <div className="text-sm text-muted-foreground leading-relaxed space-y-3 px-1">

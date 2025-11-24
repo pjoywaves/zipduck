@@ -63,9 +63,9 @@ export function NewOnboardingScreen({ onComplete }: NewOnboardingScreenProps) {
           {/* Decorative rings */}
           <div className="absolute inset-0 rounded-full border-4 border-white/20 animate-pulse"></div>
           <div className="absolute inset-4 rounded-full border-4 border-white/10"></div>
-          
+
           {/* 3D-style emoji illustration */}
-          <div className="text-8xl transform hover:scale-110 transition-transform duration-300" style={{ 
+          <div className="text-8xl transform hover:scale-110 transition-transform duration-300" style={{
             textShadow: '0 8px 16px rgba(0,0,0,0.2)',
             filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.15))'
           }}>
@@ -96,7 +96,7 @@ export function NewOnboardingScreen({ onComplete }: NewOnboardingScreenProps) {
                   ? "w-8 bg-primary"
                   : index < currentStep
                   ? "w-2 bg-primary/50"
-                  : "w-2 bg-muted"
+                  : "w-2 bg-primary/50"
               }`}
             ></div>
           ))}

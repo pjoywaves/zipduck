@@ -50,7 +50,7 @@ export function NewFavoritesScreen({ onNavigateToDetail }: NewFavoritesScreenPro
     <div className="min-h-screen bg-background pb-24 max-w-md mx-auto">
       {/* Header */}
       <div className="bg-background px-6 pt-6 pb-4">
-        <h2 className="font-bold mb-2">관심 단지</h2>
+        <h2 className="font-bold text-foreground mb-2">관심 단지</h2>
         <p className="text-sm text-muted-foreground">
           등록한 {favorites.length}개의 단지를 관리하세요
         </p>
@@ -62,7 +62,7 @@ export function NewFavoritesScreen({ onNavigateToDetail }: NewFavoritesScreenPro
           <div className="w-24 h-24 bg-muted rounded-full flex items-center justify-center mb-6">
             <Heart size={40} className="text-muted-foreground" />
           </div>
-          <h3 className="font-bold mb-2">아직 관심 단지가 없어요</h3>
+          <h3 className="font-bold text-foreground mb-2">아직 관심 단지가 없어요</h3>
           <p className="text-sm text-muted-foreground text-center mb-6">
             마음에 드는 단지를 찾아<br />관심 단지로 등록해보세요
           </p>
@@ -85,7 +85,7 @@ export function NewFavoritesScreen({ onNavigateToDetail }: NewFavoritesScreenPro
                   onClick={(e) => {
                     e.stopPropagation();
                   }}
-                  className="absolute top-4 right-4 w-10 h-10 bg-white/90 dark:bg-black/50 backdrop-blur-sm rounded-full flex items-center justify-center"
+                  className="absolute top-4 right-4 w-10 h-10 bg-background/90 dark:bg-black/50 backdrop-blur-sm rounded-full flex items-center justify-center"
                 >
                   <Heart size={20} className="fill-red-500 text-red-500" />
                 </button>
@@ -99,7 +99,7 @@ export function NewFavoritesScreen({ onNavigateToDetail }: NewFavoritesScreenPro
               {/* Content */}
               <div className="p-5 space-y-3" onClick={onNavigateToDetail}>
                 <div>
-                  <h3 className="font-bold mb-1 group-hover:text-primary transition-colors">
+                  <h3 className="font-bold text-foreground mb-1 group-hover:text-primary transition-colors">
                     {favorite.name}
                   </h3>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -115,7 +115,7 @@ export function NewFavoritesScreen({ onNavigateToDetail }: NewFavoritesScreenPro
                   </div>
                   <div className="text-right">
                     <p className="text-xs text-muted-foreground mb-1">공급 타입</p>
-                    <p className="font-medium">{favorite.types}</p>
+                    <p className="font-medium text-foreground">{favorite.types}</p>
                   </div>
                 </div>
 
@@ -143,7 +143,7 @@ export function NewFavoritesScreen({ onNavigateToDetail }: NewFavoritesScreenPro
                       <Clock size={12} className="text-muted-foreground" />
                       <p className="text-xs text-muted-foreground">마감일</p>
                     </div>
-                    <p className="font-semibold text-sm">{favorite.deadline}</p>
+                    <p className="font-semibold text-sm text-foreground">{favorite.deadline}</p>
                   </div>
                 </div>
               </div>

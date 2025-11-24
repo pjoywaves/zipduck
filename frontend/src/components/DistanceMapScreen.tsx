@@ -58,7 +58,7 @@ export function DistanceMapScreen({ onBack }: DistanceMapScreenProps) {
             <ChevronLeft size={24} />
           </button>
           <div className="ml-4">
-            <h2 className="font-bold">거리 및 경로</h2>
+            <h2 className="font-bold text-foreground">거리 및 경로</h2>
             <p className="text-xs text-muted-foreground">선호지역 ↔ 청약단지</p>
           </div>
         </div>
@@ -87,8 +87,8 @@ export function DistanceMapScreen({ onBack }: DistanceMapScreenProps) {
                 <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center shadow-lg mb-2">
                   <MapPin size={28} className="text-white" />
                 </div>
-                <div className="bg-white dark:bg-card px-3 py-2 rounded-xl shadow-md">
-                  <p className="text-xs font-semibold">내 선호지역</p>
+                <div className="bg-background dark:bg-card px-3 py-2 rounded-xl shadow-md">
+                  <p className="text-xs font-semibold text-foreground">내 선호지역</p>
                   <p className="text-xs text-muted-foreground">서울 강남구</p>
                 </div>
               </div>
@@ -106,8 +106,8 @@ export function DistanceMapScreen({ onBack }: DistanceMapScreenProps) {
                 <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center shadow-lg mb-2">
                   <span className="text-3xl">🏢</span>
                 </div>
-                <div className="bg-white dark:bg-card px-3 py-2 rounded-xl shadow-md">
-                  <p className="text-xs font-semibold">청약 단지</p>
+                <div className="bg-background dark:bg-card px-3 py-2 rounded-xl shadow-md">
+                  <p className="text-xs font-semibold text-foreground">청약 단지</p>
                   <p className="text-xs text-muted-foreground">서울 송파구</p>
                 </div>
               </div>
@@ -117,7 +117,7 @@ export function DistanceMapScreen({ onBack }: DistanceMapScreenProps) {
 
         {/* Routes */}
         <div className="px-6">
-          <h3 className="font-semibold mb-4 flex items-center gap-2">
+          <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2">
             <Navigation size={20} className="text-primary" />
             추천 경로
           </h3>
@@ -141,7 +141,7 @@ export function DistanceMapScreen({ onBack }: DistanceMapScreenProps) {
                     </div>
                     <div className="flex-1 text-left">
                       <div className="flex items-center gap-2 mb-1">
-                        <p className="font-semibold">{route.name}</p>
+                        <p className="font-semibold text-foreground">{route.name}</p>
                         {route.recommended && (
                           <span className="px-2 py-0.5 bg-primary text-primary-foreground text-xs font-bold rounded">
                             추천
@@ -150,7 +150,7 @@ export function DistanceMapScreen({ onBack }: DistanceMapScreenProps) {
                       </div>
                       <p className="text-sm text-muted-foreground mb-1">{route.details}</p>
                       <div className="flex items-center gap-3 text-xs">
-                        <span className="flex items-center gap-1">
+                        <span className="flex items-center gap-1 text-muted-foreground">
                           <Clock size={12} />
                           {route.time}
                         </span>
@@ -169,7 +169,7 @@ export function DistanceMapScreen({ onBack }: DistanceMapScreenProps) {
 
         {/* Nearby Places */}
         <div className="px-6">
-          <h3 className="font-semibold mb-4 flex items-center gap-2">
+          <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2">
             <span className="text-xl">📍</span>
             주요 시설과의 거리
           </h3>
@@ -181,7 +181,7 @@ export function DistanceMapScreen({ onBack }: DistanceMapScreenProps) {
                     <MapPin size={18} className="text-primary" />
                   </div>
                   <div>
-                    <p className="font-medium">{place.name}</p>
+                    <p className="font-medium text-foreground">{place.name}</p>
                     <p className="text-xs text-muted-foreground">{place.distance}</p>
                   </div>
                 </div>
@@ -197,7 +197,7 @@ export function DistanceMapScreen({ onBack }: DistanceMapScreenProps) {
 
         {/* Heatmap Score */}
         <div className="px-6">
-          <h3 className="font-semibold mb-4 flex items-center gap-2">
+          <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2">
             <span className="text-xl">🔥</span>
             지역 매력도
           </h3>
@@ -208,10 +208,10 @@ export function DistanceMapScreen({ onBack }: DistanceMapScreenProps) {
                 <span className="text-sm font-medium text-muted-foreground">높음</span>
               </div>
               <div className="relative h-3 bg-gradient-to-r from-blue-500 via-primary to-red-500 rounded-full">
-                <div className="absolute top-1/2 -translate-y-1/2 right-1/4 w-6 h-6 bg-white dark:bg-card border-2 border-primary rounded-full shadow-lg"></div>
+                <div className="absolute top-1/2 -translate-y-1/2 right-1/4 w-6 h-6 bg-background dark:bg-card border-2 border-primary rounded-full shadow-lg"></div>
               </div>
               <div className="text-center mt-4">
-                <p className="font-bold">종합 점수: 89점</p>
+                <p className="font-bold text-foreground">종합 점수: 89점</p>
                 <p className="text-sm text-muted-foreground mt-1">매우 우수한 입지 조건</p>
               </div>
             </div>

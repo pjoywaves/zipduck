@@ -122,7 +122,7 @@ export function AIChatScreen({ onBack }: AIChatScreenProps) {
           </button>
           <div className="flex-1 flex items-center justify-center gap-2 pr-10">
             <Sparkles size={20} className="text-primary" />
-            <h2 className="font-bold">AI 청약 상담</h2>
+            <h2 className="font-bold text-foreground">AI 청약 상담</h2>
           </div>
         </div>
       </div>

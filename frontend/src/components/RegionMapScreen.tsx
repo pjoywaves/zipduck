@@ -61,7 +61,7 @@ export function RegionMapScreen({ onBack, onNavigateToDetail }: RegionMapScreenP
           <button onClick={onBack} className="p-2 -ml-2">
             <ChevronLeft size={24} />
           </button>
-          <h2 className="font-bold ml-4">지역별 청약</h2>
+          <h2 className="font-bold ml-4 text-foreground">지역별 청약</h2>
         </div>
 
         {/* Search */}
@@ -92,7 +92,7 @@ export function RegionMapScreen({ onBack, onNavigateToDetail }: RegionMapScreenP
             </div>
             <div className="relative text-center">
               <span className="text-6xl mb-4 block">🗺️</span>
-              <h3 className="font-bold mb-2">대한민국 청약 지도</h3>
+              <h3 className="font-bold text-foreground mb-2">대한민국 청약 지도</h3>
               <p className="text-sm text-muted-foreground">지역을 선택하여 청약 정보를 확인하세요</p>
             </div>
           </div>
@@ -100,7 +100,7 @@ export function RegionMapScreen({ onBack, onNavigateToDetail }: RegionMapScreenP
 
         {/* Region Cards */}
         <div className="px-6">
-          <h3 className="font-semibold mb-4">지역 선택</h3>
+          <h3 className="font-semibold text-foreground mb-4">지역 선택</h3>
           <div className="grid grid-cols-2 gap-3">
             {regions.map((region) => (
               <button
@@ -113,7 +113,7 @@ export function RegionMapScreen({ onBack, onNavigateToDetail }: RegionMapScreenP
                 }`}
               >
                 <div className="flex items-center justify-between mb-2">
-                  <span className="font-bold">{region.name}</span>
+                  <span className="font-bold text-foreground">{region.name}</span>
                   <div
                     className="w-3 h-3 rounded-full"
                     style={{ backgroundColor: region.color }}
@@ -131,7 +131,7 @@ export function RegionMapScreen({ onBack, onNavigateToDetail }: RegionMapScreenP
         {selectedRegion && (
           <div className="px-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold">{selectedRegion} 진행 중 청약</h3>
+              <h3 className="font-semibold text-foreground">{selectedRegion} 진행 중 청약</h3>
               <p className="text-sm text-muted-foreground">{apartments.length}건</p>
             </div>
             <div className="space-y-3">
@@ -178,7 +178,7 @@ export function RegionMapScreen({ onBack, onNavigateToDetail }: RegionMapScreenP
             <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
               <MapPin size={28} className="text-muted-foreground" />
             </div>
-            <h3 className="font-semibold mb-2">지역을 선택하세요</h3>
+            <h3 className="font-semibold text-foreground mb-2">지역을 선택하세요</h3>
             <p className="text-sm text-muted-foreground">
               위에서 관심 지역을 선택하면<br />해당 지역의 청약 정보를 확인할 수 있습니다
             </p>
