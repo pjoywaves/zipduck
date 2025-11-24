@@ -44,16 +44,16 @@ export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
   const currentSlideData = slides[currentSlide];
 
   return (
-    <div className="min-h-screen bg-white flex flex-col items-center justify-between p-6 max-w-md mx-auto">
+    <div className="min-h-screen bg-background flex flex-col items-center justify-between p-6 max-w-md mx-auto">
       <div className="flex-1 flex flex-col items-center justify-center">
         <div className="mb-12">
-          <div className="w-32 h-32 rounded-full bg-[#FCD34D] bg-opacity-20 flex items-center justify-center mb-8">
+          <div className="w-32 h-32 rounded-full bg-warning bg-opacity-20 flex items-center justify-center mb-8">
             <span className="text-7xl">{currentSlideData.emoji}</span>
           </div>
           <h1 className="text-center mb-4 whitespace-pre-line font-bold">
             {currentSlideData.title}
           </h1>
-          <p className="text-center text-gray-600 whitespace-pre-line">
+          <p className="text-center text-muted-foreground whitespace-pre-line">
             {currentSlideData.description}
           </p>
         </div>
@@ -66,8 +66,8 @@ export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
               key={index}
               className={`h-2 rounded-full transition-all ${
                 index === currentSlide 
-                  ? 'w-8 bg-[#FCD34D]' 
-                  : 'w-2 bg-gray-300'
+                  ? 'w-8 bg-warning' 
+                  : 'w-2 bg-border'
               }`}
             />
           ))}
@@ -75,7 +75,7 @@ export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
 
         <Button
           onClick={handleNext}
-          className="w-full bg-[#FCD34D] hover:bg-[#fcd34d]/90 text-gray-900 h-14 rounded-xl"
+          className="w-full bg-warning hover:bg-warning/90 text-foreground h-14 rounded-xl"
         >
           {currentSlide < slides.length - 1 ? "다음" : "시작하기"}
           <ChevronRight size={20} className="ml-1" />
@@ -84,7 +84,7 @@ export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
         {currentSlide < slides.length - 1 && (
           <button
             onClick={onComplete}
-            className="w-full text-gray-500 py-3"
+            className="w-full text-muted-foreground py-3"
           >
             건너뛰기
           </button>

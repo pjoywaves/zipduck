@@ -63,7 +63,7 @@ export function HelpScreen({ onBack }: HelpScreenProps) {
               <HelpCircle size={20} className="text-white" />
             </div>
             <div>
-              <h3 className="font-semibold text-foreground mb-1">자주 묻는 질문</h3>
+              <h3 className="font-semibold text-foreground text-foreground mb-1">자주 묻는 질문</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 청약과 관련된 궁금한 사항을 확인해보세요.
               </p>
@@ -110,7 +110,7 @@ export function HelpScreen({ onBack }: HelpScreenProps) {
                 {isExpanded && (
                   <div className="px-5 pb-5 pt-0">
                     <div className="flex items-start gap-3">
-                      <span className="text-sm font-bold flex-shrink-0 w-6 h-6 rounded-full bg-[#EFF6FF] dark:bg-[#1E293B] text-primary flex items-center justify-center">
+                      <span className="text-sm font-bold flex-shrink-0 w-6 h-6 rounded-full bg-blue-soft-bg dark:bg-card text-primary flex items-center justify-center">
                         A
                       </span>
                       <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line flex-1">
@@ -125,7 +125,7 @@ export function HelpScreen({ onBack }: HelpScreenProps) {
         </div>
 
         {/* Contact Support */}
-        <div className="bg-[#EFF6FF] dark:bg-[#1E293B] rounded-xl p-5 border border-primary/20">
+        <div className="bg-blue-soft-bg dark:bg-card rounded-xl p-5 border border-primary/20">
           <h4 className="font-semibold text-foreground mb-2">추가 문의가 필요하신가요?</h4>
           <p className="text-sm text-muted-foreground mb-3 leading-relaxed">
             원하는 답변을 찾지 못하셨다면 고객센터로 문의해주세요.

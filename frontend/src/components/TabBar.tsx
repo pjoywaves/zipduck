@@ -14,7 +14,7 @@ export function TabBar({ currentTab, onTabChange }: TabBarProps) {
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-card dark:bg-[#0F172A] border-t border-border pb-safe rounded-t-2xl shadow-lg">
+    <div className="fixed bottom-0 left-0 right-0 bg-card dark:bg-background border-t border-border pb-safe rounded-t-2xl shadow-lg">
       <div className="flex items-center justify-around h-16 max-w-md mx-auto">
         {tabs.map((tab) => {
           const Icon = tab.icon;
@@ -30,13 +30,13 @@ export function TabBar({ currentTab, onTabChange }: TabBarProps) {
               <Icon 
                 size={24} 
                 className={`transition-colors ${
-                  isActive ? 'text-primary' : 'text-[#94A3B8]'
+                  isActive ? 'text-primary' : 'text-muted-foreground'
                 }`}
                 strokeWidth={isActive ? 2.5 : 2}
                 fill={tab.id === 'favorites' && isActive ? 'currentColor' : 'none'}
               />
               <span className={`text-xs font-medium transition-colors ${
-                isActive ? 'text-primary' : 'text-[#94A3B8]'
+                isActive ? 'text-primary' : 'text-muted-foreground'
               }`}>
                 {tab.label}
               </span>

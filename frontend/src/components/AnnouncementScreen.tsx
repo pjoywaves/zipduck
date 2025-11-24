@@ -77,7 +77,7 @@ export function AnnouncementScreen({ onBack }: AnnouncementScreenProps) {
 
   if (selectedAnnouncement) {
     const announcement = announcements.find(a => a.id === selectedAnnouncement);
-    
+
     return (
       <div className="min-h-screen bg-background pb-24 max-w-md mx-auto">
         {/* Header */}
@@ -86,7 +86,7 @@ export function AnnouncementScreen({ onBack }: AnnouncementScreenProps) {
             <button onClick={() => setSelectedAnnouncement(null)} className="p-2 -ml-2">
               <ChevronLeft size={24} />
             </button>
-            <h2 className="font-bold ml-4">공지사항</h2>
+            <h2 className="font-bold ml-4 text-muted-foreground">공지사항</h2>
           </div>
         </div>
 
@@ -106,7 +106,7 @@ export function AnnouncementScreen({ onBack }: AnnouncementScreenProps) {
 
           {/* Title */}
           <div>
-            <h1 className="font-bold mb-3">{announcement!.title}</h1>
+            <h1 className="font-bold text-foreground mb-3">{announcement!.title}</h1>
             <p className="text-sm text-muted-foreground">{announcement!.date}</p>
           </div>
 
@@ -119,7 +119,7 @@ export function AnnouncementScreen({ onBack }: AnnouncementScreenProps) {
               <p className="text-foreground leading-relaxed mb-4">
                 사용자분들께 더 나은 서비스를 제공하기 위해 AI 상담 기능을 대폭 업데이트하였습니다.
               </p>
-              <h3 className="font-semibold text-foreground mt-6 mb-3">주요 업데이트 내용</h3>
+              <h3 className="font-semibold text-foreground text-foreground mt-6 mb-3">주요 업데이트 내용</h3>
               <ul className="space-y-2 text-foreground">
                 <li className="flex items-start gap-2">
                   <span className="text-primary mt-1">•</span>
@@ -149,7 +149,7 @@ export function AnnouncementScreen({ onBack }: AnnouncementScreenProps) {
 
           {/* Attachments */}
           <div className="bg-card border border-border rounded-2xl p-5">
-            <h3 className="font-semibold mb-3 flex items-center gap-2">
+            <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2">
               <Paperclip size={18} className="text-primary" />
               첨부파일
             </h3>
@@ -157,7 +157,7 @@ export function AnnouncementScreen({ onBack }: AnnouncementScreenProps) {
               <button className="w-full p-3 bg-muted rounded-xl flex items-center gap-3 hover:bg-muted/80 transition-colors">
                 <FileText size={20} className="text-muted-foreground" />
                 <div className="flex-1 text-left">
-                  <p className="text-sm font-medium">업데이트_상세_안내.pdf</p>
+                  <p className="text-sm font-medium text-muted-foreground">업데이트_상세_안내.pdf</p>
                   <p className="text-xs text-muted-foreground">2.4 MB</p>
                 </div>
               </button>
@@ -176,7 +176,7 @@ export function AnnouncementScreen({ onBack }: AnnouncementScreenProps) {
           <button onClick={onBack} className="p-2 -ml-2">
             <ChevronLeft size={24} />
           </button>
-          <h2 className="font-bold ml-4">공지사항</h2>
+          <h2 className="font-bold ml-4 text-muted-foreground">공지사항</h2>
         </div>
 
         {/* Search */}
@@ -210,7 +210,7 @@ export function AnnouncementScreen({ onBack }: AnnouncementScreenProps) {
                   </span>
                 )}
               </div>
-              <h3 className="font-semibold mb-1 line-clamp-2">{announcement.title}</h3>
+              <h3 className="font-semibold text-foreground mb-1 line-clamp-2">{announcement.title}</h3>
               <p className="text-sm text-muted-foreground">{announcement.date}</p>
             </div>
             <ChevronRight size={20} className="text-muted-foreground flex-shrink-0 mt-1" />

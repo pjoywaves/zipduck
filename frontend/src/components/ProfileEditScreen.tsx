@@ -119,7 +119,7 @@ export function ProfileEditScreen({ onBack }: ProfileEditScreenProps) {
 
         {/* Preview Notice */}
         {previewImage && (
-          <div className="bg-[#EFF6FF] dark:bg-[#1E293B] rounded-xl p-4 border border-primary/20">
+          <div className="bg-blue-soft-bg dark:bg-card rounded-xl p-4 border border-primary/20">
             <p className="text-sm text-muted-foreground text-center">
               💡 변경사항을 저장하려면 아래 <span className="font-semibold text-primary">"저장하기"</span> 버튼을 눌러주세요.
             </p>

@@ -88,7 +88,7 @@ export function AIRecommendBestScreen({ onBack, onNavigateToDetail }: AIRecommen
           </button>
           <div className="flex-1 flex items-center justify-center gap-2 pr-10">
             <Sparkles size={20} className="text-primary" />
-            <h2 className="font-bold">AI 맞춤 추천</h2>
+            <h2 className="font-bold text-foreground">AI 맞춤 추천</h2>
           </div>
         </div>
       </div>
@@ -101,7 +101,7 @@ export function AIRecommendBestScreen({ onBack, onNavigateToDetail }: AIRecommen
               <span className="text-3xl">🦆</span>
             </div>
             <div>
-              <h3 className="font-bold mb-2">김청약님을 위한 BEST 3</h3>
+              <h3 className="font-bold text-foreground mb-2">김청약님을 위한 BEST 3</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 회원님의 조건을 분석하여 <span className="font-semibold text-foreground">가장 적합한 3개 단지</span>를 추천해드려요
               </p>
@@ -109,7 +109,7 @@ export function AIRecommendBestScreen({ onBack, onNavigateToDetail }: AIRecommen
           </div>
 
           {/* User Conditions */}
-          <div className="bg-white/60 dark:bg-black/20 rounded-2xl p-4">
+          <div className="bg-background/60 dark:bg-black/20 rounded-2xl p-4">
             <p className="text-xs font-semibold text-muted-foreground mb-2">분석된 조건</p>
             <div className="flex flex-wrap gap-2">
               <span className="px-3 py-1 bg-primary/20 text-primary text-xs font-semibold rounded-full">
@@ -144,7 +144,7 @@ export function AIRecommendBestScreen({ onBack, onNavigateToDetail }: AIRecommen
                   className="w-full h-48 object-cover"
                 />
                 <div className={`absolute top-4 left-4 w-12 h-12 ${getRankBadge(rec.rank)} rounded-2xl flex items-center justify-center shadow-lg`}>
-                  <span className="font-bold text-xl">{rec.rank}</span>
+                  <span className="font-bold text-xl text-foreground">{rec.rank}</span>
                 </div>
                 <div className="absolute top-4 right-4 bg-primary text-primary-foreground px-3 py-1.5 rounded-xl font-bold shadow-lg">
                   매칭도 {rec.matchScore}%
@@ -154,7 +154,7 @@ export function AIRecommendBestScreen({ onBack, onNavigateToDetail }: AIRecommen
               {/* Content */}
               <div className="p-5 space-y-4">
                 <div>
-                  <h3 className="font-bold mb-1 group-hover:text-primary transition-colors">
+                  <h3 className="font-bold text-foreground mb-1 group-hover:text-primary transition-colors">
                     {rec.name}
                   </h3>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -168,7 +168,7 @@ export function AIRecommendBestScreen({ onBack, onNavigateToDetail }: AIRecommen
                 <div className="bg-muted rounded-2xl p-4">
                   <div className="flex items-center gap-2 mb-3">
                     <Sparkles size={16} className="text-primary" />
-                    <p className="font-semibold text-sm">AI 추천 이유</p>
+                    <p className="font-semibold text-sm text-foreground">AI 추천 이유</p>
                   </div>
                   <ul className="space-y-2">
                     {rec.reasons.map((reason, index) => (
@@ -185,17 +185,17 @@ export function AIRecommendBestScreen({ onBack, onNavigateToDetail }: AIRecommen
                   <div className="bg-muted rounded-xl p-3 text-center">
                     <TrendingUp size={16} className="text-muted-foreground mx-auto mb-1" />
                     <p className="text-xs text-muted-foreground mb-1">경쟁률</p>
-                    <p className="font-semibold text-xs">{rec.highlights.competition}</p>
+                    <p className="font-semibold text-xs text-foreground">{rec.highlights.competition}</p>
                   </div>
                   <div className="bg-muted rounded-xl p-3 text-center">
                     <MapPin size={16} className="text-muted-foreground mx-auto mb-1" />
                     <p className="text-xs text-muted-foreground mb-1">거리</p>
-                    <p className="font-semibold text-xs">{rec.highlights.distance}</p>
+                    <p className="font-semibold text-xs text-foreground">{rec.highlights.distance}</p>
                   </div>
                   <div className="bg-muted rounded-xl p-3 text-center">
                     <Home size={16} className="text-muted-foreground mx-auto mb-1" />
                     <p className="text-xs text-muted-foreground mb-1">주변환경</p>
-                    <p className="font-semibold text-xs">{rec.highlights.facilities}</p>
+                    <p className="font-semibold text-xs text-foreground">{rec.highlights.facilities}</p>
                   </div>
                 </div>
               </div>
@@ -208,7 +208,7 @@ export function AIRecommendBestScreen({ onBack, onNavigateToDetail }: AIRecommen
           <div className="flex items-center gap-3 mb-4">
             <Award size={24} className="text-primary" />
             <div>
-              <h3 className="font-semibold">더 많은 추천이 필요하신가요?</h3>
+              <h3 className="font-semibold text-foreground">더 많은 추천이 필요하신가요?</h3>
               <p className="text-xs text-muted-foreground">AI 상담으로 자세히 분석해드려요</p>
             </div>
           </div>

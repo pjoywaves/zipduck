@@ -27,11 +27,11 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
       {/* Logo Container */}
       <div className="relative z-10 animate-[fadeInScale_1s_ease-out]">
         <div className="mb-8 relative flex items-center justify-center">
-          <div className="w-32 h-32 bg-white rounded-3xl flex items-center justify-center shadow-2xl">
+          <div className="w-32 h-32 bg-white rounded-3xl flex items-center justify-center">
             <img src={logo} alt="ZipDuck Logo" className="w-full h-full object-contain" />
           </div>
         </div>
-        
+
         {/* App Name */}
         <div className="text-center">
           <h1 className="font-bold text-foreground mb-2">집덕</h1>

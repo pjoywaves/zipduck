@@ -10,9 +10,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 interface NewSignUpScreenProps {
   onBack: () => void;
   onSignUp: () => void;
+  onNavigateToLogin?: () => void;
 }
 
-export function NewSignUpScreen({ onBack, onSignUp }: NewSignUpScreenProps) {
+export function NewSignUpScreen({ onBack, onSignUp, onNavigateToLogin }: NewSignUpScreenProps) {
   const [isNewlywed, setIsNewlywed] = useState(false);
   const [childrenCount, setChildrenCount] = useState(0);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
@@ -26,18 +27,17 @@ export function NewSignUpScreen({ onBack, onSignUp }: NewSignUpScreenProps) {
           <button onClick={onBack} className="p-2 -ml-2">
             <ChevronLeft size={24} />
           </button>
-          <h2 className="font-bold ml-4">회원가입</h2>
+          <h2 className="font-bold ml-4 text-foreground">회원가입</h2>
         </div>
       </div>
 
       <div className="px-6 py-6 space-y-6">
         {/* Logo & Welcome */}
         <div className="text-center mb-8">
-          <div className="w-24 h-24 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-            
+          <div className="w-24 h-24 bg-background rounded-2xl flex items-center justify-center mx-auto mb-4">
             <img src={logo} alt="ZipDuck Logo" className="w-full h-full object-contain" />
           </div>
-          <h1 className="font-bold mb-2">집덕과 함께</h1>
+          <h1 className="font-bold text-foreground mb-2 text-foreground">집덕과 함께</h1>
           <p className="text-muted-foreground">청약을 더 쉽고 빠르게 시작하세요</p>
         </div>
 
@@ -93,14 +93,14 @@ export function NewSignUpScreen({ onBack, onSignUp }: NewSignUpScreenProps) {
 
         {/* Additional Info */}
         <div className="bg-card border border-border rounded-2xl p-5 space-y-4">
-          <h3 className="font-semibold">추가 정보 (맞춤 추천용)</h3>
-          
+          <h3 className="font-semibold text-foreground">추가 정보 (맞춤 추천용)</h3>
+
           {/* Newlywed Toggle */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <span className="text-2xl">💑</span>
               <div>
-                <p className="font-medium">신혼부부</p>
+                <p className="font-medium text-foreground">신혼부부</p>
                 <p className="text-xs text-muted-foreground">신혼부부 특별공급 대상</p>
               </div>
             </div>
@@ -112,7 +112,7 @@ export function NewSignUpScreen({ onBack, onSignUp }: NewSignUpScreenProps) {
             <div className="flex items-center gap-3">
               <span className="text-2xl">👶</span>
               <div>
-                <p className="font-medium">자녀 수</p>
+                <p className="font-medium text-foreground">자녀 수</p>
                 <p className="text-xs text-muted-foreground">가점 계산에 반영</p>
               </div>
             </div>
@@ -165,7 +165,7 @@ export function NewSignUpScreen({ onBack, onSignUp }: NewSignUpScreenProps) {
               className="mt-1"
             />
             <label htmlFor="terms" className="text-sm leading-relaxed">
-              <span className="font-medium">(필수)</span> 서비스 이용약관에 동의합니다
+              <span className="font-medium text-foreground">(필수)</span> 서비스 이용약관에 동의합니다
             </label>
           </div>
 
@@ -177,7 +177,7 @@ export function NewSignUpScreen({ onBack, onSignUp }: NewSignUpScreenProps) {
               className="mt-1"
             />
             <label htmlFor="privacy" className="text-sm leading-relaxed">
-              <span className="font-medium">(필수)</span> 개인정보 처리방침에 동의합니다
+              <span className="font-medium text-foreground">(필수)</span> 개인정보 처리방침에 동의합니다
             </label>
           </div>
         </div>
@@ -207,7 +207,7 @@ export function NewSignUpScreen({ onBack, onSignUp }: NewSignUpScreenProps) {
             className="w-full h-14 rounded-2xl border-border hover:bg-muted"
           >
             <span className="text-2xl mr-3">🌐</span>
-            <span className="font-semibold">Google로 시작하기</span>
+            <span className="font-semibold text-foreground">Google로 시작하기</span>
           </Button>
           <Button
             variant="outline"
@@ -215,14 +215,17 @@ export function NewSignUpScreen({ onBack, onSignUp }: NewSignUpScreenProps) {
             style={{ backgroundColor: "#FEE500", borderColor: "#FEE500" }}
           >
             <span className="text-2xl mr-3">💬</span>
-            <span className="font-semibold text-gray-900">카카오로 시작하기</span>
+            <span className="font-semibold text-foreground">카카오로 시작하기</span>
           </Button>
         </div>
 
         {/* Login Link */}
         <div className="text-center pt-4">
-          <button className="text-sm text-muted-foreground">
-            이미 계정이 있으신가요? <span className="text-primary font-semibold">로그인</span>
+          <button
+            onClick={onNavigateToLogin}
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            이미 계정이 있으신가요? <span className="text-primary font-semibold hover:text-primary/80">로그인</span>
           </button>
         </div>
       </div>

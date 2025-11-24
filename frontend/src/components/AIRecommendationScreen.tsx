@@ -51,14 +51,14 @@ export function AIRecommendationScreen({ onBack, onNavigateToDetail }: AIRecomme
           <button onClick={onBack} className="p-2 -ml-2 hover:bg-muted rounded-xl transition-colors">
             <ChevronLeft size={24} />
           </button>
-          <h2 className="flex-1 text-center pr-10 font-bold">AI 맞춤 추천</h2>
+          <h2 className="flex-1 text-center pr-10 font-bold text-foreground">AI 맞춤 추천</h2>
         </div>
       </div>
 
       {/* Info Banner */}
       <div className="bg-gradient-to-r from-primary to-blue-400 dark:from-primary dark:to-blue-600 px-6 py-6 mb-6">
         <div className="flex items-start gap-3">
-          <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center flex-shrink-0 shadow-md">
+          <div className="w-12 h-12 rounded-full bg-background flex items-center justify-center flex-shrink-0 shadow-md">
             <Sparkles size={24} className="text-primary" />
           </div>
           <div>
@@ -81,7 +81,7 @@ export function AIRecommendationScreen({ onBack, onNavigateToDetail }: AIRecomme
           >
             {/* Premium Rank Badge */}
             <div className="absolute top-4 left-4 z-10">
-              <div className="bg-primary dark:bg-[#2563EB] text-white w-10 h-10 rounded-xl flex items-center justify-center shadow-lg font-bold">
+              <div className="bg-primary dark:bg-primary-hover text-white w-10 h-10 rounded-xl flex items-center justify-center shadow-lg font-bold">
                 {index + 1}
               </div>
             </div>
@@ -109,7 +109,7 @@ export function AIRecommendationScreen({ onBack, onNavigateToDetail }: AIRecomme
                   <p className="text-sm text-muted-foreground">{apt.location}</p>
                 </div>
                 {apt.dday <= 7 && (
-                  <span className="bg-warning text-gray-900 text-xs px-2.5 py-1 rounded-lg ml-2 whitespace-nowrap font-bold">
+                  <span className="bg-warning text-foreground text-xs px-2.5 py-1 rounded-lg ml-2 whitespace-nowrap font-bold">
                     D-{apt.dday}
                   </span>
                 )}
@@ -140,7 +140,7 @@ export function AIRecommendationScreen({ onBack, onNavigateToDetail }: AIRecomme
       <div className="px-6 mt-6 pb-6">
         <div className="bg-info/10 border border-info/30 rounded-2xl p-4">
           <p className="text-xs text-foreground leading-relaxed">
-            💡 <span className="font-semibold">추천 안내:</span> 등록하신 정보를 바탕으로 제공되며, 실제 청약 자격과는 다를 수 있습니다.
+            💡 <span className="font-semibold text-foreground">추천 안내:</span> 등록하신 정보를 바탕으로 제공되며, 실제 청약 자격과는 다를 수 있습니다.
             청약 전 반드시 자격 요건을 확인해주세요.
           </p>
         </div>

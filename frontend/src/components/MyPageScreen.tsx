@@ -43,7 +43,7 @@ export function MyPageScreen({ onNavigateToSettings }: MyPageScreenProps) {
       <div className="bg-card border-b border-border px-6 pt-6 pb-4 mb-4">
         <div className="flex items-center gap-3 mb-2">
           <img src={logo} alt="ZipDuck Logo" className="w-8 h-8 object-contain" />
-          <h2 className="font-bold">마이페이지</h2>
+          <h2 className="font-bold text-foreground">마이페이지</h2>
         </div>
       </div>
 
@@ -51,7 +51,7 @@ export function MyPageScreen({ onNavigateToSettings }: MyPageScreenProps) {
         {/* Profile Card */}
         <div className="bg-gradient-to-br from-primary to-blue-400 dark:from-primary dark:to-blue-600 rounded-2xl p-6 shadow-lg">
           <div className="flex items-center gap-4 mb-4">
-            <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center shadow-md">
+            <div className="w-16 h-16 rounded-full bg-background flex items-center justify-center shadow-md">
               <span className="text-3xl">👤</span>
             </div>
             <div>

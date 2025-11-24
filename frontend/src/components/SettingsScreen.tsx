@@ -14,10 +14,11 @@ interface SettingsScreenProps {
   onNavigateToTerms?: () => void;
   onNavigateToEmailChange?: () => void;
   onNavigateToPasswordChange?: () => void;
+  onLogout?: () => void;
 }
 
-export function SettingsScreen({ 
-  onBack, 
+export function SettingsScreen({
+  onBack,
   onNavigateToAppearance,
   onNavigateToProfile,
   onNavigateToRegionPreference,
@@ -26,7 +27,8 @@ export function SettingsScreen({
   onNavigateToPrivacyPolicy,
   onNavigateToTerms,
   onNavigateToEmailChange,
-  onNavigateToPasswordChange
+  onNavigateToPasswordChange,
+  onLogout
 }: SettingsScreenProps) {
   const [pushNotifications, setNotifications] = useState(true);
 
@@ -38,7 +40,7 @@ export function SettingsScreen({
           <button onClick={onBack} className="p-2 -ml-2">
             <ChevronLeft size={24} />
           </button>
-          <h2 className="font-bold ml-4">설정</h2>
+          <h2 className="font-bold ml-4 text-foreground">설정</h2>
         </div>
       </div>
 
@@ -56,7 +58,7 @@ export function SettingsScreen({
               <div className="flex items-center gap-3">
                 <Palette size={20} className="text-primary" />
                 <div className="text-left">
-                  <p className="font-semibold">테마 설정</p>
+                  <p className="font-semibold text-foreground">테마 설정</p>
                   <p className="text-xs text-muted-foreground">Blue Theme · Light/Dark 모드</p>
                 </div>
               </div>
@@ -77,7 +79,7 @@ export function SettingsScreen({
               <div className="flex items-center gap-3">
                 <Mail size={20} className="text-muted-foreground" />
                 <div className="text-left">
-                  <p className="font-medium">이메일 변경</p>
+                  <p className="font-medium text-foreground">이메일 변경</p>
                   <p className="text-xs text-muted-foreground">zipduck@example.com</p>
                 </div>
               </div>
@@ -91,7 +93,7 @@ export function SettingsScreen({
               <div className="flex items-center gap-3">
                 <Lock size={20} className="text-muted-foreground" />
                 <div className="text-left">
-                  <p className="font-medium">비밀번호 변경</p>
+                  <p className="font-medium text-foreground">비밀번호 변경</p>
                   <p className="text-xs text-muted-foreground">마지막 변경: 2025.10.15</p>
                 </div>
               </div>
@@ -105,7 +107,7 @@ export function SettingsScreen({
               <div className="flex items-center gap-3">
                 <User size={20} className="text-muted-foreground" />
                 <div className="text-left">
-                  <p className="font-medium">프로필 관리</p>
+                  <p className="font-medium text-foreground">프로필 관리</p>
                   <p className="text-xs text-muted-foreground">개인정보 수정</p>
                 </div>
               </div>
@@ -126,7 +128,7 @@ export function SettingsScreen({
               <div className="flex items-center gap-3">
                 <MapPin size={20} className="text-primary" />
                 <div className="text-left">
-                  <p className="font-semibold">관심 지역 설정</p>
+                  <p className="font-semibold text-foreground">관심 지역 설정</p>
                   <p className="text-xs text-muted-foreground">선호 지역 관리</p>
                 </div>
               </div>
@@ -147,7 +149,7 @@ export function SettingsScreen({
               <div className="flex items-center gap-3">
                 <Bell size={20} className="text-primary" />
                 <div className="text-left">
-                  <p className="font-semibold">알림 설정</p>
+                  <p className="font-semibold text-foreground">알림 설정</p>
                   <p className="text-xs text-muted-foreground">알림 유형별 관리</p>
                 </div>
               </div>
@@ -168,7 +170,7 @@ export function SettingsScreen({
               <div className="flex items-center gap-3">
                 <HelpCircle size={20} className="text-primary" />
                 <div className="text-left">
-                  <p className="font-semibold">도움말</p>
+                  <p className="font-semibold text-foreground">도움말</p>
                   <p className="text-xs text-muted-foreground">자주 묻는 질문</p>
                 </div>
               </div>
@@ -189,7 +191,7 @@ export function SettingsScreen({
               <div className="flex items-center gap-3">
                 <Shield size={20} className="text-muted-foreground" />
                 <div className="text-left">
-                  <p className="font-medium">개인정보 처리방침</p>
+                  <p className="font-medium text-foreground">개인정보 처리방침</p>
                   <p className="text-xs text-muted-foreground">개인정보 보호 정책</p>
                 </div>
               </div>
@@ -203,7 +205,7 @@ export function SettingsScreen({
               <div className="flex items-center gap-3">
                 <FileText size={20} className="text-muted-foreground" />
                 <div className="text-left">
-                  <p className="font-medium">서비스 이용약관</p>
+                  <p className="font-medium text-foreground">서비스 이용약관</p>
                   <p className="text-xs text-muted-foreground">서비스 약관 및 정책</p>
                 </div>
               </div>
@@ -216,6 +218,7 @@ export function SettingsScreen({
         <div className="space-y-4">
           <Button
             variant="outline"
+            onClick={onLogout}
             className="w-full h-14 rounded-2xl border-border hover:bg-muted font-semibold"
           >
             <LogOut size={20} className="mr-2" />

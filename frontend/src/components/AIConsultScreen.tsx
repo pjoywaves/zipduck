@@ -74,7 +74,7 @@ export function AIConsultScreen({ onBack }: AIConsultScreenProps) {
           </button>
           <div className="flex-1 flex items-center justify-center gap-2 pr-10">
             <Sparkles size={20} className="text-primary" />
-            <h2 className="font-bold">집덕 AI 상담</h2>
+            <h2 className="font-bold text-foreground">집덕 AI 상담</h2>
           </div>
         </div>
       </div>
@@ -90,7 +90,7 @@ export function AIConsultScreen({ onBack }: AIConsultScreenProps) {
                   <span className="text-2xl">🦆</span>
                 </div>
                 <div>
-                  <h3 className="font-bold mb-2">안녕하세요! 👋</h3>
+                  <h3 className="font-bold text-foreground mb-2">안녕하세요! 👋</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">
                     저는 집덕 AI 상담원입니다.<br />
                     청약에 대한 궁금한 점을 물어보시거나<br />
@@ -102,7 +102,7 @@ export function AIConsultScreen({ onBack }: AIConsultScreenProps) {
 
             {/* Preset Questions */}
             <div>
-              <p className="text-sm font-semibold mb-3 px-1">💬 추천 질문</p>
+              <p className="text-sm font-semibold mb-3 px-1 text-muted-foreground">💬 추천 질문</p>
               <div className="space-y-2">
                 {presetQuestions.map((question, index) => (
                   <button
@@ -110,7 +110,7 @@ export function AIConsultScreen({ onBack }: AIConsultScreenProps) {
                     onClick={() => handlePresetQuestion(question)}
                     className="w-full p-4 bg-card border border-border rounded-2xl text-left hover:border-primary hover:bg-primary/5 transition-all"
                   >
-                    <p className="font-medium text-sm">{question}</p>
+                    <p className="font-medium text-sm text-muted-foreground">{question}</p>
                   </button>
                 ))}
               </div>
@@ -118,7 +118,7 @@ export function AIConsultScreen({ onBack }: AIConsultScreenProps) {
 
             {/* Features */}
             <div className="bg-gradient-to-br from-primary/10 to-blue-100/50 dark:from-primary/5 dark:to-blue-900/20 border border-primary/20 rounded-2xl p-5">
-              <h3 className="font-semibold mb-3 flex items-center gap-2">
+              <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2">
                 <Sparkles size={18} className="text-primary" />
                 AI 상담 기능
               </h3>
