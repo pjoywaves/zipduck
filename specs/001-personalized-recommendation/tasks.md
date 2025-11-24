@@ -74,32 +74,32 @@ description: "Task list for ZipDuck MVP - Personalized Subscription Recommendati
 
 #### Backend - User Profile (FR-001, FR-002, FR-006, FR-014)
 
-- [ ] T022 [P] [US1] Create User entity in backend/src/main/java/com/zipduck/domain/user/User.java
-- [ ] T023 [P] [US1] Create UserProfile entity in backend/src/main/java/com/zipduck/domain/user/UserProfile.java
-- [ ] T024 [P] [US1] Create UserRepository interface in backend/src/main/java/com/zipduck/domain/user/UserRepository.java
-- [ ] T025 [US1] Implement UserQueryService for reading operations in backend/src/main/java/com/zipduck/domain/user/UserQueryService.java
-- [ ] T026 [US1] Implement UserCommandService for create/update operations in backend/src/main/java/com/zipduck/domain/user/UserCommandService.java
-- [ ] T027 [US1] Create UserProfileRequest DTO with validation in backend/src/main/java/com/zipduck/api/dto/request/UserProfileRequest.java
-- [ ] T028 [US1] Create UserProfileResponse DTO in backend/src/main/java/com/zipduck/api/dto/response/UserProfileResponse.java
-- [ ] T029 [US1] Implement UserController with OpenAPI annotations in backend/src/main/java/com/zipduck/api/controller/UserController.java (POST /api/v1/users/profile, GET /api/v1/users/{userId}/profile, PUT /api/v1/users/{userId}/profile)
+- [X] T022 [P] [US1] Create User entity in backend/src/main/java/com/zipduck/domain/user/User.java
+- [X] T023 [P] [US1] Create UserProfile entity in backend/src/main/java/com/zipduck/domain/user/UserProfile.java
+- [X] T024 [P] [US1] Create UserRepository interface in backend/src/main/java/com/zipduck/domain/user/UserRepository.java
+- [X] T025 [US1] Implement UserQueryService for reading operations in backend/src/main/java/com/zipduck/domain/user/UserQueryService.java
+- [X] T026 [US1] Implement UserCommandService for create/update operations in backend/src/main/java/com/zipduck/domain/user/UserCommandService.java
+- [X] T027 [US1] Create UserProfileRequest DTO with validation in backend/src/main/java/com/zipduck/api/dto/request/UserProfileRequest.java
+- [X] T028 [US1] Create UserProfileResponse DTO in backend/src/main/java/com/zipduck/api/dto/response/UserProfileResponse.java
+- [X] T029 [US1] Implement UserController with OpenAPI annotations in backend/src/main/java/com/zipduck/api/controller/UserController.java (POST /api/v1/users/{id}/profile, GET /api/v1/users/{id}/profile, PATCH /api/v1/users/{id}/profile/notifications)
 
 #### Backend - Subscription Management (FR-003, FR-004, FR-005, FR-011, FR-026, FR-027, FR-032)
 
-- [ ] T030 [P] [US1] Create Subscription entity in backend/src/main/java/com/zipduck/domain/subscription/Subscription.java with source enum (PUBLIC_DB, PDF_UPLOAD, MERGED)
-- [ ] T031 [P] [US1] Create SubscriptionRepository interface in backend/src/main/java/com/zipduck/domain/subscription/SubscriptionRepository.java
-- [ ] T032 [US1] Implement SubscriptionQueryService in backend/src/main/java/com/zipduck/domain/subscription/SubscriptionQueryService.java
-- [ ] T033 [US1] Implement SubscriptionCommandService in backend/src/main/java/com/zipduck/domain/subscription/SubscriptionCommandService.java
-- [ ] T034 [US1] Create EligibilityCalculator service in backend/src/main/java/com/zipduck/domain/eligibility/EligibilityCalculator.java for filtering logic
-- [ ] T035 [US1] Implement unified recommendation logic in SubscriptionQueryService.getRecommendations() with source filtering support
-- [ ] T036 [US1] Create SubscriptionDto response DTO in backend/src/main/java/com/zipduck/api/dto/response/SubscriptionDto.java
-- [ ] T037 [US1] Create SubscriptionListResponse DTO in backend/src/main/java/com/zipduck/api/dto/response/SubscriptionListResponse.java
-- [ ] T038 [US1] Implement SubscriptionController with OpenAPI annotations in backend/src/main/java/com/zipduck/api/controller/SubscriptionController.java (GET /api/v1/subscriptions/recommendations with sourceFilter param)
+- [X] T030 [P] [US1] Create Subscription entity in backend/src/main/java/com/zipduck/domain/subscription/Subscription.java with source enum (PUBLIC_DB, PDF_UPLOAD, MERGED)
+- [X] T031 [P] [US1] Create SubscriptionRepository interface in backend/src/main/java/com/zipduck/domain/subscription/SubscriptionRepository.java
+- [X] T032 [US1] Implement SubscriptionQueryService in backend/src/main/java/com/zipduck/domain/subscription/SubscriptionQueryService.java
+- [X] T033 [US1] Implement SubscriptionCommandService in backend/src/main/java/com/zipduck/domain/subscription/SubscriptionCommandService.java
+- [X] T034 [US1] Create EligibilityCalculator service in backend/src/main/java/com/zipduck/domain/eligibility/EligibilityCalculator.java for filtering logic
+- [X] T035 [US1] Implement unified recommendation logic in SubscriptionQueryService.getRecommendations() with source filtering support
+- [X] T036 [US1] Create SubscriptionDto response DTO in backend/src/main/java/com/zipduck/api/dto/response/SubscriptionDto.java
+- [X] T037 [US1] Create SubscriptionListResponse DTO in backend/src/main/java/com/zipduck/api/dto/response/SubscriptionListResponse.java
+- [X] T038 [US1] Implement SubscriptionController with OpenAPI annotations in backend/src/main/java/com/zipduck/api/controller/SubscriptionController.java (GET /api/v1/subscriptions/recommendations with sourceFilter param)
 
 #### Backend - Public Data Collection (FR-003, FR-011)
 
-- [ ] T039 [US1] Implement PublicDataCollector scheduled task in backend/src/main/java/com/zipduck/application/collector/PublicDataCollector.java with @Scheduled(cron = "0 0 2 * * *")
-- [ ] T040 [US1] Implement data collection logic to fetch, transform, and save subscriptions from 공공데이터포털 API
-- [ ] T041 [US1] Add logic to deactivate expired subscriptions (FR-030)
+- [X] T039 [US1] Implement PublicDataCollector scheduled task in backend/src/main/java/com/zipduck/application/collector/PublicDataCollector.java with @Scheduled(cron = "0 0 2 * * *")
+- [X] T040 [US1] Implement data collection logic to fetch, transform, and save subscriptions from 공공데이터포털 API
+- [X] T041 [US1] Add logic to deactivate expired subscriptions (FR-030)
 
 #### Frontend - User Profile (FR-001, FR-002, FR-006, FR-014)
 
@@ -135,43 +135,43 @@ description: "Task list for ZipDuck MVP - Personalized Subscription Recommendati
 
 #### Backend - PDF Document Management (FR-016, FR-023, FR-024, FR-036)
 
-- [ ] T056 [P] [US2] Create PdfDocument entity in backend/src/main/java/com/zipduck/domain/pdf/PdfDocument.java with processing status enum
-- [ ] T057 [P] [US2] Create PdfAnalysisResult entity in backend/src/main/java/com/zipduck/domain/pdf/PdfAnalysisResult.java
-- [ ] T058 [P] [US2] Create PdfRepository interface in backend/src/main/java/com/zipduck/domain/pdf/PdfRepository.java
-- [ ] T059 [US2] Implement PdfQueryService in backend/src/main/java/com/zipduck/domain/pdf/PdfQueryService.java
-- [ ] T060 [US2] Implement PdfCommandService in backend/src/main/java/com/zipduck/domain/pdf/PdfCommandService.java with file storage and cache key generation
-- [ ] T061 [US2] Implement Redis caching service for PDF analysis results in backend/src/main/java/com/zipduck/infrastructure/cache/PdfCacheService.java
+- [X] T056 [P] [US2] Create PdfDocument entity in backend/src/main/java/com/zipduck/domain/pdf/PdfDocument.java with processing status enum
+- [X] T057 [P] [US2] Create PdfAnalysisResult entity in backend/src/main/java/com/zipduck/domain/pdf/PdfAnalysisResult.java
+- [X] T058 [P] [US2] Create PdfRepository interface in backend/src/main/java/com/zipduck/domain/pdf/PdfRepository.java
+- [X] T059 [US2] Implement PdfQueryService in backend/src/main/java/com/zipduck/domain/pdf/PdfQueryService.java
+- [X] T060 [US2] Implement PdfCommandService in backend/src/main/java/com/zipduck/domain/pdf/PdfCommandService.java with file storage and cache key generation
+- [X] T061 [US2] Implement Redis caching service for PDF analysis results in backend/src/main/java/com/zipduck/infrastructure/cache/PdfCacheService.java
 
 #### Backend - AI & OCR Integration (FR-017, FR-033, FR-034, FR-035, FR-037, FR-038)
 
-- [ ] T062 [P] [US2] Implement VisionService for OCR in backend/src/main/java/com/zipduck/application/ai/VisionService.java with detectImageContent() and performOcr() methods
-- [ ] T063 [P] [US2] Implement GeminiService for criteria extraction in backend/src/main/java/com/zipduck/application/ai/GeminiService.java with extractCriteria() and prompt engineering
-- [ ] T064 [US2] Implement EligibilityScorer for match scoring in backend/src/main/java/com/zipduck/application/ai/EligibilityScorer.java
+- [X] T062 [P] [US2] Implement VisionService for OCR in backend/src/main/java/com/zipduck/application/ai/VisionService.java with detectImageContent() and performOcr() methods
+- [X] T063 [P] [US2] Implement GeminiService for criteria extraction in backend/src/main/java/com/zipduck/application/ai/GeminiService.java with extractCriteria() and prompt engineering
+- [X] T064 [US2] Implement EligibilityScorer for match scoring in backend/src/main/java/com/zipduck/application/ai/EligibilityScorer.java
 
 #### Backend - Async PDF Processing (FR-016 to FR-025, FR-028, FR-029, FR-030)
 
-- [ ] T065 [US2] Create PdfAnalysisTask async processor in backend/src/main/java/com/zipduck/application/async/PdfAnalysisTask.java with @Async annotation
-- [ ] T066 [US2] Implement analyzePdfAsync() workflow: status update, OCR detection, text extraction, AI analysis, profile matching, result saving, caching
-- [ ] T067 [US2] Add duplicate detection logic to find matching subscriptions by name and location (FR-028)
-- [ ] T068 [US2] Implement mergeWithPdf() in SubscriptionCommandService for duplicate handling (FR-029)
-- [ ] T069 [US2] Implement createFromPdf() in SubscriptionCommandService for new PDF-based subscriptions
-- [ ] T070 [US2] Add automatic expiration handling for PDF-analyzed subscriptions (FR-030, FR-031)
+- [X] T065 [US2] Create PdfAnalysisTask async processor in backend/src/main/java/com/zipduck/application/async/PdfAnalysisTask.java with @Async annotation
+- [X] T066 [US2] Implement analyzePdfAsync() workflow: status update, OCR detection, text extraction, AI analysis, profile matching, result saving, caching
+- [X] T067 [US2] Add duplicate detection logic to find matching subscriptions by name and location (FR-028)
+- [X] T068 [US2] Implement mergeWithPdf() in SubscriptionCommandService for duplicate handling (FR-029)
+- [X] T069 [US2] Implement createFromPdf() in SubscriptionCommandService for new PDF-based subscriptions
+- [X] T070 [US2] Add automatic expiration handling for PDF-analyzed subscriptions (FR-030, FR-031)
 
 #### Backend - PDF API Endpoints (FR-016, FR-022, FR-036, FR-037, FR-038)
 
-- [ ] T071 [P] [US2] Create PdfUploadRequest and PdfUploadResponse DTOs in backend/src/main/java/com/zipduck/api/dto/
-- [ ] T072 [P] [US2] Create PdfStatusResponse and PdfAnalysisResponse DTOs in backend/src/main/java/com/zipduck/api/dto/response/
-- [ ] T073 [US2] Implement PdfController with OpenAPI annotations in backend/src/main/java/com/zipduck/api/controller/PdfController.java (POST /api/v1/pdf/upload, GET /api/v1/pdf/{pdfId}/status, GET /api/v1/pdf/{pdfId}/analysis)
-- [ ] T074 [US2] Add file format validation and size limits (max 10MB) to PdfController.uploadPdf()
-- [ ] T075 [US2] Add OCR quality detection and user notification logic (FR-037, FR-038)
+- [X] T071 [P] [US2] Create PdfUploadRequest and PdfUploadResponse DTOs in backend/src/main/java/com/zipduck/api/dto/
+- [X] T072 [P] [US2] Create PdfStatusResponse and PdfAnalysisResponse DTOs in backend/src/main/java/com/zipduck/api/dto/response/
+- [X] T073 [US2] Implement PdfController with OpenAPI annotations in backend/src/main/java/com/zipduck/api/controller/PdfController.java (POST /api/v1/pdf/upload, GET /api/v1/pdf/{pdfId}/status, GET /api/v1/pdf/{pdfId}/analysis)
+- [X] T074 [US2] Add file format validation and size limits (max 10MB) to PdfController.uploadPdf()
+- [X] T075 [US2] Add OCR quality detection and user notification logic (FR-037, FR-038)
 
 #### Backend - Eligibility Matching (FR-007, FR-008, FR-018, FR-019, FR-020, FR-021, FR-025)
 
-- [ ] T076 [P] [US2] Create EligibilityMatch entity in backend/src/main/java/com/zipduck/domain/eligibility/EligibilityMatch.java
-- [ ] T077 [P] [US2] Create EligibilityRepository interface in backend/src/main/java/com/zipduck/domain/eligibility/EligibilityRepository.java
-- [ ] T078 [US2] Implement match analysis logic in EligibilityCalculator.analyzeMatch() with requirements met/failed breakdown
-- [ ] T079 [US2] Add multi-tier qualification detection for partial matches (FR-020)
-- [ ] T080 [US2] Implement actionable recommendations generation based on match status (FR-021, FR-025)
+- [X] T076 [P] [US2] Create EligibilityMatch entity in backend/src/main/java/com/zipduck/domain/eligibility/EligibilityMatch.java
+- [X] T077 [P] [US2] Create EligibilityRepository interface in backend/src/main/java/com/zipduck/domain/eligibility/EligibilityRepository.java
+- [X] T078 [US2] Implement match analysis logic in EligibilityCalculator.analyzeMatch() with requirements met/failed breakdown
+- [X] T079 [US2] Add multi-tier qualification detection for partial matches (FR-020)
+- [X] T080 [US2] Implement actionable recommendations generation based on match status (FR-021, FR-025)
 
 #### Frontend - PDF Upload & Analysis (FR-016, FR-022, FR-036, FR-037, FR-038)
 

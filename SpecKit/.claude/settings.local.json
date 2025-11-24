@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(lsof:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(./gradlew clean build:*)"
     ],
     "deny": [],
     "ask": []
