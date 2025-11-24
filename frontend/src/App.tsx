@@ -30,13 +30,17 @@ import { TermsOfServiceScreen } from "./components/TermsOfServiceScreen";
 import { ProfileEditScreen } from "./components/ProfileEditScreen";
 import { EmailChangeScreen } from "./components/EmailChangeScreen";
 import { PasswordChangeScreen } from "./components/PasswordChangeScreen";
+import { FindAccountScreen } from "./components/FindAccountScreen";
+import { ProfileFormDemo } from "./components/ProfileFormDemo";
 import { TabBar } from "./components/TabBar";
+import { X } from "lucide-react";
 
 type Screen =
   | "splash"
   | "onboarding"
   | "signup"
   | "login"
+  | "find-account"
   | "home"
   | "search"
   | "favorites"
@@ -63,20 +67,22 @@ type Screen =
   | "terms-of-service"
   | "profile-edit"
   | "email-change"
-  | "password-change";
+  | "password-change"
+  | "profile-demo";
 
 type Tab = "home" | "search" | "favorites" | "mypage";
 
-export default function App() {
+function AppContent() {
   const [currentScreen, setCurrentScreen] = useState<Screen>("splash");
   const [currentTab, setCurrentTab] = useState<Tab>("home");
+  const [isDemoMenuOpen, setIsDemoMenuOpen] = useState(false);
 
   const handleSplashComplete = () => {
     setCurrentScreen("onboarding");
   };
 
   const handleOnboardingComplete = () => {
-    setCurrentScreen("signup");
+    setCurrentScreen("login");
   };
 
   const handleSignUp = () => {
@@ -84,7 +90,17 @@ export default function App() {
   };
 
   const handleLogin = () => {
+    // Save auth token to localStorage (simulated)
+    localStorage.setItem("zipduck-auth-token", "demo-token");
     setCurrentScreen("home");
+  };
+
+  const handleLogout = () => {
+    // Remove auth token from localStorage
+    localStorage.removeItem("zipduck-auth-token");
+    // Reset to login screen
+    setCurrentScreen("login");
+    setCurrentTab("home");
   };
 
   const handleNavigateToDetail = () => {
@@ -109,38 +125,47 @@ export default function App() {
 
   const handleNavigateToNotifications = () => {
     setCurrentScreen("notifications");
+    setIsDemoMenuOpen(false);
   };
 
   const handleNavigateToFilter = () => {
     setCurrentScreen("filter");
+    setIsDemoMenuOpen(false);
   };
 
   const handleNavigateToRegionMap = () => {
     setCurrentScreen("region-map");
+    setIsDemoMenuOpen(false);
   };
 
   const handleNavigateToAnalytics = () => {
     setCurrentScreen("analytics");
+    setIsDemoMenuOpen(false);
   };
 
   const handleNavigateToAnnouncement = () => {
     setCurrentScreen("announcement");
+    setIsDemoMenuOpen(false);
   };
 
   const handleNavigateToDistanceMap = () => {
     setCurrentScreen("distance-map");
+    setIsDemoMenuOpen(false);
   };
 
   const handleNavigateToAIConsult = () => {
     setCurrentScreen("ai-consult");
+    setIsDemoMenuOpen(false);
   };
 
   const handleNavigateToCalendar = () => {
     setCurrentScreen("calendar");
+    setIsDemoMenuOpen(false);
   };
 
   const handleNavigateToAIBest = () => {
     setCurrentScreen("ai-best");
+    setIsDemoMenuOpen(false);
   };
 
   const handleTabChange = (tab: string) => {
@@ -169,6 +194,10 @@ export default function App() {
     setCurrentScreen("settings");
   };
 
+  const handleBackToLogin = () => {
+    setCurrentScreen("login");
+  };
+
   const renderScreen = () => {
     switch (currentScreen) {
       case "splash":
@@ -176,9 +205,23 @@ export default function App() {
       case "onboarding":
         return <NewOnboardingScreen onComplete={handleOnboardingComplete} />;
       case "signup":
-        return <NewSignUpScreen onBack={() => setCurrentScreen("login")} onSignUp={handleSignUp} />;
+        return (
+          <NewSignUpScreen
+            onBack={() => setCurrentScreen("login")}
+            onSignUp={handleSignUp}
+            onNavigateToLogin={() => setCurrentScreen("login")}
+          />
+        );
       case "login":
-        return <LoginScreen onLogin={handleLogin} onNavigateToSignUp={() => setCurrentScreen("signup")} />;
+        return (
+          <LoginScreen
+            onLogin={handleLogin}
+            onNavigateToSignUp={() => setCurrentScreen("signup")}
+            onNavigateToFindAccount={() => setCurrentScreen("find-account")}
+          />
+        );
+      case "find-account":
+        return <FindAccountScreen onBack={handleBackToLogin} />;
       case "home":
         return (
           <HomeScreen
@@ -200,18 +243,21 @@ export default function App() {
       case "ai-chat":
         return <AIChatScreen onBack={handleBackToHome} />;
       case "settings":
-        return <SettingsScreen 
-          onBack={handleBackToMyPage} 
-          onNavigateToAppearance={handleNavigateToAppearance}
-          onNavigateToProfile={() => setCurrentScreen("profile-edit")}
-          onNavigateToRegionPreference={() => setCurrentScreen("region-preference")}
-          onNavigateToNotificationSettings={() => setCurrentScreen("notification-settings")}
-          onNavigateToHelp={() => setCurrentScreen("help")}
-          onNavigateToPrivacyPolicy={() => setCurrentScreen("privacy-policy")}
-          onNavigateToTerms={() => setCurrentScreen("terms-of-service")}
-          onNavigateToEmailChange={() => setCurrentScreen("email-change")}
-          onNavigateToPasswordChange={() => setCurrentScreen("password-change")}
-        />;
+        return (
+          <SettingsScreen
+            onBack={handleBackToMyPage}
+            onNavigateToAppearance={handleNavigateToAppearance}
+            onNavigateToProfile={() => setCurrentScreen("profile-edit")}
+            onNavigateToRegionPreference={() => setCurrentScreen("region-preference")}
+            onNavigateToNotificationSettings={() => setCurrentScreen("notification-settings")}
+            onNavigateToHelp={() => setCurrentScreen("help")}
+            onNavigateToPrivacyPolicy={() => setCurrentScreen("privacy-policy")}
+            onNavigateToTerms={() => setCurrentScreen("terms-of-service")}
+            onNavigateToEmailChange={() => setCurrentScreen("email-change")}
+            onNavigateToPasswordChange={() => setCurrentScreen("password-change")}
+            onLogout={handleLogout}
+          />
+        );
       case "appearance":
         return <AppearanceScreen onBack={handleBackToSettings} />;
       case "notifications":
@@ -250,6 +296,8 @@ export default function App() {
         return <EmailChangeScreen onBack={handleBackToSettings} />;
       case "password-change":
         return <PasswordChangeScreen onBack={handleBackToSettings} />;
+      case "profile-demo":
+        return <ProfileFormDemo onBack={handleBackToHome} />;
       default:
         return <HomeScreen onNavigateToDetail={handleNavigateToDetail} onNavigateToAI={handleNavigateToAI} onNavigateToChat={handleNavigateToChat} />;
     }
@@ -262,51 +310,98 @@ export default function App() {
       {renderScreen()}
       {showTabBar && <TabBar currentTab={currentTab} onTabChange={handleTabChange} />}
 
-      {/* Quick Access FAB for Demo Navigation */}
+      {/* Quick Access FAB for Demo Navigation - Click to Toggle */}
       {showTabBar && (
-        <div className="fixed bottom-24 right-6 z-50 max-w-md mx-auto">
-          <div className="relative group">
-            <button className="w-14 h-14 bg-primary hover:bg-primary/90 rounded-full shadow-lg flex items-center justify-center transition-all">
-              <span className="text-2xl">🎯</span>
-            </button>
-            
-            {/* Demo Menu */}
-            <div className="absolute bottom-16 right-0 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all bg-card border border-border rounded-2xl shadow-xl p-3 w-64 space-y-1 max-h-[70vh] overflow-y-auto">
-              <p className="text-xs font-semibold text-muted-foreground px-3 py-1 sticky top-0 bg-card">🚀 Demo Screens</p>
-              <button onClick={handleNavigateToNotifications} className="w-full text-left px-3 py-2 hover:bg-muted rounded-xl text-sm">
+        <>
+          {/* Overlay */}
+          {isDemoMenuOpen && (
+            <div
+              className="fixed inset-0 bg-black/30 z-40"
+              onClick={() => setIsDemoMenuOpen(false)}
+            />
+          )}
+
+          <div className="fixed bottom-24 right-6 z-50 max-w-md mx-auto">
+            {/* Demo Menu - Click to Toggle */}
+            <div
+              className={`absolute bottom-16 right-0 transition-all duration-300 bg-card border border-border rounded-2xl shadow-xl p-3 w-64 space-y-1 max-h-[70vh] overflow-y-auto ${
+                isDemoMenuOpen
+                  ? "opacity-100 visible translate-y-0"
+                  : "opacity-0 invisible translate-y-4"
+              }`}
+            >
+              <div className="flex items-center justify-between px-3 py-2 border-b border-border mb-2">
+                <span className="text-sm font-semibold text-foreground">Demo Menu</span>
+                <button
+                  onClick={() => setIsDemoMenuOpen(false)}
+                  className="p-1 hover:bg-muted rounded-lg"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+              <button onClick={handleNavigateToNotifications} className="w-full text-left px-3 py-2 hover:bg-muted rounded-xl text-sm text-foreground">
                 📬 알림함
               </button>
-              <button onClick={handleNavigateToFilter} className="w-full text-left px-3 py-2 hover:bg-muted rounded-xl text-sm">
+              <button onClick={handleNavigateToFilter} className="w-full text-left px-3 py-2 hover:bg-muted rounded-xl text-sm text-foreground">
                 🎚️ 맞춤 필터
               </button>
-              <button onClick={handleNavigateToRegionMap} className="w-full text-left px-3 py-2 hover:bg-muted rounded-xl text-sm">
+              <button onClick={handleNavigateToRegionMap} className="w-full text-left px-3 py-2 hover:bg-muted rounded-xl text-sm text-foreground">
                 🗺️ 지역별 청약
               </button>
-              <button onClick={handleNavigateToAnalytics} className="w-full text-left px-3 py-2 hover:bg-muted rounded-xl text-sm">
+              <button onClick={handleNavigateToAnalytics} className="w-full text-left px-3 py-2 hover:bg-muted rounded-xl text-sm text-foreground">
                 📊 데이터 분석
               </button>
-              <button onClick={handleNavigateToAnnouncement} className="w-full text-left px-3 py-2 hover:bg-muted rounded-xl text-sm">
+              <button onClick={handleNavigateToAnnouncement} className="w-full text-left px-3 py-2 hover:bg-muted rounded-xl text-sm text-foreground">
                 📢 공지사항
               </button>
-              <button onClick={handleNavigateToDistanceMap} className="w-full text-left px-3 py-2 hover:bg-muted rounded-xl text-sm">
+              <button onClick={handleNavigateToDistanceMap} className="w-full text-left px-3 py-2 hover:bg-muted rounded-xl text-sm text-foreground">
                 📍 거리 분석
               </button>
-              <button onClick={handleNavigateToAIConsult} className="w-full text-left px-3 py-2 hover:bg-muted rounded-xl text-sm">
+              <button onClick={handleNavigateToAIConsult} className="w-full text-left px-3 py-2 hover:bg-muted rounded-xl text-sm text-foreground">
                 ✨ AI 상담 (고급)
               </button>
-              <button onClick={handleNavigateToCalendar} className="w-full text-left px-3 py-2 hover:bg-muted rounded-xl text-sm">
+              <button onClick={handleNavigateToCalendar} className="w-full text-left px-3 py-2 hover:bg-muted rounded-xl text-sm text-foreground">
                 📅 청약 캘린더
               </button>
-              <button onClick={handleNavigateToAIBest} className="w-full text-left px-3 py-2 hover:bg-muted rounded-xl text-sm">
+              <button onClick={handleNavigateToAIBest} className="w-full text-left px-3 py-2 hover:bg-muted rounded-xl text-sm text-foreground">
                 🏆 AI BEST 3
               </button>
-              <button onClick={handleNavigateToSettings} className="w-full text-left px-3 py-2 hover:bg-muted rounded-xl text-sm">
+              <button
+                onClick={() => {
+                  setCurrentScreen("profile-demo");
+                  setIsDemoMenuOpen(false);
+                }}
+                className="w-full text-left px-3 py-2 hover:bg-muted rounded-xl text-sm text-foreground"
+              >
+                🧪 프로필 폼 (TanStack Query)
+              </button>
+              <button
+                onClick={() => {
+                  handleNavigateToSettings();
+                  setIsDemoMenuOpen(false);
+                }}
+                className="w-full text-left px-3 py-2 hover:bg-muted rounded-xl text-sm text-foreground"
+              >
                 ⚙️ 설정
               </button>
             </div>
+
+            {/* FAB Button */}
+            <button
+              onClick={() => setIsDemoMenuOpen(!isDemoMenuOpen)}
+              className={`w-14 h-14 bg-primary hover:bg-primary/90 rounded-full shadow-lg flex items-center justify-center transition-all ${
+                isDemoMenuOpen ? "rotate-45" : ""
+              }`}
+            >
+              <span className="text-2xl">{isDemoMenuOpen ? "✕" : "🎯"}</span>
+            </button>
           </div>
-        </div>
+        </>
       )}
     </div>
   );
+}
+
+export function App() {
+  return <AppContent />;
 }

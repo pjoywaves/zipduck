@@ -55,7 +55,7 @@ export function SearchScreen({ onNavigateToDetail }: SearchScreenProps) {
     <div className="min-h-screen bg-background pb-20 max-w-md mx-auto">
       {/* Header */}
       <div className="bg-card border-b border-border px-6 pt-6 pb-4">
-        <h2 className="mb-4 font-bold">검색</h2>
+        <h2 className="mb-4 font-bold text-foreground">검색</h2>
         
         {/* Search Input */}
         <div className="relative mb-4">
@@ -135,7 +135,7 @@ export function SearchScreen({ onNavigateToDetail }: SearchScreenProps) {
           </div>
           <Button variant="ghost" size="sm" className="gap-2 hover:bg-primary/10 hover:text-primary">
             <SlidersHorizontal size={16} />
-            <span className="font-medium">필터</span>
+            <span className="font-medium text-foreground">필터</span>
           </Button>
         </div>
       </div>
@@ -178,7 +178,7 @@ export function SearchScreen({ onNavigateToDetail }: SearchScreenProps) {
                   <div className="flex items-start justify-between mb-1">
                     <p className="text-foreground line-clamp-1 font-semibold">{apt.name}</p>
                     {apt.dday <= 7 && (
-                      <span className="bg-[#EFF6FF] dark:bg-[#1E293B] text-[#2563EB] dark:text-primary text-xs px-3 py-1 rounded-2xl ml-2 whitespace-nowrap font-semibold">
+                      <span className="bg-blue-soft-bg dark:bg-card text-primary text-xs px-3 py-1 rounded-2xl ml-2 whitespace-nowrap font-semibold">
                         D-{apt.dday}
                       </span>
                     )}

@@ -50,6 +50,7 @@
   --sidebar-accent-foreground: #0F172A;
   --sidebar-border: #E2E8F0;
   --sidebar-ring: #3B82F6;
+  --blue-soft-bg: #1E3A5F;
 }
 
 .dark {
@@ -92,6 +93,7 @@
   --sidebar-accent-foreground: #F8FAFC;
   --sidebar-border: #334155;
   --sidebar-ring: #3B82F6;
+  --blue-soft-bg: #1E3A5F;
 }
 
 @theme inline {
@@ -104,6 +106,7 @@
   --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: var(--primary-hover);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
@@ -112,6 +115,11 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-info: var(--info);
+  --color-mint: var(--mint);
+  --color-blue-soft-bg: var(--blue-soft-bg);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-input-background: var(--input-background);
@@ -143,7 +151,8 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    background-color: var(--background);
+    color: var(--foreground);
     font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
   }
 }
@@ -205,4 +214,26 @@
 
 html {
   font-size: var(--font-size);
+}
+
+/* Custom utility classes for theme-aware colors */
+@layer utilities {
+  .text-foreground {
+    color: var(--foreground) !important;
+  }
+  .text-muted-foreground {
+    color: var(--muted-foreground) !important;
+  }
+  .bg-background {
+    background-color: var(--background) !important;
+  }
+  .bg-card {
+    background-color: var(--card) !important;
+  }
+  .bg-primary {
+    background-color: var(--primary) !important;
+  }
+  .border-border {
+    border-color: var(--border) !important;
+  }
 }

@@ -1,31 +1,15 @@
-import { useState } from "react";
 import { ChevronLeft, Sun, Moon, Monitor, Smartphone } from "lucide-react";
+import { useTheme } from "../contexts/ThemeContext";
 
 interface AppearanceScreenProps {
   onBack: () => void;
 }
 
-type ThemeMode = "light" | "dark" | "auto";
-
 export function AppearanceScreen({ onBack }: AppearanceScreenProps) {
-  const [themeMode, setThemeMode] = useState<ThemeMode>("light");
+  const { themeMode, setThemeMode, currentTheme } = useTheme();
 
-  const handleThemeChange = (mode: ThemeMode) => {
+  const handleThemeChange = (mode: "light" | "dark" | "system") => {
     setThemeMode(mode);
-    
-    if (mode === "light") {
-      document.documentElement.classList.remove('dark');
-    } else if (mode === "dark") {
-      document.documentElement.classList.add('dark');
-    } else {
-      // Auto mode - check system preference
-      const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      if (isDark) {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
-    }
   };
 
   return (
@@ -36,7 +20,7 @@ export function AppearanceScreen({ onBack }: AppearanceScreenProps) {
           <button onClick={onBack} className="p-2 -ml-2">
             <ChevronLeft size={24} />
           </button>
-          <h2 className="font-bold ml-4">화면 설정</h2>
+          <h2 className="font-bold ml-4 text-foreground">화면 설정</h2>
         </div>
       </div>
 
@@ -46,18 +30,26 @@ export function AppearanceScreen({ onBack }: AppearanceScreenProps) {
           <div className="flex items-start gap-3">
             <Smartphone size={24} className="text-primary flex-shrink-0 mt-0.5" />
             <div>
-              <h3 className="font-semibold mb-2">Blue Theme 인터페이스</h3>
+              <h3 className="font-semibold text-foreground mb-2">Blue Theme 인터페이스</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                눈에 편안한 Blue Theme 기반 인터페이스를 제공합니다. 
+                눈에 편안한 Blue Theme 기반 인터페이스를 제공합니다.
                 밝은 화면과 어두운 화면 중 선호하는 테마를 선택하세요.
               </p>
             </div>
           </div>
         </div>
 
+        {/* Current Theme Indicator */}
+        <div className="bg-muted/50 rounded-2xl p-4 flex items-center justify-between">
+          <span className="text-sm text-muted-foreground">현재 적용된 테마</span>
+          <span className="text-sm font-semibold text-primary">
+            {currentTheme === "light" ? "라이트 모드" : "다크 모드"}
+          </span>
+        </div>
+
         {/* Theme Options */}
         <div>
-          <h3 className="font-semibold mb-4">테마 선택</h3>
+          <h3 className="font-semibold text-foreground mb-4">테마 선택</h3>
           <div className="space-y-3">
             {/* Light Mode */}
             <button
@@ -76,7 +68,7 @@ export function AppearanceScreen({ onBack }: AppearanceScreenProps) {
                     <Sun size={24} className={themeMode === "light" ? "text-white" : "text-muted-foreground"} />
                   </div>
                   <div className="text-left">
-                    <p className="font-semibold">라이트 모드</p>
+                    <p className="font-semibold text-foreground">라이트 모드</p>
                     <p className="text-sm text-muted-foreground">밝은 화면</p>
                   </div>
                 </div>
@@ -107,7 +99,7 @@ export function AppearanceScreen({ onBack }: AppearanceScreenProps) {
                     <Moon size={24} className={themeMode === "dark" ? "text-white" : "text-muted-foreground"} />
                   </div>
                   <div className="text-left">
-                    <p className="font-semibold">다크 모드</p>
+                    <p className="font-semibold text-foreground">다크 모드</p>
                     <p className="text-sm text-muted-foreground">어두운 화면</p>
                   </div>
                 </div>
@@ -123,9 +115,9 @@ export function AppearanceScreen({ onBack }: AppearanceScreenProps) {
 
             {/* Auto Mode */}
             <button
-              onClick={() => handleThemeChange("auto")}
+              onClick={() => handleThemeChange("system")}
               className={`w-full p-5 rounded-2xl border-2 transition-all ${
-                themeMode === "auto"
+                themeMode === "system"
                   ? "border-primary bg-primary/5"
                   : "border-border bg-card hover:border-primary/50"
               }`}
@@ -133,16 +125,16 @@ export function AppearanceScreen({ onBack }: AppearanceScreenProps) {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${
-                    themeMode === "auto" ? "bg-primary" : "bg-muted"
+                    themeMode === "system" ? "bg-primary" : "bg-muted"
                   }`}>
-                    <Monitor size={24} className={themeMode === "auto" ? "text-white" : "text-muted-foreground"} />
+                    <Monitor size={24} className={themeMode === "system" ? "text-white" : "text-muted-foreground"} />
                   </div>
                   <div className="text-left">
-                    <p className="font-semibold">자동</p>
+                    <p className="font-semibold text-foreground">자동</p>
                     <p className="text-sm text-muted-foreground">시스템 설정 따르기</p>
                   </div>
                 </div>
-                {themeMode === "auto" && (
+                {themeMode === "system" && (
                   <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center">
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                       <path d="M13 4L6 11L3 8" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -156,10 +148,10 @@ export function AppearanceScreen({ onBack }: AppearanceScreenProps) {
 
         {/* Preview Samples */}
         <div>
-          <h3 className="font-semibold mb-4">미리보기</h3>
+          <h3 className="font-semibold text-foreground mb-4">미리보기</h3>
           <div className="grid grid-cols-2 gap-3">
             {/* Light Preview */}
-            <div className="rounded-2xl overflow-hidden border border-border">
+            <div className={`rounded-2xl overflow-hidden border-2 ${currentTheme === "light" ? "border-primary" : "border-border"}`}>
               <div className="bg-white p-4 space-y-2">
                 <div className="h-3 bg-slate-200 rounded w-3/4"></div>
                 <div className="h-3 bg-slate-200 rounded w-1/2"></div>
@@ -171,7 +163,7 @@ export function AppearanceScreen({ onBack }: AppearanceScreenProps) {
             </div>
 
             {/* Dark Preview */}
-            <div className="rounded-2xl overflow-hidden border border-border">
+            <div className={`rounded-2xl overflow-hidden border-2 ${currentTheme === "dark" ? "border-primary" : "border-border"}`}>
               <div className="bg-slate-900 p-4 space-y-2">
                 <div className="h-3 bg-slate-700 rounded w-3/4"></div>
                 <div className="h-3 bg-slate-700 rounded w-1/2"></div>
@@ -186,30 +178,37 @@ export function AppearanceScreen({ onBack }: AppearanceScreenProps) {
 
         {/* Color Palette Info */}
         <div className="bg-card border border-border rounded-2xl p-5">
-          <h3 className="font-semibold mb-4">컬러 시스템</h3>
+          <h3 className="font-semibold text-foreground mb-4">컬러 시스템</h3>
           <div className="space-y-3">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-lg bg-primary"></div>
               <div>
-                <p className="text-sm font-medium">Primary Blue</p>
+                <p className="text-sm font-medium text-foreground">Primary Blue</p>
                 <p className="text-xs text-muted-foreground">#3B82F6</p>
               </div>
             </div>
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-lg" style={{ backgroundColor: '#34D399' }}></div>
               <div>
-                <p className="text-sm font-medium">Mint Harmony</p>
+                <p className="text-sm font-medium text-foreground">Mint Harmony</p>
                 <p className="text-xs text-muted-foreground">#34D399</p>
               </div>
             </div>
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-lg" style={{ backgroundColor: '#FACC15' }}></div>
               <div>
-                <p className="text-sm font-medium">Yellow Accent</p>
+                <p className="text-sm font-medium text-foreground">Yellow Accent</p>
                 <p className="text-xs text-muted-foreground">#FACC15</p>
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Info about localStorage */}
+        <div className="bg-blue-soft-bg dark:bg-card rounded-xl p-4 border border-primary/20">
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            선택한 테마는 자동으로 저장되며, 다음에 앱을 열 때도 유지됩니다.
+          </p>
         </div>
       </div>
     </div>

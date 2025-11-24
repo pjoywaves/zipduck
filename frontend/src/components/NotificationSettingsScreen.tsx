@@ -45,7 +45,7 @@ export function NotificationSettingsScreen({ onBack }: NotificationSettingsScree
       icon: Settings,
       title: "시스템 알림",
       description: "앱 업데이트 및 중요 공지사항",
-      color: "text-gray-500"
+      color: "text-muted-foreground"
     }
   ];
 
@@ -116,7 +116,7 @@ export function NotificationSettingsScreen({ onBack }: NotificationSettingsScree
         </div>
 
         {/* Additional Info */}
-        <div className="bg-[#EFF6FF] dark:bg-[#1E293B] rounded-xl p-4 border border-primary/20">
+        <div className="bg-blue-soft-bg dark:bg-card rounded-xl p-4 border border-primary/20">
           <p className="text-sm text-muted-foreground leading-relaxed">
             <span className="font-semibold text-foreground">💡 알림 권한</span>이 꺼져있다면 
             기기 설정에서 집덕 앱의 알림을 허용해주세요.

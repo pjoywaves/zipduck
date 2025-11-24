@@ -1,22 +1,89 @@
 import logo from "@/assets/img/logo.svg";
 import { useState } from "react";
 import { Button } from "./ui/button";
-import { Eye, EyeOff, Mail, Lock, Home } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock } from "lucide-react";
+import { z } from "zod";
 
 interface LoginScreenProps {
   onLogin: () => void;
   onNavigateToSignUp?: () => void;
+  onNavigateToFindAccount?: () => void;
 }
 
-export function LoginScreen({ onLogin, onNavigateToSignUp }: LoginScreenProps) {
+// Zod validation schema
+const loginSchema = z.object({
+  email: z.string().email("올바른 이메일 형식을 입력해주세요"),
+  password: z.string().min(6, "비밀번호는 최소 6자리 이상이어야 합니다"),
+});
+
+type LoginFormErrors = {
+  email?: string;
+  password?: string;
+};
+
+export function LoginScreen({ onLogin, onNavigateToSignUp, onNavigateToFindAccount }: LoginScreenProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState<LoginFormErrors>({});
+  const [touched, setTouched] = useState({ email: false, password: false });
+
+  const validateField = (field: "email" | "password", value: string) => {
+    try {
+      if (field === "email") {
+        loginSchema.shape.email.parse(value);
+      } else {
+        loginSchema.shape.password.parse(value);
+      }
+      setErrors((prev) => ({ ...prev, [field]: undefined }));
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        setErrors((prev) => ({ ...prev, [field]: error.errors[0].message }));
+      }
+    }
+  };
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setEmail(value);
+    if (touched.email) {
+      validateField("email", value);
+    }
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setPassword(value);
+    if (touched.password) {
+      validateField("password", value);
+    }
+  };
+
+  const handleBlur = (field: "email" | "password") => {
+    setTouched((prev) => ({ ...prev, [field]: true }));
+    validateField(field, field === "email" ? email : password);
+  };
 
   const handleLogin = () => {
-    if (email && password) {
-      onLogin();
+    // Validate all fields
+    const result = loginSchema.safeParse({ email, password });
+
+    if (!result.success) {
+      const newErrors: LoginFormErrors = {};
+      result.error.errors.forEach((err) => {
+        const field = err.path[0] as keyof LoginFormErrors;
+        if (!newErrors[field]) {
+          newErrors[field] = err.message;
+        }
+      });
+      setErrors(newErrors);
+      setTouched({ email: true, password: true });
+      return;
     }
+
+    // Clear errors and proceed
+    setErrors({});
+    onLogin();
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -26,12 +93,12 @@ export function LoginScreen({ onLogin, onNavigateToSignUp }: LoginScreenProps) {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#0F172A] flex flex-col items-center justify-center p-6 max-w-md mx-auto">
+    <div className="min-h-screen bg-secondary dark:bg-background flex flex-col items-center justify-center p-6 max-w-md mx-auto">
       <div className="w-full space-y-8">
         {/* Logo & Title */}
         <div className="text-center mb-8">
           <div className="inline-block mb-6">
-            <div className="w-24 h-24 bg-white rounded-2xl flex items-center justify-center shadow-lg">
+            <div className="w-24 h-24 bg-background rounded-2xl flex items-center justify-center shadow-lg">
               <img src={logo} alt="ZipDuck Logo" className="w-full h-full object-contain" />
             </div>
           </div>
@@ -51,12 +118,20 @@ export function LoginScreen({ onLogin, onNavigateToSignUp }: LoginScreenProps) {
               <input
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={handleEmailChange}
+                onBlur={() => handleBlur("email")}
                 onKeyPress={handleKeyPress}
                 placeholder="이메일을 입력하세요"
-                className="w-full h-12 pl-12 pr-4 rounded-xl border-2 border-border bg-background text-foreground placeholder:text-muted-foreground transition-colors focus:outline-none focus:border-primary"
+                className={`w-full h-12 pl-12 pr-4 rounded-xl border-2 bg-background text-foreground placeholder:text-muted-foreground transition-colors focus:outline-none ${
+                  errors.email && touched.email
+                    ? "border-destructive focus:border-destructive"
+                    : "border-border focus:border-primary"
+                }`}
               />
             </div>
+            {errors.email && touched.email && (
+              <p className="text-destructive text-sm">{errors.email}</p>
+            )}
           </div>
 
           {/* Password Input */}
@@ -69,10 +144,15 @@ export function LoginScreen({ onLogin, onNavigateToSignUp }: LoginScreenProps) {
               <input
                 type={showPassword ? "text" : "password"}
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={handlePasswordChange}
+                onBlur={() => handleBlur("password")}
                 onKeyPress={handleKeyPress}
                 placeholder="비밀번호를 입력하세요"
-                className="w-full h-12 pl-12 pr-12 rounded-xl border-2 border-border bg-background text-foreground placeholder:text-muted-foreground transition-colors focus:outline-none focus:border-primary"
+                className={`w-full h-12 pl-12 pr-12 rounded-xl border-2 bg-background text-foreground placeholder:text-muted-foreground transition-colors focus:outline-none ${
+                  errors.password && touched.password
+                    ? "border-destructive focus:border-destructive"
+                    : "border-border focus:border-primary"
+                }`}
               />
               <button
                 type="button"
@@ -82,19 +162,25 @@ export function LoginScreen({ onLogin, onNavigateToSignUp }: LoginScreenProps) {
                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
             </div>
+            {errors.password && touched.password && (
+              <p className="text-destructive text-sm">{errors.password}</p>
+            )}
           </div>
 
           {/* Forgot Password */}
           <div className="text-right">
-            <button className="text-sm text-primary hover:text-primary/80 font-medium transition-colors">
-              비밀번호 찾기
+            <button
+              onClick={onNavigateToFindAccount}
+              className="text-sm text-primary hover:text-primary/80 font-medium transition-colors"
+            >
+              계정 찾기
             </button>
           </div>
 
           {/* Login Button */}
           <Button
             onClick={handleLogin}
-            className="w-full h-12 bg-primary hover:bg-primary/90 dark:bg-[#2563EB] dark:hover:bg-[#2563EB]/90 text-white rounded-xl font-semibold shadow-lg transition-all"
+            className="w-full h-12 bg-primary hover:bg-primary/90 dark:bg-primary-hover dark:hover:bg-primary-hover/90 text-white rounded-xl font-semibold shadow-lg transition-all"
           >
             로그인하기
           </Button>
@@ -106,7 +192,7 @@ export function LoginScreen({ onLogin, onNavigateToSignUp }: LoginScreenProps) {
             <div className="w-full border-t border-border"></div>
           </div>
           <div className="relative flex justify-center">
-            <span className="px-4 bg-[#F8FAFC] dark:bg-[#0F172A] text-muted-foreground text-sm">소셜 로그인</span>
+            <span className="px-4 bg-secondary dark:bg-background text-muted-foreground text-sm">소셜 로그인</span>
           </div>
         </div>
 
@@ -115,7 +201,7 @@ export function LoginScreen({ onLogin, onNavigateToSignUp }: LoginScreenProps) {
           {/* Kakao Login */}
           <button
             className="w-full h-12 rounded-xl font-semibold transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2"
-            style={{ 
+            style={{
               backgroundColor: "#FEE500",
               color: "#000000"
             }}
@@ -152,7 +238,7 @@ export function LoginScreen({ onLogin, onNavigateToSignUp }: LoginScreenProps) {
 
         {/* Sign Up Link */}
         <div className="text-center pt-4">
-          <button 
+          <button
             onClick={onNavigateToSignUp}
             className="text-sm text-muted-foreground hover:text-foreground transition-colors"
           >

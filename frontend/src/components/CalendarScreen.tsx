@@ -55,7 +55,7 @@ export function CalendarScreen({ onBack }: CalendarScreenProps) {
           <button onClick={onBack} className="p-2 -ml-2">
             <ChevronLeft size={24} />
           </button>
-          <h2 className="font-bold ml-4">청약 캘린더</h2>
+          <h2 className="font-bold ml-4 text-muted-foreground">청약 캘린더</h2>
         </div>
       </div>
 
@@ -66,7 +66,7 @@ export function CalendarScreen({ onBack }: CalendarScreenProps) {
             <button onClick={previousMonth} className="p-2 hover:bg-muted rounded-xl transition-colors">
               <ChevronLeft size={20} />
             </button>
-            <h3 className="font-bold">{monthName}</h3>
+            <h3 className="font-bold text-foreground">{monthName}</h3>
             <button onClick={nextMonth} className="p-2 hover:bg-muted rounded-xl transition-colors">
               <ChevronRight size={20} />
             </button>
@@ -107,7 +107,7 @@ export function CalendarScreen({ onBack }: CalendarScreenProps) {
                       : "hover:bg-muted/50"
                   }`}
                 >
-                  <span className="text-sm">{day}</span>
+                  <span className="text-sm text-muted-foreground">{day}</span>
                   {dayEvents.length > 0 && (
                     <div className="flex gap-1 mt-1">
                       {dayEvents.slice(0, 2).map((event, idx) => (
@@ -126,30 +126,30 @@ export function CalendarScreen({ onBack }: CalendarScreenProps) {
 
         {/* Legend */}
         <div className="bg-card border border-border rounded-2xl p-5">
-          <h3 className="font-semibold mb-4">일정 구분</h3>
+          <h3 className="font-semibold text-foreground mb-4">일정 구분</h3>
           <div className="grid grid-cols-2 gap-3">
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-full bg-primary"></div>
-              <span className="text-sm">청약 접수</span>
+              <span className="text-sm text-muted-foreground">청약 접수</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-full bg-red-500"></div>
-              <span className="text-sm">마감일</span>
+              <span className="text-sm text-muted-foreground">마감일</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-              <span className="text-sm">당첨 발표</span>
+              <span className="text-sm text-muted-foreground">당첨 발표</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-full bg-green-500"></div>
-              <span className="text-sm">계약 체결</span>
+              <span className="text-sm text-muted-foreground">계약 체결</span>
             </div>
           </div>
         </div>
 
         {/* Upcoming Events */}
         <div>
-          <h3 className="font-semibold mb-4">다가오는 일정</h3>
+          <h3 className="font-semibold text-foreground mb-4">다가오는 일정</h3>
           <div className="space-y-3">
             {events.slice(0, 4).map((event, index) => (
               <div
@@ -165,7 +165,7 @@ export function CalendarScreen({ onBack }: CalendarScreenProps) {
                         {new Date(event.date).toLocaleDateString("ko-KR", { month: "long", day: "numeric" })}
                       </p>
                     </div>
-                    <p className="font-medium">{event.title}</p>
+                    <p className="font-medium text-foreground">{event.title}</p>
                   </div>
                 </div>
               </div>
