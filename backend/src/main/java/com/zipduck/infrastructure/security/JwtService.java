@@ -31,12 +31,12 @@ public class JwtService {
     /**
      * Generate JWT token for a user
      */
-    public String generateToken(String userId) {
+    public String generateToken(Long id) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + expirationMs);
 
         return Jwts.builder()
-            .subject(userId)
+            .subject(String.valueOf(id))
             .issuedAt(now)
             .expiration(expiryDate)
             .signWith(secretKey)
@@ -46,14 +46,14 @@ public class JwtService {
     /**
      * Extract user ID from token
      */
-    public String getUserIdFromToken(String token) {
+    public Long getIdFromToken(String token) {
         Claims claims = Jwts.parser()
             .verifyWith(secretKey)
             .build()
             .parseSignedClaims(token)
             .getPayload();
 
-        return claims.getSubject();
+        return Long.parseLong(claims.getSubject());
     }
 
     /**

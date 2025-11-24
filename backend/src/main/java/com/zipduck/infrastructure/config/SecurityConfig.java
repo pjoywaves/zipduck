@@ -52,7 +52,8 @@ public class SecurityConfig {
                     "/api-docs/**",
                     "/v3/api-docs/**",
                     "/actuator/health",
-                    "/actuator/info"
+                    "/actuator/info",
+                        "/api/v1/**"
                 ).permitAll()
                 // All other endpoints require authentication
                 .anyRequest().authenticated()
