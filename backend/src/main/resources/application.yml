@@ -4,6 +4,7 @@ spring:
 
   profiles:
     active: dev
+    include: resilience4j  # T109-T110: Enable retry and circuit breaker
 
   datasource:
     url: jdbc:mysql://localhost:3306/zipduck?useSSL=false&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
@@ -73,9 +74,10 @@ springdoc:
   show-actuator: false
 
 # Application Properties
+# T113: JWT secret from environment variable for production
 app:
   jwt:
-    secret: your-secret-key-change-this-in-production
+    secret: ${JWT_SECRET:your-secret-key-change-this-in-production}
     expiration: 86400000 # 24 hours
 
   google:
@@ -93,8 +95,13 @@ app:
     storage-path: /app/pdfs
     max-size: 10485760 # 10MB
 
+  # T108: Redis TTL Settings for different cache types
   cache:
-    ttl: 3600 # 1 hour in seconds
+    ttl: 3600 # Default: 1 hour in seconds
+    pdf-analysis-ttl: 2592000 # PDF analysis results: 30 days in seconds
+    user-profile-ttl: 86400 # User profile cache: 24 hours
+    subscription-list-ttl: 1800 # Subscription lists: 30 minutes
+    eligibility-ttl: 3600 # Eligibility calculations: 1 hour
 
 ---
 spring:

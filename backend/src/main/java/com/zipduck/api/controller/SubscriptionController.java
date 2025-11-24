@@ -1,6 +1,8 @@
 package com.zipduck.api.controller;
 
+import com.zipduck.api.dto.request.CompareSubscriptionsRequest;
 import com.zipduck.api.dto.response.ApiResponse;
+import com.zipduck.api.dto.response.ComparisonResponse;
 import com.zipduck.api.dto.response.SubscriptionDto;
 import com.zipduck.api.dto.response.SubscriptionListResponse;
 import com.zipduck.api.exception.BusinessException;
@@ -13,7 +15,9 @@ import com.zipduck.domain.user.UserQueryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +27,9 @@ import java.util.stream.Collectors;
 /**
  * Subscription API Controller
  * T038: GET /api/v1/subscriptions/recommendations with sourceFilter param
+ * T100: POST /api/v1/subscriptions/compare for side-by-side comparison
  */
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/subscriptions")
 @RequiredArgsConstructor
@@ -151,6 +157,59 @@ public class SubscriptionController {
 
         SubscriptionListResponse response = SubscriptionListResponse.of(dtos,
                 sourceFilter != null ? sourceFilter : "ALL");
+
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
+    /**
+     * Compare multiple subscriptions side-by-side
+     * T100: POST /api/v1/subscriptions/compare
+     * FR-010: Side-by-side comparison of up to 5 subscriptions
+     */
+    @PostMapping("/compare")
+    @Operation(
+            summary = "Compare subscriptions",
+            description = "Compare 2-5 subscriptions side-by-side with eligibility details and summary"
+    )
+    public ResponseEntity<ApiResponse<ComparisonResponse>> compareSubscriptions(
+            @Valid @RequestBody CompareSubscriptionsRequest request) {
+
+        log.info("Compare subscriptions request - User: {}, Subscriptions: {}",
+                request.getUserId(), request.getSubscriptionIds());
+
+        // Get user with profile
+        User user = userQueryService.getByIdWithProfile(request.getUserId());
+        if (user.getProfile() == null) {
+            throw new BusinessException("PROFILE_NOT_FOUND",
+                    "사용자 프로필을 찾을 수 없습니다. 먼저 프로필을 생성해주세요.");
+        }
+
+        // Get subscriptions with eligibility details
+        List<SubscriptionDto> subscriptionDtos = request.getSubscriptionIds().stream()
+                .map(id -> {
+                    try {
+                        Subscription subscription = subscriptionQueryService.getById(id);
+                        EligibilityDetails details = eligibilityCalculator.getEligibilityDetails(
+                                user.getProfile(), subscription);
+                        return SubscriptionDto.fromWithEligibility(subscription, details);
+                    } catch (Exception e) {
+                        log.warn("Failed to load subscription {} for comparison: {}",
+                                id, e.getMessage());
+                        return null;
+                    }
+                })
+                .filter(dto -> dto != null)
+                .collect(Collectors.toList());
+
+        if (subscriptionDtos.size() < 2) {
+            throw new BusinessException("INSUFFICIENT_SUBSCRIPTIONS",
+                    "최소 2개 이상의 청약을 비교할 수 있습니다.");
+        }
+
+        ComparisonResponse response = ComparisonResponse.of(subscriptionDtos);
+
+        log.info("Comparison completed - User: {}, Compared: {} subscriptions, Best match: {}",
+                request.getUserId(), subscriptionDtos.size(), response.getSummary().getBestMatch());
 
         return ResponseEntity.ok(ApiResponse.success(response));
     }

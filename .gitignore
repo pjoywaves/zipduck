@@ -80,3 +80,9 @@ coverage/
 # Spring Boot
 /spring-boot-*.log
 /spring-boot-*.log.*
+
+# T113: Application-specific files
+# PDF uploads (local development)
+/app/pdfs/
+backend/pdfs/
+*.pdf

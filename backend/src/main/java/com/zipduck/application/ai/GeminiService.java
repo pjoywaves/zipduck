@@ -62,7 +62,7 @@ public class GeminiService {
                 **출력 형식 (JSON):**
                 ```json
                 {
-                  "subscriptionName": "청약명",
+          "subscriptionName": "청약명",
                   "location": "지역 (서울, 경기 등)",
                   "address": "상세 주소",
                   "housingType": "아파트 또는 오피스텔 또는 빌라 또는 타운하우스 또는 기타",

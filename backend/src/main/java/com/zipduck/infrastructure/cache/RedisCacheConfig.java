@@ -20,9 +20,10 @@ import java.time.Duration;
 
 /**
  * Redis Cache Configuration
+ * T108: Enhanced with multiple TTL settings for different cache types
  * - Configures Redis as a cache provider
  * - Sets up JSON serialization for cached objects
- * - Configures TTL for cache entries
+ * - Configures TTL for cache entries with type-specific durations
  */
 @Configuration
 @EnableCaching
@@ -30,6 +31,18 @@ public class RedisCacheConfig {
 
     @Value("${app.cache.ttl:3600}")
     private long cacheTtlSeconds;
+
+    @Value("${app.cache.pdf-analysis-ttl:2592000}")
+    private long pdfAnalysisTtlSeconds;
+
+    @Value("${app.cache.user-profile-ttl:86400}")
+    private long userProfileTtlSeconds;
+
+    @Value("${app.cache.subscription-list-ttl:1800}")
+    private long subscriptionListTtlSeconds;
+
+    @Value("${app.cache.eligibility-ttl:3600}")
+    private long eligibilityTtlSeconds;
 
     /**
      * Configure Redis cache manager with JSON serialization
@@ -59,8 +72,25 @@ public class RedisCacheConfig {
             )
             .disableCachingNullValues();
 
+        // T108: Configure specific TTLs for different cache names
+        RedisCacheConfiguration pdfConfig = cacheConfig
+                .entryTtl(Duration.ofSeconds(pdfAnalysisTtlSeconds));
+
+        RedisCacheConfiguration userProfileConfig = cacheConfig
+                .entryTtl(Duration.ofSeconds(userProfileTtlSeconds));
+
+        RedisCacheConfiguration subscriptionConfig = cacheConfig
+                .entryTtl(Duration.ofSeconds(subscriptionListTtlSeconds));
+
+        RedisCacheConfiguration eligibilityConfig = cacheConfig
+                .entryTtl(Duration.ofSeconds(eligibilityTtlSeconds));
+
         return RedisCacheManager.builder(connectionFactory)
             .cacheDefaults(cacheConfig)
+            .withCacheConfiguration("pdf-analysis", pdfConfig)
+            .withCacheConfiguration("user-profiles", userProfileConfig)
+            .withCacheConfiguration("subscriptions", subscriptionConfig)
+            .withCacheConfiguration("eligibility", eligibilityConfig)
             .transactionAware()
             .build();
     }
