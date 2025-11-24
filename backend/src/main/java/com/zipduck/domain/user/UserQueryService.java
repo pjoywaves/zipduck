@@ -24,34 +24,11 @@ public class UserQueryService {
     }
 
     /**
-     * Get user by userId
-     */
-    public User getByUserId(String userId) {
-        return userRepository.findByUserId(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with userId: " + userId));
-    }
-
-    /**
      * Get user with profile by ID
      */
     public User getByIdWithProfile(Long id) {
         return userRepository.findByIdWithProfile(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
-    }
-
-    /**
-     * Get user with profile by userId
-     */
-    public User getByUserIdWithProfile(String userId) {
-        return userRepository.findByUserIdWithProfile(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with userId: " + userId));
-    }
-
-    /**
-     * Check if userId exists
-     */
-    public boolean existsByUserId(String userId) {
-        return userRepository.existsByUserId(userId);
     }
 
     /**

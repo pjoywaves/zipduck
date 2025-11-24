@@ -4,21 +4,21 @@
 -- ==========================================
 -- Test Users
 -- ==========================================
-INSERT INTO users (user_id, username, email, password, status) VALUES
-    ('USR001', '김민수', 'minsu.kim@example.com', '$2a$10$dummyHashedPassword1', 'ACTIVE'),
-    ('USR002', '이영희', 'younghee.lee@example.com', '$2a$10$dummyHashedPassword2', 'ACTIVE'),
-    ('USR003', '박철수', 'chulsoo.park@example.com', '$2a$10$dummyHashedPassword3', 'ACTIVE');
+INSERT INTO users (username, email, password, status) VALUES
+    ('김민수', 'minsu.kim@example.com', '$2a$10$dummyHashedPassword1', 'ACTIVE'),
+    ('이영희', 'younghee.lee@example.com', '$2a$10$dummyHashedPassword2', 'ACTIVE'),
+    ('박철수', 'chulsoo.park@example.com', '$2a$10$dummyHashedPassword3', 'ACTIVE');
 
 -- ==========================================
 -- Test User Profiles
 -- ==========================================
 -- Get the actual user IDs that were just inserted
 INSERT INTO user_profiles (user_id, age, annual_income, household_members, housing_owned, location_preferences, notifications_enabled)
-SELECT id, 28, 35000000, 1, 0, '서울,경기', TRUE FROM users WHERE user_id = 'USR001'
+SELECT id, 28, 35000000, 1, 0, '서울,경기', TRUE FROM users WHERE email = 'minsu.kim@example.com'
 UNION ALL
-SELECT id, 32, 45000000, 3, 0, '서울,인천', TRUE FROM users WHERE user_id = 'USR002'
+SELECT id, 32, 45000000, 3, 0, '서울,인천', TRUE FROM users WHERE email = 'younghee.lee@example.com'
 UNION ALL
-SELECT id, 25, 28000000, 2, 1, '부산,경남', FALSE FROM users WHERE user_id = 'USR003';
+SELECT id, 25, 28000000, 2, 1, '부산,경남', FALSE FROM users WHERE email = 'chulsoo.park@example.com';
 
 -- ==========================================
 -- Test Subscriptions (청약 데이터)

@@ -45,12 +45,12 @@ public class SubscriptionController {
     )
     public ResponseEntity<ApiResponse<SubscriptionListResponse>> getRecommendations(
             @Parameter(description = "User ID", required = true)
-            @RequestParam Long userId,
+            @RequestParam Long id,
             @Parameter(description = "Source filter: ALL, PUBLIC_DB, PDF_UPLOAD, MERGED")
             @RequestParam(required = false) String sourceFilter) {
 
         // Get user with profile
-        User user = userQueryService.getByIdWithProfile(userId);
+        User user = userQueryService.getByIdWithProfile(id);
         if (user.getProfile() == null) {
             throw new BusinessException("PROFILE_NOT_FOUND", "User profile not found. Please create a profile first.");
         }

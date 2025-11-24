@@ -22,9 +22,6 @@ public class UserProfileResponse {
     @Schema(description = "Profile ID", example = "1")
     private Long id;
 
-    @Schema(description = "User ID", example = "1")
-    private Long userId;
-
     @Schema(description = "User age", example = "32")
     private Integer age;
 
@@ -52,7 +49,6 @@ public class UserProfileResponse {
     public static UserProfileResponse from(UserProfile profile) {
         return UserProfileResponse.builder()
                 .id(profile.getId())
-                .userId(profile.getUser().getId())
                 .age(profile.getAge())
                 .annualIncome(profile.getAnnualIncome())
                 .householdMembers(profile.getHouseholdMembers())

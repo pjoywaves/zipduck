@@ -32,14 +32,14 @@ public class UserController {
      * Create user profile
      * FR-001, FR-002
      */
-    @PostMapping("/{userId}/profile")
+    @PostMapping("/{id}/profile")
     @Operation(summary = "Create or update user profile", description = "Create or update user profile with eligibility information")
     public ResponseEntity<ApiResponse<UserProfileResponse>> createOrUpdateProfile(
-            @PathVariable Long userId,
+            @PathVariable Long id,
             @Valid @RequestBody UserProfileRequest request) {
 
         UserProfile profile = userCommandService.createOrUpdateProfile(
-                userId,
+                id,
                 request.getAge(),
                 request.getAnnualIncome(),
                 request.getHouseholdMembers(),
@@ -56,10 +56,10 @@ public class UserController {
      * Get user profile
      * FR-006
      */
-    @GetMapping("/{userId}/profile")
+    @GetMapping("/{id}/profile")
     @Operation(summary = "Get user profile", description = "Retrieve user profile information")
-    public ResponseEntity<ApiResponse<UserProfileResponse>> getProfile(@PathVariable Long userId) {
-        User user = userQueryService.getByIdWithProfile(userId);
+    public ResponseEntity<ApiResponse<UserProfileResponse>> getProfile(@PathVariable Long id) {
+        User user = userQueryService.getByIdWithProfile(id);
 
         if (user.getProfile() == null) {
             return ResponseEntity.ok(ApiResponse.success(null));
@@ -73,13 +73,13 @@ public class UserController {
      * Update notification settings
      * FR-015
      */
-    @PatchMapping("/{userId}/profile/notifications")
+    @PatchMapping("/{id}/profile/notifications")
     @Operation(summary = "Update notification settings", description = "Enable or disable notifications for the user")
     public ResponseEntity<ApiResponse<Void>> updateNotifications(
-            @PathVariable Long userId,
+            @PathVariable Long id,
             @RequestParam Boolean enabled) {
 
-        userCommandService.updateNotificationSettings(userId, enabled);
+        userCommandService.updateNotificationSettings(id, enabled);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 }

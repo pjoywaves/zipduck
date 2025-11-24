@@ -20,17 +20,13 @@ public class UserCommandService {
     /**
      * Create new user
      */
-    public User createUser(String userId, String username, String email, String password) {
+    public User createUser(String username, String email, String password) {
         // Check for duplicates
-        if (userRepository.existsByUserId(userId)) {
-            throw new BusinessException("USER_ID_EXISTS", "UserId already exists: " + userId);
-        }
         if (userRepository.existsByEmail(email)) {
             throw new BusinessException("EMAIL_EXISTS", "Email already exists: " + email);
         }
 
         User user = User.builder()
-                .userId(userId)
                 .username(username)
                 .email(email)
                 .password(passwordEncoder.encode(password))
@@ -44,11 +40,11 @@ public class UserCommandService {
      * Create or update user profile
      * FR-001, FR-014
      */
-    public UserProfile createOrUpdateProfile(Long userId, Integer age, Long annualIncome,
+    public UserProfile createOrUpdateProfile(Long id, Integer age, Long annualIncome,
                                             Integer householdMembers, Integer housingOwned,
                                             String locationPreferences) {
-        User user = userRepository.findByIdWithProfile(userId)
-                .orElseThrow(() -> new BusinessException("USER_NOT_FOUND", "User not found with id: " + userId));
+        User user = userRepository.findByIdWithProfile(id)
+                .orElseThrow(() -> new BusinessException("USER_NOT_FOUND", "User not found with id: " + id));
 
         if (user.getProfile() == null) {
             // Create new profile
@@ -74,12 +70,12 @@ public class UserCommandService {
      * Update notification settings
      * FR-015
      */
-    public void updateNotificationSettings(Long userId, Boolean enabled) {
-        User user = userRepository.findByIdWithProfile(userId)
-                .orElseThrow(() -> new BusinessException("USER_NOT_FOUND", "User not found with id: " + userId));
+    public void updateNotificationSettings(Long id, Boolean enabled) {
+        User user = userRepository.findByIdWithProfile(id)
+                .orElseThrow(() -> new BusinessException("USER_NOT_FOUND", "User not found with id: " + id));
 
         if (user.getProfile() == null) {
-            throw new BusinessException("PROFILE_NOT_FOUND", "User profile not found for user id: " + userId);
+            throw new BusinessException("PROFILE_NOT_FOUND", "User profile not found for user id: " + id);
         }
 
         user.getProfile().updateNotificationSettings(enabled);
