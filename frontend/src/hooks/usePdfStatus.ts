@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { usePdfStatus as usePdfStatusQuery, usePdfAnalysis } from "@/services/pdfService";
+import { usePdfStatus as usePdfStatusQuery, usePdfAnalysis } from "@/api/pdf";
 import type { PdfProcessingStatus, PdfStatusResponse, PdfAnalysisResult } from "@/types/Pdf";
 
 const DEFAULT_POLLING_INTERVAL = 2000; // 2초
@@ -30,7 +30,7 @@ export function usePdfStatusPolling(
   // 상태 쿼리
   const statusQuery = usePdfStatusQuery(pdfId || "", {
     enabled: isPolling && !!pdfId,
-    refetchInterval: isPolling ? pollingInterval : false,
+    refetchInterval: isPolling ? pollingInterval : undefined,
   });
 
   // 분석 결과 쿼리
@@ -127,7 +127,7 @@ export function useMultiplePdfStatus(pdfIds: string[]) {
 
   // 각 PDF ID에 대해 상태 폴링
   useEffect(() => {
-    const intervals: NodeJS.Timeout[] = [];
+    const intervals: ReturnType<typeof setInterval>[] = [];
 
     pdfIds.forEach((pdfId) => {
       // 이미 완료된 것은 건너뛰기

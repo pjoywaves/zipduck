@@ -4,7 +4,7 @@ import {
   useInfiniteSubscriptions,
   useRecommendations,
   useFilteredSubscriptions,
-} from "@/services/subscriptionService";
+} from "@/api/subscription";
 import type {
   SubscriptionFilter,
   SubscriptionSource,

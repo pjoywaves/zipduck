@@ -6,9 +6,20 @@ import { Switch } from "./ui/switch";
 import {
   useMyProfile,
   useSaveProfile,
-  useResetProfile,
-  type UserProfileRequest,
-} from "@/services/userProfileService";
+} from "@/api/user";
+import type { UserProfileRequest } from "@/types/User";
+
+// Mock reset profile hook since it doesn't exist in the new API
+function useResetProfile() {
+  const saveProfile = useSaveProfile();
+  return {
+    mutate: () => {
+      localStorage.removeItem("zipduck-user-profile");
+      window.location.reload();
+    },
+    isPending: false,
+  };
+}
 
 interface ProfileFormDemoProps {
   onBack: () => void;

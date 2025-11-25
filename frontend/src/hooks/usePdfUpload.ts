@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { usePdfUpload as usePdfUploadMutation } from "@/services/pdfService";
+import { usePdfUpload as usePdfUploadMutation } from "@/api/pdf";
 import type { UploadProgress, FileValidationResult, FileValidationError } from "@/types/Pdf";
 
 // 파일 제한 상수

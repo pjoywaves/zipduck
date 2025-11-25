@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { EligibilityResult, RequirementGroup, EligibilityRequirement } from "@/types/Eligibility";
-import { groupRequirementsByCategory, getMatchScoreColor, getMatchScoreLabel } from "@/services/eligibilityService";
+import { groupRequirementsByCategory, getMatchScoreColor, getMatchScoreLabel } from "@/api/eligibility";
 import { TIER_LABELS } from "@/types/Eligibility";
 
 interface EligibilityBreakdownProps {

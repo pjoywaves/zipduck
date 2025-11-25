@@ -7,7 +7,7 @@ import {
   removeFromComparison,
   isInComparison,
   clearComparison,
-} from "@/services/favoritesService";
+} from "@/api/favorites";
 
 /**
  * 즐겨찾기 관리 커스텀 훅

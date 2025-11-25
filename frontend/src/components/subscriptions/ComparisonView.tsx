@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { X, ChevronLeft, ChevronRight, Check, Minus, AlertCircle } from "lucide-react";
-import { getComparisonItems, removeFromComparison, clearComparison } from "@/services/favoritesService";
-import { useSubscription } from "@/services/subscriptionService";
+import { getComparisonItems, removeFromComparison, clearComparison } from "@/api/favorites";
+import { useSubscriptionDetail } from "@/api/subscription";
 import type { Subscription } from "@/types/Subscription";
 
 interface ComparisonViewProps {
@@ -151,15 +151,17 @@ interface ComparisonCardProps {
 }
 
 function ComparisonCard({ subscriptionId, onRemove, onClick }: ComparisonCardProps) {
-  const { data: subscription, isLoading } = useSubscription(subscriptionId);
+  const { data, isLoading } = useSubscriptionDetail(subscriptionId);
 
   if (isLoading) {
     return <div className="bg-card border border-border rounded-2xl h-80 animate-pulse" />;
   }
 
-  if (!subscription) {
+  if (!data) {
     return null;
   }
+
+  const subscription = data.subscription;
 
   const formatPrice = (price?: number) => {
     if (!price) return "-";
@@ -235,8 +237,8 @@ interface ComparisonTableProps {
 function ComparisonTable({ subscriptionIds, onRemove, onClick }: ComparisonTableProps) {
   // 각 청약 데이터 로드
   const subscriptions: (Subscription | undefined)[] = subscriptionIds.map((id) => {
-    const { data } = useSubscription(id);
-    return data;
+    const { data } = useSubscriptionDetail(id);
+    return data?.subscription;
   });
 
   const formatPrice = (price?: number) => {

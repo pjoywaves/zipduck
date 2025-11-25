@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Heart, Trash2, GitCompare, MoreVertical, Filter } from "lucide-react";
-import { useFavorites, useRemoveFavorite, addToComparison, isInComparison } from "@/services/favoritesService";
+import { useFavorites, useRemoveFavorite, addToComparison, isInComparison } from "@/api/favorites";
 import { SubscriptionCard } from "@/components/subscriptions/SubscriptionCard";
-import type { FavoriteItem } from "@/services/favoritesService";
+import type { FavoriteItem } from "@/api/favorites";
 
 interface FavoritesListProps {
   userId: string;

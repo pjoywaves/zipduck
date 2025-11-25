@@ -1,5 +1,5 @@
 import { useMemo, useCallback } from "react";
-import { useMyProfile, useSaveProfile, useCurrentUser } from "@/services/userService";
+import { useMyProfile, useSaveProfile, useCurrentUser } from "@/api/user";
 import type { UserProfileRequest } from "@/types/User";
 
 /**

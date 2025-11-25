@@ -1,5 +1,5 @@
 import type { PdfAnalysisResult } from "@/types/Pdf";
-import { getMatchScoreColor, getMatchScoreLabel } from "@/services/eligibilityService";
+import { getMatchScoreColor, getMatchScoreLabel } from "@/api/eligibility";
 
 interface AnalysisResultDisplayProps {
   result: PdfAnalysisResult;

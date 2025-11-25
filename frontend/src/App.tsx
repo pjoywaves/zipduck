@@ -1,36 +1,43 @@
 import { useState } from "react";
-import { SplashScreen } from "./components/SplashScreen";
-import { NewOnboardingScreen } from "./components/NewOnboardingScreen";
-import { NewSignUpScreen } from "./components/NewSignUpScreen";
-import { LoginScreen } from "./components/LoginScreen";
-import { HomeScreen } from "./components/HomeScreen";
-import { SearchScreen } from "./components/SearchScreen";
-import { DetailScreenNew } from "./components/DetailScreenNew";
-import { MyPageScreen } from "./components/MyPageScreen";
-import { AIChatScreen } from "./components/AIChatScreen";
-import { AIRecommendationScreen } from "./components/AIRecommendationScreen";
-import { SettingsScreen } from "./components/SettingsScreen";
-import { AppearanceScreen } from "./components/AppearanceScreen";
-import { NotificationScreen } from "./components/NotificationScreen";
-import { CustomFilterScreen } from "./components/CustomFilterScreen";
-import { RegionMapScreen } from "./components/RegionMapScreen";
-import { AnalyticsScreen } from "./components/AnalyticsScreen";
-import { AnnouncementScreen } from "./components/AnnouncementScreen";
-import { DistanceMapScreen } from "./components/DistanceMapScreen";
-import { AIConsultScreen } from "./components/AIConsultScreen";
-import { NewFavoritesScreen } from "./components/NewFavoritesScreen";
-import { CalendarScreen } from "./components/CalendarScreen";
-import { AIRecommendBestScreen } from "./components/AIRecommendBestScreen";
-import { RegionPreferenceScreen } from "./components/RegionPreferenceScreen";
-import { NotificationSettingsScreen } from "./components/NotificationSettingsScreen";
+// Auth pages
+import { SplashScreen } from "./pages/auth/SplashScreen";
+import { NewOnboardingScreen } from "./pages/auth/NewOnboardingScreen";
+import { NewSignUpScreen } from "./pages/auth/NewSignUpScreen";
+import { LoginScreen } from "./pages/auth/LoginScreen";
+import { FindAccountScreen } from "./pages/auth/FindAccountScreen";
+// Home and subscription pages
+import { HomeScreen } from "./pages/home/HomeScreen";
+import { SearchScreen } from "./pages/subscriptions/SearchScreen";
+import { DetailScreenNew } from "./pages/subscriptions/DetailScreenNew";
+import { NewFavoritesScreen } from "./pages/subscriptions/NewFavoritesScreen";
+// Profile pages
+import { MyPageScreen } from "./pages/profile/MyPageScreen";
+import { ProfileEditScreen } from "./pages/profile/ProfileEditScreen";
+// AI pages
+import { AIChatScreen } from "./pages/ai/AIChatScreen";
+import { AIRecommendationScreen } from "./pages/ai/AIRecommendationScreen";
+import { AIConsultScreen } from "./pages/ai/AIConsultScreen";
+import { AIRecommendBestScreen } from "./pages/ai/AIRecommendBestScreen";
+// Settings pages
+import { SettingsScreen } from "./pages/settings/SettingsScreen";
+import { AppearanceScreen } from "./pages/settings/AppearanceScreen";
+import { RegionPreferenceScreen } from "./pages/settings/RegionPreferenceScreen";
+import { NotificationSettingsScreen } from "./pages/settings/NotificationSettingsScreen";
+import { HelpScreen } from "./pages/settings/HelpScreen";
+import { PrivacyPolicyScreen } from "./pages/settings/PrivacyPolicyScreen";
+import { TermsOfServiceScreen } from "./pages/settings/TermsOfServiceScreen";
+import { EmailChangeScreen } from "./pages/settings/EmailChangeScreen";
+import { PasswordChangeScreen } from "./pages/settings/PasswordChangeScreen";
+// Common pages
+import { NotificationScreen } from "./pages/common/NotificationScreen";
+import { CustomFilterScreen } from "./pages/common/CustomFilterScreen";
+import { RegionMapScreen } from "./pages/common/RegionMapScreen";
+import { AnalyticsScreen } from "./pages/common/AnalyticsScreen";
+import { AnnouncementScreen } from "./pages/common/AnnouncementScreen";
+import { DistanceMapScreen } from "./pages/common/DistanceMapScreen";
+import { CalendarScreen } from "./pages/common/CalendarScreen";
+// Components
 import { SettingsDetailScreen } from "./components/SettingsDetailScreen";
-import { HelpScreen } from "./components/HelpScreen";
-import { PrivacyPolicyScreen } from "./components/PrivacyPolicyScreen";
-import { TermsOfServiceScreen } from "./components/TermsOfServiceScreen";
-import { ProfileEditScreen } from "./components/ProfileEditScreen";
-import { EmailChangeScreen } from "./components/EmailChangeScreen";
-import { PasswordChangeScreen } from "./components/PasswordChangeScreen";
-import { FindAccountScreen } from "./components/FindAccountScreen";
 import { ProfileFormDemo } from "./components/ProfileFormDemo";
 import { TabBar } from "./components/TabBar";
 import { X } from "lucide-react";
