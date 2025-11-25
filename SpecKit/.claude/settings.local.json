@@ -5,7 +5,13 @@
       "Bash(find:*)",
       "Bash(./gradlew clean build:*)",
       "Bash(.specify/scripts/bash/check-prerequisites.sh:*)",
-      "Bash(chmod:*)"
+      "Bash(chmod:*)",
+      "SlashCommand(/speckit.specify Critical (즉시 필요)\n\n  1. 인증/인가 시스템 완전 누락\n     - 회원가입 API (POST /api/v1/auth/signup)\n     - 로그인 API (POST /api/v1/auth/login)\n     - 로그아웃 API (POST /api/v1/auth/logout)\n     - JWT 토큰 발급/갱신 (Access + Refresh Token)\n     - AuthController, UserService, JwtTokenProvider\n\n  High Priority (완성도)\n\n  2. Edge Case 처리 검증\n     - 경계값 처리 (소득 정확히 일치)\n     - 0개 매칭 시 명확한 메시지\n     - 에러 응답 표준화\n\n  3. OAuth 2.0 소셜 로그인 (Google, Kakao)\n  4. 알림 시스템 (이메일/Push)\n     - 신규 청약 알림\n     - 마감 임박 알림)",
+      "Bash(ls:*)",
+      "Bash(sed:*)",
+      "Bash(.specify/scripts/bash/create-new-feature.sh --json \"Critical (즉시 필요)\n\n  1. 인증/인가 시스템 완전 누락\n     - 회원가입 API (POST /api/v1/auth/signup)\n     - 로그인 API (POST /api/v1/auth/login)\n     - 로그아웃 API (POST /api/v1/auth/logout)\n     - JWT 토큰 발급/갱신 (Access + Refresh Token)\n     - AuthController, UserService, JwtTokenProvider\n\n  High Priority (완성도)\n\n  2. Edge Case 처리 검증\n     - 경계값 처리 (소득 정확히 일치)\n     - 0개 매칭 시 명확한 메시지\n     - 에러 응답 표준화\n\n  3. OAuth 2.0 소셜 로그인 (Google, Kakao)\n  4. 알림 시스템 (이메일/Push)\n     - 신규 청약 알림\n     - 마감 임박 알림\" --number 2 --short-name \"auth-notification-system\")",
+      "Bash(.specify/scripts/bash/setup-plan.sh:*)",
+      "Bash(.specify/scripts/bash/update-agent-context.sh:*)"
     ],
     "deny": [],
     "ask": []

@@ -1,0 +1,159 @@
+openapi: 3.0.3
+info:
+  title: ZipDuck OAuth API
+  version: 1.0.0
+  description: OAuth 2.0 소셜 로그인 API
+
+servers:
+  - url: https://api.zipduck.com/api/v1
+    description: Production
+  - url: http://localhost:8080/api/v1
+    description: Development
+
+tags:
+  - name: OAuth
+    description: OAuth 2.0 소셜 로그인
+
+paths:
+  /oauth2/authorization/{provider}:
+    get:
+      tags:
+        - OAuth
+      summary: OAuth 인증 시작
+      description: Google 또는 Kakao OAuth 인증 페이지로 리다이렉트
+      operationId: startOAuthFlow
+      parameters:
+        - name: provider
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [google, kakao]
+          description: OAuth 제공자
+      responses:
+        '302':
+          description: OAuth 제공자 인증 페이지로 리다이렉트
+          headers:
+            Location:
+              schema:
+                type: string
+                example: https://accounts.google.com/o/oauth2/v2/auth?...
+
+  /oauth2/callback/{provider}:
+    get:
+      tags:
+        - OAuth
+      summary: OAuth 콜백 처리
+      description: OAuth 인증 완료 후 콜백 처리 및 JWT 토큰 발급
+      operationId: handleOAuthCallback
+      parameters:
+        - name: provider
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [google, kakao]
+          description: OAuth 제공자
+        - name: code
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Authorization code
+        - name: state
+          in: query
+          required: false
+          schema:
+            type: string
+          description: CSRF 방지용 state 파라미터
+      responses:
+        '200':
+          description: OAuth 로그인 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuthTokenResponse'
+        '400':
+          description: 잘못된 요청 (code 누락 등)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: OAuth 인증 실패
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    OAuthTokenResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        refreshToken:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        tokenType:
+          type: string
+          example: Bearer
+        expiresIn:
+          type: integer
+          example: 3600
+        user:
+          $ref: '#/components/schemas/UserInfo'
+        isNewUser:
+          type: boolean
+          example: true
+          description: 신규 회원가입 여부
+
+    UserInfo:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        email:
+          type: string
+          format: email
+          example: user@gmail.com
+        name:
+          type: string
+          example: 홍길동
+        profileImage:
+          type: string
+          format: uri
+          nullable: true
+          example: https://lh3.googleusercontent.com/...
+        provider:
+          type: string
+          enum: [GOOGLE, KAKAO]
+          example: GOOGLE
+
+    ErrorResponse:
+      type: object
+      properties:
+        type:
+          type: string
+          format: uri
+          example: https://zipduck.com/errors/oauth-failed
+        title:
+          type: string
+          example: OAuth Authentication Failed
+        status:
+          type: integer
+          example: 401
+        detail:
+          type: string
+          example: Google OAuth 인증에 실패했습니다
+        errorCode:
+          type: string
+          example: OAUTH001
+        timestamp:
+          type: string
+          format: date-time
+          example: 2025-11-25T10:00:00+09:00

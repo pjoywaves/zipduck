@@ -1,0 +1,326 @@
+openapi: 3.0.3
+info:
+  title: ZipDuck Notification API
+  version: 1.0.0
+  description: 청약 알림 구독 및 관리 API
+
+servers:
+  - url: https://api.zipduck.com/api/v1
+    description: Production
+  - url: http://localhost:8080/api/v1
+    description: Development
+
+tags:
+  - name: Notification
+    description: 알림 구독 관리
+
+paths:
+  /notifications/subscriptions:
+    get:
+      tags:
+        - Notification
+      summary: 내 알림 구독 목록 조회
+      description: 현재 사용자의 모든 알림 구독 조회
+      operationId: getMySubscriptions
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: 조회 성공
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SubscriptionResponse'
+        '401':
+          description: 인증 실패
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    post:
+      tags:
+        - Notification
+      summary: 알림 구독 생성
+      description: 새로운 청약 알림 구독 생성
+      operationId: createSubscription
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSubscriptionRequest'
+      responses:
+        '201':
+          description: 구독 생성 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionResponse'
+        '400':
+          description: 잘못된 입력
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 인증 실패
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /notifications/subscriptions/{id}:
+    get:
+      tags:
+        - Notification
+      summary: 알림 구독 상세 조회
+      description: 특정 알림 구독 상세 정보 조회
+      operationId: getSubscription
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 조회 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionResponse'
+        '401':
+          description: 인증 실패
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: 구독을 찾을 수 없음
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    put:
+      tags:
+        - Notification
+      summary: 알림 구독 수정
+      description: 알림 구독 정보 수정
+      operationId: updateSubscription
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSubscriptionRequest'
+      responses:
+        '200':
+          description: 수정 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionResponse'
+        '400':
+          description: 잘못된 입력
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 인증 실패
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: 구독을 찾을 수 없음
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    delete:
+      tags:
+        - Notification
+      summary: 알림 구독 삭제
+      description: 알림 구독 취소
+      operationId: deleteSubscription
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: 삭제 성공
+        '401':
+          description: 인증 실패
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: 구독을 찾을 수 없음
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    CreateSubscriptionRequest:
+      type: object
+      required:
+        - notificationType
+        - deliveryMethod
+      properties:
+        region:
+          type: string
+          nullable: true
+          example: 서울
+          description: 지역 필터 (NULL이면 전체)
+        minIncome:
+          type: integer
+          format: int64
+          nullable: true
+          example: 30000000
+          description: 최소 소득 (NULL이면 제한 없음)
+        maxIncome:
+          type: integer
+          format: int64
+          nullable: true
+          example: 60000000
+          description: 최대 소득 (NULL이면 제한 없음)
+        notificationType:
+          type: string
+          enum: [NEW, DEADLINE]
+          example: NEW
+          description: NEW(신규 청약) 또는 DEADLINE(마감 임박)
+        deliveryMethod:
+          type: string
+          enum: [EMAIL, PUSH, BOTH]
+          example: BOTH
+          description: 알림 수신 방법
+
+    UpdateSubscriptionRequest:
+      type: object
+      properties:
+        region:
+          type: string
+          nullable: true
+          example: 경기
+        minIncome:
+          type: integer
+          format: int64
+          nullable: true
+          example: 40000000
+        maxIncome:
+          type: integer
+          format: int64
+          nullable: true
+          example: 70000000
+        notificationType:
+          type: string
+          enum: [NEW, DEADLINE]
+          example: DEADLINE
+        deliveryMethod:
+          type: string
+          enum: [EMAIL, PUSH, BOTH]
+          example: EMAIL
+        active:
+          type: boolean
+          example: true
+          description: 구독 활성화 여부
+
+    SubscriptionResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        region:
+          type: string
+          nullable: true
+          example: 서울
+        minIncome:
+          type: integer
+          format: int64
+          nullable: true
+          example: 30000000
+        maxIncome:
+          type: integer
+          format: int64
+          nullable: true
+          example: 60000000
+        notificationType:
+          type: string
+          enum: [NEW, DEADLINE]
+          example: NEW
+        deliveryMethod:
+          type: string
+          enum: [EMAIL, PUSH, BOTH]
+          example: BOTH
+        active:
+          type: boolean
+          example: true
+        createdAt:
+          type: string
+          format: date-time
+          example: 2025-11-25T10:00:00+09:00
+        updatedAt:
+          type: string
+          format: date-time
+          example: 2025-11-25T10:00:00+09:00
+
+    ErrorResponse:
+      type: object
+      properties:
+        type:
+          type: string
+          format: uri
+          example: https://zipduck.com/errors/subscription-not-found
+        title:
+          type: string
+          example: Subscription Not Found
+        status:
+          type: integer
+          example: 404
+        detail:
+          type: string
+          example: 구독을 찾을 수 없습니다
+        errorCode:
+          type: string
+          example: NOTI001
+        timestamp:
+          type: string
+          format: date-time
+          example: 2025-11-25T10:00:00+09:00

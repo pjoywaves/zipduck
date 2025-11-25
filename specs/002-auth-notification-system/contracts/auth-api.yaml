@@ -1,0 +1,321 @@
+openapi: 3.0.3
+info:
+  title: ZipDuck Authentication API
+  version: 1.0.0
+  description: 사용자 인증 및 회원 관리 API
+
+servers:
+  - url: https://api.zipduck.com/api/v1
+    description: Production
+  - url: http://localhost:8080/api/v1
+    description: Development
+
+tags:
+  - name: Auth
+    description: 인증 관련 API
+  - name: User
+    description: 사용자 관리 API
+
+paths:
+  /auth/signup:
+    post:
+      tags:
+        - Auth
+      summary: 회원가입
+      description: 이메일과 비밀번호로 신규 계정 생성
+      operationId: signup
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignupRequest'
+      responses:
+        '201':
+          description: 회원가입 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '400':
+          description: 잘못된 입력 (이메일 형식 오류, 비밀번호 강도 부족)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: 이미 사용 중인 이메일
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      summary: 로그인
+      description: 이메일과 비밀번호로 로그인하여 JWT 토큰 발급
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: 로그인 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '401':
+          description: 이메일 또는 비밀번호가 올바르지 않음
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/logout:
+    post:
+      tags:
+        - Auth
+      summary: 로그아웃
+      description: Refresh Token을 무효화하고 로그아웃
+      operationId: logout
+      security:
+        - BearerAuth: []
+      responses:
+        '204':
+          description: 로그아웃 성공
+        '401':
+          description: 인증 실패
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/refresh:
+    post:
+      tags:
+        - Auth
+      summary: 토큰 갱신
+      description: Refresh Token으로 새로운 Access Token 발급
+      operationId: refreshToken
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshTokenRequest'
+      responses:
+        '200':
+          description: 토큰 갱신 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '401':
+          description: Refresh Token이 유효하지 않거나 만료됨
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /users/me:
+    get:
+      tags:
+        - User
+      summary: 내 프로필 조회
+      description: 현재 로그인한 사용자의 프로필 정보 조회
+      operationId: getMyProfile
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: 프로필 조회 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '401':
+          description: 인증 실패
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    put:
+      tags:
+        - User
+      summary: 내 프로필 수정
+      description: 현재 로그인한 사용자의 프로필 정보 수정
+      operationId: updateMyProfile
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProfileRequest'
+      responses:
+        '200':
+          description: 프로필 수정 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '400':
+          description: 잘못된 입력
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 인증 실패
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    SignupRequest:
+      type: object
+      required:
+        - email
+        - password
+        - name
+      properties:
+        email:
+          type: string
+          format: email
+          example: user@zipduck.com
+        password:
+          type: string
+          format: password
+          minLength: 8
+          example: Password123
+          description: 최소 8자, 영문+숫자 조합
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+          example: 홍길동
+
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          example: user@zipduck.com
+        password:
+          type: string
+          format: password
+          example: Password123
+
+    RefreshTokenRequest:
+      type: object
+      required:
+        - refreshToken
+      properties:
+        refreshToken:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+    TokenResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+          description: 유효기간 1시간
+        refreshToken:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+          description: 유효기간 7일
+        tokenType:
+          type: string
+          example: Bearer
+        expiresIn:
+          type: integer
+          example: 3600
+          description: Access Token 만료 시간 (초)
+
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        email:
+          type: string
+          format: email
+          example: user@zipduck.com
+        name:
+          type: string
+          example: 홍길동
+        profileImage:
+          type: string
+          format: uri
+          nullable: true
+          example: https://zipduck.com/profiles/user123.jpg
+        accountStatus:
+          type: string
+          enum: [ACTIVE, INACTIVE, SUSPENDED]
+          example: ACTIVE
+        createdAt:
+          type: string
+          format: date-time
+          example: 2025-11-25T10:00:00+09:00
+
+    UpdateProfileRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+          example: 홍길동
+        profileImage:
+          type: string
+          format: uri
+          nullable: true
+          example: https://zipduck.com/profiles/user123.jpg
+
+    ErrorResponse:
+      type: object
+      properties:
+        type:
+          type: string
+          format: uri
+          example: https://zipduck.com/errors/user-already-exists
+        title:
+          type: string
+          example: User Already Exists
+        status:
+          type: integer
+          example: 409
+        detail:
+          type: string
+          example: 이미 사용 중인 이메일입니다
+        errorCode:
+          type: string
+          example: AUTH001
+        timestamp:
+          type: string
+          format: date-time
+          example: 2025-11-25T10:00:00+09:00
