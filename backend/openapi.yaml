@@ -1,0 +1,1244 @@
+openapi: 3.0.3
+info:
+  title: ZipDuck API
+  description: |
+    ZipDuck 청약 추천 및 분석 서비스 API
+
+    ## 주요 기능
+    - 사용자 프로필 관리 (청약 자격 정보)
+    - 청약 목록 조회 및 필터링
+    - AI 기반 청약 추천
+    - PDF 청약 공고 분석 (OCR 지원)
+    - 청약 자격 분석
+
+    ## 인증
+    Bearer Token (JWT) 방식 사용
+    ```
+    Authorization: Bearer {accessToken}
+    ```
+  version: 1.0.0
+  contact:
+    name: ZipDuck Team
+    email: support@zipduck.com
+
+servers:
+  - url: http://localhost:8080
+    description: Local Development Server
+  - url: https://api-dev.zipduck.com
+    description: Development Server
+  - url: https://api.zipduck.com
+    description: Production Server
+
+tags:
+  - name: Profile
+    description: 사용자 프로필 (청약 자격 정보) 관리
+  - name: Subscriptions
+    description: 청약 정보 조회 및 추천
+  - name: PDF Analysis
+    description: PDF 청약 공고 분석
+  - name: Eligibility
+    description: 청약 자격 분석
+
+paths:
+  # ==================== Profile APIs ====================
+  /api/users/me/profile:
+    get:
+      tags:
+        - Profile
+      summary: 사용자 프로필 조회
+      description: 현재 로그인한 사용자의 청약 자격 정보를 조회합니다.
+      operationId: getMyProfile
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 프로필 조회 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+              examples:
+                success:
+                  value:
+                    success: true
+                    data:
+                      userId: "user-123"
+                      age: 32
+                      annualIncome: 6000
+                      householdMembers: 2
+                      housingOwned: 0
+                      currentRegion: "서울특별시"
+                      subscriptionPeriod: 24
+                      isMarried: true
+                      hasChildren: false
+                      isFirstTimeHomeBuyer: true
+                      createdAt: "2025-01-15T10:00:00Z"
+                      updatedAt: "2025-11-25T10:00:00Z"
+                    message: "프로필 조회 성공"
+                    timestamp: "2025-11-25T10:30:00Z"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: 프로필이 존재하지 않음
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    post:
+      tags:
+        - Profile
+      summary: 사용자 프로필 생성
+      description: 새로운 사용자의 청약 자격 정보를 생성합니다.
+      operationId: createProfile
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserProfileRequest'
+            examples:
+              newProfile:
+                value:
+                  age: 32
+                  annualIncome: 6000
+                  householdMembers: 2
+                  housingOwned: 0
+                  region: "서울특별시"
+                  subscriptionPeriod: 24
+                  isMarried: true
+                  hasChildren: false
+                  isFirstTimeHomeBuyer: true
+      responses:
+        '201':
+          description: 프로필 생성 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          description: 이미 프로필이 존재함
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    put:
+      tags:
+        - Profile
+      summary: 사용자 프로필 수정
+      description: 기존 사용자의 청약 자격 정보를 수정합니다.
+      operationId: updateProfile
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserProfileRequest'
+      responses:
+        '200':
+          description: 프로필 수정 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: 프로필이 존재하지 않음
+
+  # ==================== Subscription APIs ====================
+  /api/subscriptions:
+    get:
+      tags:
+        - Subscriptions
+      summary: 청약 목록 조회
+      description: |
+        필터링, 정렬, 페이징을 지원하는 청약 목록을 조회합니다.
+
+        ## 필터링 옵션
+        - **source**: 데이터 소스 (PUBLIC_DB, PDF_UPLOAD, MERGED)
+        - **status**: 청약 상태 (ACTIVE, CLOSED, UPCOMING)
+        - **minMatchScore**: 최소 매칭 점수 (0-100)
+        - **regions**: 지역 필터 (다중 선택 가능)
+        - **keyword**: 키워드 검색 (단지명, 지역)
+
+        ## 정렬 옵션
+        - **matchScore**: 매칭률순 (기본)
+        - **applicationEndDate**: 마감임박순
+        - **price**: 가격순
+        - **createdAt**: 등록일순
+      operationId: getSubscriptions
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: filter[source]
+          in: query
+          schema:
+            type: string
+            enum: [ALL, PUBLIC_DB, PDF_UPLOAD, MERGED]
+            default: ALL
+          description: 데이터 소스 필터
+        - name: filter[status]
+          in: query
+          schema:
+            type: string
+            enum: [ALL, ACTIVE, CLOSED, UPCOMING]
+            default: ALL
+          description: 청약 상태 필터
+        - name: filter[minMatchScore]
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 100
+          description: 최소 매칭 점수 (0-100)
+        - name: filter[regions]
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+          description: 지역 필터 (다중 선택)
+          example: ["서울특별시", "경기도"]
+        - name: filter[keyword]
+          in: query
+          schema:
+            type: string
+          description: 키워드 검색 (단지명, 지역)
+        - name: sortBy
+          in: query
+          schema:
+            type: string
+            enum: [matchScore, applicationEndDate, price, createdAt]
+            default: matchScore
+          description: 정렬 기준
+        - name: sortOrder
+          in: query
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+          description: 정렬 순서
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+          description: 페이지 번호 (0부터 시작)
+        - name: size
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 10
+          description: 페이지 크기
+      responses:
+        '200':
+          description: 청약 목록 조회 성공
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/SubscriptionListResponse'
+              examples:
+                success:
+                  value:
+                    success: true
+                    data:
+                      content:
+                        - id: "sub-001"
+                          name: "래미안 원베일리"
+                          location: "서울특별시 서초구"
+                          developer: "삼성물산"
+                          supplyType: "PRIVATE"
+                          totalUnits: 2990
+                          minPrice: 150000
+                          maxPrice: 450000
+                          applicationStartDate: "2025-02-01"
+                          applicationEndDate: "2025-02-07"
+                          source: "PUBLIC_DB"
+                          status: "UPCOMING"
+                          matchScore: 85
+                          isEligible: true
+                      page: 0
+                      size: 10
+                      totalElements: 42
+                      totalPages: 5
+                      first: true
+                      last: false
+                    message: "청약 목록 조회 성공"
+                    timestamp: "2025-11-25T10:30:00Z"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/subscriptions/{id}:
+    get:
+      tags:
+        - Subscriptions
+      summary: 청약 상세 조회
+      description: 특정 청약의 상세 정보와 자격 분석 결과를 조회합니다.
+      operationId: getSubscriptionDetail
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 청약 ID
+          example: "sub-001"
+      responses:
+        '200':
+          description: 청약 상세 조회 성공
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/SubscriptionDetailResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/subscriptions/recommendations:
+    get:
+      tags:
+        - Subscriptions
+      summary: 추천 청약 목록 조회
+      description: |
+        사용자 프로필 기반 AI 맞춤 추천 청약 목록을 조회합니다.
+        매칭 점수가 높은 순서로 정렬되어 반환됩니다.
+      operationId: getRecommendations
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 10
+          description: 추천 청약 수
+        - name: minMatchScore
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 100
+            default: 70
+          description: 최소 매칭 점수
+      responses:
+        '200':
+          description: 추천 청약 조회 성공
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          recommendations:
+                            type: array
+                            items:
+                              $ref: '#/components/schemas/Subscription'
+                          profileCompleteness:
+                            type: integer
+                            description: 프로필 완성도 (0-100)
+                            example: 90
+                          lastUpdated:
+                            type: string
+                            format: date-time
+                            example: "2025-11-25T10:00:00Z"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: 사용자 프로필이 없음
+
+  /api/subscriptions/{id}/eligibility:
+    get:
+      tags:
+        - Eligibility
+      summary: 청약 자격 분석
+      description: |
+        특정 청약에 대한 사용자의 자격 요건 충족 여부를 분석합니다.
+
+        ## 분석 내용
+        - 매칭 점수 (0-100)
+        - 자격 순위 (1순위, 2순위 등)
+        - 충족한 요건 목록
+        - 미충족 요건 목록 및 개선 방법
+        - 맞춤 추천사항
+      operationId: checkEligibility
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 청약 ID
+      responses:
+        '200':
+          description: 자격 분석 성공
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/EligibilityResult'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # ==================== PDF Analysis APIs ====================
+  /api/pdf/upload:
+    post:
+      tags:
+        - PDF Analysis
+      summary: PDF 파일 업로드
+      description: |
+        청약 공고 PDF 파일을 업로드하여 분석을 시작합니다.
+
+        ## 지원 형식
+        - 텍스트 기반 PDF
+        - 스캔/이미지 기반 PDF (OCR 자동 적용)
+        - 모바일 사진 (JPG, PNG 등)
+
+        ## 처리 프로세스
+        1. 파일 업로드 및 검증
+        2. OCR 필요 여부 자동 감지
+        3. 텍스트 추출 (OCR 포함)
+        4. AI 기반 청약 정보 분석
+        5. 사용자 프로필 대비 자격 분석
+
+        ## 파일 제한
+        - 최대 크기: 10MB
+        - 허용 형식: PDF, JPG, PNG, HEIC
+      operationId: uploadPdf
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: PDF 파일
+      responses:
+        '201':
+          description: 업로드 성공 및 분석 시작
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/PdfUploadResponse'
+              examples:
+                success:
+                  value:
+                    success: true
+                    data:
+                      pdfId: "pdf-001"
+                      fileName: "subscription_2025.pdf"
+                      status: "PROCESSING"
+                      uploadedAt: "2025-11-25T10:30:00Z"
+                    message: "PDF 업로드 성공"
+                    timestamp: "2025-11-25T10:30:00Z"
+        '400':
+          description: 잘못된 파일 형식 또는 크기 초과
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/pdf/{id}/status:
+    get:
+      tags:
+        - PDF Analysis
+      summary: PDF 처리 상태 조회
+      description: |
+        업로드된 PDF의 처리 상태를 조회합니다.
+
+        ## 상태 값
+        - **PENDING**: 대기 중
+        - **UPLOADING**: 업로드 중
+        - **PROCESSING**: 파일 처리 중
+        - **OCR_IN_PROGRESS**: OCR 진행 중
+        - **ANALYZING**: AI 분석 중
+        - **COMPLETED**: 분석 완료
+        - **FAILED**: 처리 실패
+
+        ## 폴링 권장사항
+        - 간격: 2초
+        - COMPLETED 또는 FAILED 상태가 되면 폴링 중지
+      operationId: getPdfStatus
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: PDF ID
+          example: "pdf-001"
+      responses:
+        '200':
+          description: 상태 조회 성공
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/PdfStatusResponse'
+              examples:
+                processing:
+                  value:
+                    success: true
+                    data:
+                      pdfId: "pdf-001"
+                      status: "ANALYZING"
+                      progress: 65
+                      currentStep: "AI 분석 중"
+                      estimatedTimeRemaining: 15
+                      hasOcr: true
+                      ocrQuality: "HIGH"
+                    timestamp: "2025-11-25T10:30:00Z"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/pdf/{id}/analysis:
+    get:
+      tags:
+        - PDF Analysis
+      summary: PDF 분석 결과 조회
+      description: |
+        완료된 PDF 분석 결과를 조회합니다.
+
+        ## 분석 결과 포함 내용
+        - 추출된 청약 정보 (단지명, 위치, 공급유형, 일정, 가격 등)
+        - 자격 요건 분석
+        - 사용자 프로필 대비 매칭 결과
+        - 추천사항
+
+        ⚠️ **주의**: 이 API는 status가 COMPLETED인 경우에만 호출해야 합니다.
+      operationId: getPdfAnalysis
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: PDF ID
+      responses:
+        '200':
+          description: 분석 결과 조회 성공
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/PdfAnalysisResult'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: 분석이 아직 완료되지 않음
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+# ==================== Components ====================
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT 토큰을 사용한 Bearer 인증
+
+  schemas:
+    # Common
+    ApiResponse:
+      type: object
+      required:
+        - success
+        - timestamp
+      properties:
+        success:
+          type: boolean
+          description: 성공 여부
+          example: true
+        data:
+          type: object
+          description: 응답 데이터
+        message:
+          type: string
+          description: 응답 메시지
+          example: "요청이 성공적으로 처리되었습니다"
+        timestamp:
+          type: string
+          format: date-time
+          description: 응답 시간
+          example: "2025-11-25T10:30:00Z"
+
+    ErrorResponse:
+      type: object
+      required:
+        - success
+        - error
+        - timestamp
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: object
+          required:
+            - code
+            - message
+          properties:
+            code:
+              type: string
+              enum:
+                - INVALID_INPUT
+                - UNAUTHORIZED
+                - FORBIDDEN
+                - NOT_FOUND
+                - CONFLICT
+                - INTERNAL_ERROR
+                - SERVICE_UNAVAILABLE
+              description: 에러 코드
+              example: "INVALID_INPUT"
+            message:
+              type: string
+              description: 에러 메시지
+              example: "필수 입력값이 누락되었습니다"
+            details:
+              type: object
+              description: 에러 상세 정보
+              additionalProperties: true
+        timestamp:
+          type: string
+          format: date-time
+          example: "2025-11-25T10:30:00Z"
+
+    # Profile
+    UserProfileRequest:
+      type: object
+      required:
+        - age
+        - annualIncome
+        - householdMembers
+        - housingOwned
+      properties:
+        age:
+          type: integer
+          minimum: 19
+          maximum: 100
+          description: 나이
+          example: 32
+        annualIncome:
+          type: integer
+          minimum: 0
+          description: 연소득 (만원)
+          example: 6000
+        householdMembers:
+          type: integer
+          minimum: 1
+          maximum: 10
+          description: 가구원 수
+          example: 2
+        housingOwned:
+          type: integer
+          minimum: 0
+          description: 주택 소유 수
+          example: 0
+        region:
+          type: string
+          description: 현재 거주 지역
+          example: "서울특별시"
+        preferredRegions:
+          type: array
+          items:
+            type: string
+          description: 선호 지역 목록
+          example: ["서울특별시", "경기도"]
+        subscriptionPeriod:
+          type: integer
+          minimum: 0
+          description: 청약통장 납입 기간 (개월)
+          example: 24
+        isMarried:
+          type: boolean
+          description: 결혼 여부
+          example: true
+        hasChildren:
+          type: boolean
+          description: 자녀 유무
+          example: false
+        isFirstTimeHomeBuyer:
+          type: boolean
+          description: 생애최초 주택 구매 여부
+          example: true
+
+    # Subscription
+    Subscription:
+      type: object
+      required:
+        - id
+        - name
+        - location
+        - developer
+        - supplyType
+        - totalUnits
+        - applicationStartDate
+        - applicationEndDate
+        - source
+        - status
+      properties:
+        id:
+          type: string
+          example: "sub-001"
+        name:
+          type: string
+          description: 단지명
+          example: "래미안 원베일리"
+        location:
+          type: string
+          description: 위치 (시/도 + 구/군)
+          example: "서울특별시 서초구"
+        address:
+          type: string
+          description: 상세 주소
+          example: "서울특별시 서초구 반포동 1-1"
+        developer:
+          type: string
+          description: 시행사
+          example: "삼성물산"
+        constructor:
+          type: string
+          description: 시공사
+          example: "삼성물산 건설부문"
+        supplyType:
+          type: string
+          enum: [PUBLIC, PRIVATE, PUBLIC_RENTAL, PRIVATE_RENTAL, NEWLYWED, HAPPY_HOUSE]
+          description: 공급 유형
+          example: "PRIVATE"
+        housingType:
+          type: string
+          enum: [APT, OFFICETEL, URBAN_HOUSING, TOWNHOUSE]
+          description: 주택 타입
+          example: "APT"
+        totalUnits:
+          type: integer
+          description: 총 세대수
+          example: 2990
+        supplyUnits:
+          type: integer
+          description: 공급 세대수
+          example: 224
+        minSize:
+          type: number
+          format: float
+          description: 최소 전용면적 (㎡)
+          example: 59
+        maxSize:
+          type: number
+          format: float
+          description: 최대 전용면적 (㎡)
+          example: 244
+        minPrice:
+          type: integer
+          description: 최저 분양가 (만원)
+          example: 150000
+        maxPrice:
+          type: integer
+          description: 최고 분양가 (만원)
+          example: 450000
+        applicationStartDate:
+          type: string
+          format: date
+          description: 청약 시작일
+          example: "2025-02-01"
+        applicationEndDate:
+          type: string
+          format: date
+          description: 청약 마감일
+          example: "2025-02-07"
+        announcementDate:
+          type: string
+          format: date
+          description: 당첨자 발표일
+          example: "2025-02-15"
+        moveInDate:
+          type: string
+          description: 입주 예정일 (YYYY-MM 형식)
+          example: "2027-06"
+        source:
+          type: string
+          enum: [PUBLIC_DB, PDF_UPLOAD, MERGED]
+          description: 데이터 소스
+          example: "PUBLIC_DB"
+        status:
+          type: string
+          enum: [ACTIVE, CLOSED, UPCOMING]
+          description: 청약 상태
+          example: "UPCOMING"
+        matchScore:
+          type: integer
+          minimum: 0
+          maximum: 100
+          description: 매칭 점수
+          example: 85
+        isEligible:
+          type: boolean
+          description: 자격 여부
+          example: true
+        eligibilityTier:
+          type: string
+          description: 자격 순위
+          example: "1순위"
+        description:
+          type: string
+          description: 상세 설명
+        websiteUrl:
+          type: string
+          format: uri
+          description: 공식 웹사이트 URL
+        imageUrl:
+          type: string
+          format: uri
+          description: 이미지 URL
+        thumbnailUrl:
+          type: string
+          format: uri
+          description: 썸네일 URL
+        pdfDocumentId:
+          type: string
+          description: 연결된 PDF 문서 ID
+        createdAt:
+          type: string
+          format: date-time
+          example: "2025-01-15T00:00:00Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2025-01-15T00:00:00Z"
+
+    SubscriptionListResponse:
+      type: object
+      required:
+        - content
+        - page
+        - size
+        - totalElements
+        - totalPages
+        - first
+        - last
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/Subscription'
+        page:
+          type: integer
+          description: 현재 페이지 번호
+          example: 0
+        size:
+          type: integer
+          description: 페이지 크기
+          example: 10
+        totalElements:
+          type: integer
+          description: 전체 항목 수
+          example: 42
+        totalPages:
+          type: integer
+          description: 전체 페이지 수
+          example: 5
+        first:
+          type: boolean
+          description: 첫 페이지 여부
+          example: true
+        last:
+          type: boolean
+          description: 마지막 페이지 여부
+          example: false
+
+    SubscriptionDetailResponse:
+      type: object
+      required:
+        - subscription
+      properties:
+        subscription:
+          $ref: '#/components/schemas/Subscription'
+        eligibility:
+          $ref: '#/components/schemas/EligibilityResult'
+        relatedSubscriptions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Subscription'
+          description: 관련 청약 목록
+
+    # Eligibility
+    EligibilityResult:
+      type: object
+      required:
+        - subscriptionId
+        - isEligible
+        - matchScore
+      properties:
+        subscriptionId:
+          type: string
+          example: "sub-001"
+        isEligible:
+          type: boolean
+          description: 자격 여부
+          example: true
+        matchScore:
+          type: integer
+          minimum: 0
+          maximum: 100
+          description: 매칭 점수
+          example: 85
+        tier:
+          type: string
+          description: 자격 순위
+          example: "1순위"
+        requirementsMet:
+          type: array
+          items:
+            $ref: '#/components/schemas/EligibilityRequirement'
+          description: 충족한 요건 목록
+        requirementsFailed:
+          type: array
+          items:
+            $ref: '#/components/schemas/EligibilityRequirement'
+          description: 미충족 요건 목록
+        recommendations:
+          type: array
+          items:
+            type: string
+          description: 추천사항
+          example:
+            - "청약통장 6개월 추가 납입 시 1순위 자격 획득 가능"
+            - "현재 조건으로 2순위 지원 가능"
+
+    EligibilityRequirement:
+      type: object
+      required:
+        - name
+        - description
+        - category
+        - isMet
+        - importance
+      properties:
+        name:
+          type: string
+          description: 요건 이름
+          example: "소득요건"
+        description:
+          type: string
+          description: 요건 설명
+          example: "도시근로자 평균소득 130% 이하"
+        category:
+          type: string
+          enum: [INCOME, ASSET, HOUSING, REGION, AGE, HOUSEHOLD, SUBSCRIPTION, SPECIAL]
+          description: 요건 카테고리
+          example: "INCOME"
+        isMet:
+          type: boolean
+          description: 충족 여부
+          example: true
+        userValue:
+          type: string
+          description: 사용자 값
+          example: "6천만원"
+        requiredValue:
+          type: string
+          description: 요구 값
+          example: "7천만원 이하"
+        importance:
+          type: string
+          enum: [HIGH, MEDIUM, LOW]
+          description: 중요도
+          example: "HIGH"
+
+    # PDF Analysis
+    PdfUploadResponse:
+      type: object
+      required:
+        - pdfId
+        - fileName
+        - status
+        - uploadedAt
+      properties:
+        pdfId:
+          type: string
+          description: PDF ID
+          example: "pdf-001"
+        fileName:
+          type: string
+          description: 파일명
+          example: "subscription_2025.pdf"
+        status:
+          type: string
+          enum: [PENDING, UPLOADING, PROCESSING, OCR_IN_PROGRESS, ANALYZING, COMPLETED, FAILED]
+          description: 처리 상태
+          example: "PROCESSING"
+        uploadedAt:
+          type: string
+          format: date-time
+          description: 업로드 시간
+          example: "2025-11-25T10:30:00Z"
+
+    PdfStatusResponse:
+      type: object
+      required:
+        - pdfId
+        - status
+        - progress
+      properties:
+        pdfId:
+          type: string
+          example: "pdf-001"
+        status:
+          type: string
+          enum: [PENDING, UPLOADING, PROCESSING, OCR_IN_PROGRESS, ANALYZING, COMPLETED, FAILED]
+          example: "ANALYZING"
+        progress:
+          type: integer
+          minimum: 0
+          maximum: 100
+          description: 진행률 (%)
+          example: 65
+        currentStep:
+          type: string
+          description: 현재 처리 단계
+          example: "AI 분석 중"
+        estimatedTimeRemaining:
+          type: integer
+          description: 예상 남은 시간 (초)
+          example: 15
+        hasOcr:
+          type: boolean
+          description: OCR 적용 여부
+          example: true
+        ocrQuality:
+          type: string
+          enum: [HIGH, MEDIUM, LOW, NONE]
+          description: OCR 품질
+          example: "HIGH"
+        errorMessage:
+          type: string
+          description: 에러 메시지 (실패 시)
+
+    PdfAnalysisResult:
+      type: object
+      required:
+        - pdfId
+        - status
+        - hasOcr
+        - processingTimeMs
+        - analyzedAt
+      properties:
+        pdfId:
+          type: string
+          example: "pdf-001"
+        status:
+          type: string
+          enum: [SUCCESS, PARTIAL, FAILED]
+          description: 분석 상태
+          example: "SUCCESS"
+        extractedText:
+          type: string
+          description: 추출된 전체 텍스트
+        textConfidence:
+          type: integer
+          minimum: 0
+          maximum: 100
+          description: 텍스트 추출 신뢰도 (%)
+          example: 95
+        hasOcr:
+          type: boolean
+          description: OCR 적용 여부
+          example: true
+        ocrQuality:
+          type: string
+          enum: [HIGH, MEDIUM, LOW, NONE]
+          description: OCR 품질
+          example: "HIGH"
+        ocrWarnings:
+          type: array
+          items:
+            type: string
+          description: OCR 경고 메시지
+        extractedSubscription:
+          $ref: '#/components/schemas/ExtractedSubscriptionInfo'
+        eligibilityAnalysis:
+          $ref: '#/components/schemas/EligibilityResult'
+        processingTimeMs:
+          type: integer
+          description: 처리 시간 (밀리초)
+          example: 23500
+        analyzedAt:
+          type: string
+          format: date-time
+          description: 분석 완료 시간
+          example: "2025-11-25T10:30:45Z"
+
+    ExtractedSubscriptionInfo:
+      type: object
+      required:
+        - confidence
+      properties:
+        name:
+          type: string
+          description: 단지명
+          example: "힐스테이트 판교역"
+        location:
+          type: string
+          description: 위치
+          example: "경기도 성남시 분당구"
+        developer:
+          type: string
+          description: 시행사
+          example: "현대건설"
+        supplyType:
+          type: string
+          description: 공급 유형
+          example: "PRIVATE"
+        totalUnits:
+          type: integer
+          description: 총 세대수
+          example: 1500
+        applicationStartDate:
+          type: string
+          format: date
+          description: 청약 시작일
+          example: "2025-01-20"
+        applicationEndDate:
+          type: string
+          format: date
+          description: 청약 마감일
+          example: "2025-01-25"
+        announcementDate:
+          type: string
+          format: date
+          description: 당첨자 발표일
+        minPrice:
+          type: integer
+          description: 최저 분양가 (만원)
+          example: 120000
+        maxPrice:
+          type: integer
+          description: 최고 분양가 (만원)
+          example: 250000
+        confidence:
+          type: integer
+          minimum: 0
+          maximum: 100
+          description: 추출 신뢰도 (%)
+          example: 92
+
+  responses:
+    BadRequest:
+      description: 잘못된 요청
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            success: false
+            error:
+              code: "INVALID_INPUT"
+              message: "필수 입력값이 누락되었습니다"
+              details:
+                field: "age"
+                reason: "나이는 19세 이상이어야 합니다"
+            timestamp: "2025-11-25T10:30:00Z"
+
+    Unauthorized:
+      description: 인증 실패
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            success: false
+            error:
+              code: "UNAUTHORIZED"
+              message: "인증이 필요합니다"
+            timestamp: "2025-11-25T10:30:00Z"
+
+    NotFound:
+      description: 리소스를 찾을 수 없음
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            success: false
+            error:
+              code: "NOT_FOUND"
+              message: "요청한 리소스를 찾을 수 없습니다"
+            timestamp: "2025-11-25T10:30:00Z"
