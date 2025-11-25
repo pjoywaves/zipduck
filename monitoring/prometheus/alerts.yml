@@ -1,0 +1,143 @@
+groups:
+  - name: zipduck_alerts
+    interval: 30s
+    rules:
+      # Application availability
+      - alert: ServiceDown
+        expr: up{job="spring-boot"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Service {{ $labels.application }} is down"
+          description: "{{ $labels.application }} has been down for more than 2 minutes."
+
+      # High error rate
+      - alert: HighErrorRate
+        expr: rate(http_server_requests_seconds_count{status=~"5.."}[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High error rate detected"
+          description: "Error rate is {{ $value }} per second (threshold: 0.05)"
+
+      # High response time
+      - alert: HighResponseTime
+        expr: histogram_quantile(0.95, rate(http_server_requests_seconds_bucket[5m])) > 5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High API response time"
+          description: "95th percentile response time is {{ $value }}s (threshold: 5s)"
+
+      # PDF analysis timeout
+      - alert: PdfAnalysisTimeout
+        expr: histogram_quantile(0.95, rate(pdf_analysis_duration_seconds_bucket[10m])) > 60
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "PDF analysis taking too long"
+          description: "95th percentile PDF analysis time is {{ $value }}s (threshold: 60s)"
+
+      # Database connection pool exhaustion
+      - alert: DatabaseConnectionPoolExhausted
+        expr: hikaricp_connections_active / hikaricp_connections_max > 0.9
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Database connection pool nearly exhausted"
+          description: "{{ $value | humanizePercentage }} of database connections in use"
+
+      # High CPU usage
+      - alert: HighCPUUsage
+        expr: 100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage detected"
+          description: "CPU usage is {{ $value }}% (threshold: 80%)"
+
+      # High memory usage
+      - alert: HighMemoryUsage
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 85
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage detected"
+          description: "Memory usage is {{ $value }}% (threshold: 85%)"
+
+      # Disk space running out
+      - alert: DiskSpaceLow
+        expr: (1 - (node_filesystem_avail_bytes{fstype!="tmpfs"} / node_filesystem_size_bytes)) * 100 > 80
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Disk space running low"
+          description: "Disk usage is {{ $value }}% on {{ $labels.mountpoint }}"
+
+      # Redis cache unavailable
+      - alert: RedisCacheDown
+        expr: redis_up == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Redis cache is down"
+          description: "Redis has been unavailable for more than 2 minutes"
+
+      # High Redis memory usage
+      - alert: RedisHighMemoryUsage
+        expr: (redis_memory_used_bytes / redis_memory_max_bytes) * 100 > 90
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Redis memory usage high"
+          description: "Redis memory usage is {{ $value }}%"
+
+      # MySQL down
+      - alert: MySQLDown
+        expr: mysql_up == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "MySQL database is down"
+          description: "MySQL has been unavailable for more than 2 minutes"
+
+      # High MySQL connections
+      - alert: MySQLHighConnections
+        expr: (mysql_global_status_threads_connected / mysql_global_variables_max_connections) * 100 > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "MySQL connection usage high"
+          description: "MySQL connection usage is {{ $value }}%"
+
+      # Public data collection failure
+      - alert: PublicDataCollectionFailure
+        expr: increase(public_data_collection_failures_total[24h]) > 3
+        for: 1h
+        labels:
+          severity: warning
+        annotations:
+          summary: "Public data collection failing repeatedly"
+          description: "{{ $value }} failures in the last 24 hours"
+
+      # AI API failures
+      - alert: AIAPIFailure
+        expr: rate(ai_api_requests_total{status="error"}[10m]) > 0.1
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High AI API failure rate"
+          description: "AI API error rate is {{ $value }} per second"

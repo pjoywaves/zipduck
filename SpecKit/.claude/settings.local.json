@@ -3,7 +3,9 @@
     "allow": [
       "Bash(lsof:*)",
       "Bash(find:*)",
-      "Bash(./gradlew clean build:*)"
+      "Bash(./gradlew clean build:*)",
+      "Bash(.specify/scripts/bash/check-prerequisites.sh:*)",
+      "Bash(chmod:*)"
     ],
     "deny": [],
     "ask": []

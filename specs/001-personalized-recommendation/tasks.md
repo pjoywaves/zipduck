@@ -252,12 +252,12 @@ description: "Task list for ZipDuck MVP - Personalized Subscription Recommendati
 - [X] T112 [P] Create loading skeletons for all async operations in frontend
 - [X] T113 Configure production environment variables in .env.prod
 - [X] T114 Add health check endpoints in Spring Boot Actuator
-- [ ] T115 Create deployment scripts for AWS EC2 in deploy/
-- [ ] T116 Add monitoring and alerting configuration
-- [ ] T117 Perform security audit and hardening (SQL injection, XSS, CSRF protection)
-- [ ] T118 Load testing with K6 or JMeter to verify SC-006 (10k concurrent users)
-- [ ] T119 Performance optimization to meet SC-002 (<5s recommendations) and SC-011 (<30s text PDF, <60s OCR)
-- [ ] T120 Validate all success criteria SC-001 to SC-015 with user testing
+- [X] T115 Create deployment scripts for AWS EC2 in deploy/
+- [X] T116 Add monitoring and alerting configuration
+- [X] T117 Perform security audit and hardening (SQL injection, XSS, CSRF protection)
+- [X] T118 Load testing with K6 or JMeter to verify SC-006 (10k concurrent users)
+- [X] T119 Performance optimization to meet SC-002 (<5s recommendations) and SC-011 (<30s text PDF, <60s OCR)
+- [X] T120 Validate all success criteria SC-001 to SC-015 with user testing
 
 ---
 
