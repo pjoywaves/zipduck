@@ -217,7 +217,7 @@
 
 ### US3: Token Refresh & Rotation
 
-- [ ] **T023** [P] [US3] Implement `RefreshTokenService`
+- [x] **T023** [P] [US3] Implement `RefreshTokenService`
   ```
   Location: backend/src/main/java/com/zipduck/domain/auth/RefreshTokenService.java
   Methods:
@@ -226,41 +226,41 @@
     - revokeRefreshToken(token)
     - revokeAllUserTokens(userId)
   ```
-  **Test**: 토큰 발급, Rotation, 재사용 감지, 전체 무효화
+  **Test**: 토큰 발급, Rotation, 재사용 감지, 전체 무효화 ✅
 
-- [ ] **T024** [US3] Implement `/api/v1/auth/refresh` endpoint
+- [x] **T024** [US3] Implement `/api/v1/auth/refresh` endpoint
   ```
   Location: backend/src/main/java/com/zipduck/api/auth/AuthController.java
   POST /api/v1/auth/refresh
   Request: RefreshTokenRequest (refreshToken)
   Response: TokenResponse (new accessToken, new refreshToken)
   ```
-  **Test**: 토큰 갱신 성공, 만료된 토큰, 재사용 감지
+  **Test**: 토큰 갱신 성공, 만료된 토큰, 재사용 감지 ✅
 
-- [ ] **T025** [US3] Implement `/api/v1/auth/logout` endpoint
+- [x] **T025** [US3] Implement `/api/v1/auth/logout` endpoint
   ```
   POST /api/v1/auth/logout
   Security: @PreAuthorize("isAuthenticated()")
   Action: Refresh Token 무효화
   ```
-  **Test**: 로그아웃 후 토큰 재사용 불가 확인
+  **Test**: 로그아웃 후 토큰 재사용 불가 확인 ✅
 
-- [ ] **T026** [P] [US3] Implement `/api/v1/auth/me` endpoint
+- [x] **T026** [P] [US3] Implement `/api/v1/auth/me` endpoint
   ```
   GET /api/v1/auth/me
   Response: UserResponse (현재 로그인한 사용자 정보)
   ```
-  **Test**: 인증된 사용자 정보 조회
+  **Test**: 인증된 사용자 정보 조회 ✅
 
 ### US3: Security Enhancements
 
-- [ ] **T027** [P] [US3] Create `GlobalExceptionHandler` for auth errors
+- [x] **T027** [P] [US3] Create `GlobalExceptionHandler` for auth errors
   ```
   Location: backend/src/main/java/com/zipduck/api/exception/GlobalExceptionHandler.java
   Handle: InvalidCredentialsException, AccountLockedException, TokenExpiredException
   Response: ErrorResponse { code, message, details }
   ```
-  **Test**: 각 예외 발생 시 표준화된 에러 응답 확인
+  **Test**: 각 예외 발생 시 표준화된 에러 응답 확인 ✅
 
 ---
 
@@ -268,25 +268,25 @@
 
 ### US2: OAuth2 Configuration
 
-- [ ] **T028** [P] [US2] Configure OAuth2 providers in `application.yml`
+- [x] **T028** [P] [US2] Configure OAuth2 providers in `application.yml`
   ```
   Location: application-local.yml, application-prod.yml
   Providers: Google, Kakao
   Include: client-id, client-secret, redirect-uri, scope
   ```
-  **Test**: OAuth2 설정 파싱 확인
+  **Test**: OAuth2 설정 파싱 확인 ✅ (이미 application-local.yml에 설정됨)
 
-- [ ] **T029** [P] [US2] Create `OAuth2UserInfo` interface & implementations
+- [x] **T029** [P] [US2] Create `OAuth2UserInfo` interface & implementations
   ```
   Location: backend/src/main/java/com/zipduck/infrastructure/oauth2/
   Classes: GoogleOAuth2UserInfo, KakaoOAuth2UserInfo
   Methods: getEmail(), getName(), getProviderId()
   ```
-  **Test**: OAuth2 응답 파싱 테스트
+  **Test**: OAuth2 응답 파싱 테스트 ✅
 
 ### US2: OAuth2 Service
 
-- [ ] **T030** [US2] Implement `OAuth2Service` - 사용자 정보 처리
+- [x] **T030** [US2] Implement `OAuth2Service` - 사용자 정보 처리
   ```
   Location: backend/src/main/java/com/zipduck/domain/auth/OAuth2Service.java
   Methods:
@@ -294,31 +294,32 @@
     - linkOAuthAccount(tempToken, confirm) → AuthResponse
   Logic: 기존 이메일 확인 → 연동 확인 → 계정 생성/연동
   ```
-  **Test**: 신규 사용자, 기존 LOCAL 계정 연동, 연동 거부
+  **Test**: 신규 사용자, 기존 LOCAL 계정 연동, 연동 거부 ✅
 
-- [ ] **T031** [US2] Create `OAuth2Controller` - 인증 시작 및 콜백
+- [x] **T031** [US2] Create `OAuth2Controller` - 인증 시작 및 콜백
   ```
   Location: backend/src/main/java/com/zipduck/api/auth/OAuth2Controller.java
   GET /api/v1/oauth2/authorize/{provider}
   GET /api/v1/oauth2/callback/{provider}
   POST /api/v1/oauth2/link
   ```
-  **Test**: OAuth2 플로우 시뮬레이션 (MockOAuth2Server 사용)
+  **Test**: OAuth2 플로우 시뮬레이션 (MockOAuth2Server 사용) ✅
 
 ### US2: Account Linking
 
-- [ ] **T032** [P] [US2] Create temporary token for account linking
+- [x] **T032** [P] [US2] Create temporary token for account linking
   ```
   Location: backend/src/main/java/com/zipduck/domain/auth/LinkToken.java
   Redis TTL: 5 minutes
   Store: email, provider, providerId
   ```
-  **Test**: 임시 토큰 생성/검증/만료
+  **Test**: 임시 토큰 생성/검증/만료 ✅
 
-- [ ] **T033** [US2] Create `LinkAccountRequest`, `LinkRequiredResponse` DTOs
+- [x] **T033** [US2] Create `LinkAccountRequest`, `LinkRequiredResponse` DTOs
   ```
   Location: backend/src/main/java/com/zipduck/api/auth/dto/
   ```
+  ✅
 
 ---
 

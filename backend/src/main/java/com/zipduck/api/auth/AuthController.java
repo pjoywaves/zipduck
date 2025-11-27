@@ -1,9 +1,12 @@
 package com.zipduck.api.auth;
 
-import com.zipduck.api.auth.dto.AuthResponse;
-import com.zipduck.api.auth.dto.LoginRequest;
-import com.zipduck.api.auth.dto.SignupRequest;
+import com.zipduck.api.auth.dto.*;
 import com.zipduck.domain.auth.AuthenticationService;
+import com.zipduck.domain.auth.JwtTokenProvider;
+import com.zipduck.domain.auth.RefreshToken;
+import com.zipduck.domain.auth.RefreshTokenService;
+import com.zipduck.domain.user.User;
+import com.zipduck.domain.user.UserRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -12,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -25,6 +30,9 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthenticationService authenticationService;
+    private final RefreshTokenService refreshTokenService;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final UserRepository userRepository;
 
     private static final String REFRESH_TOKEN_COOKIE_NAME = "refreshToken";
     private static final int REFRESH_TOKEN_MAX_AGE = 7 * 24 * 60 * 60; // 7일
@@ -97,6 +105,108 @@ public class AuthController {
         cookie.setMaxAge(REFRESH_TOKEN_MAX_AGE);
         // cookie.setSameSite("Strict"); // Spring Boot 3.x에서는 별도 설정 필요
         response.addCookie(cookie);
+    }
+
+    /**
+     * 토큰 갱신
+     * POST /api/v1/auth/refresh
+     */
+    @PostMapping("/refresh")
+    public ResponseEntity<TokenResponse> refresh(
+            @Valid @RequestBody RefreshTokenRequest request,
+            HttpServletResponse response
+    ) {
+        log.info("Token refresh request");
+
+        try {
+            // Refresh Token Rotation
+            RefreshToken newRefreshToken = refreshTokenService.rotateRefreshToken(request.getRefreshToken());
+
+            // 새로운 Access Token 발급
+            String newAccessToken = jwtTokenProvider.generateAccessToken(newRefreshToken.getUserId());
+
+            // Refresh Token을 HttpOnly 쿠키로 설정
+            setRefreshTokenCookie(response, newRefreshToken.getToken());
+
+            // 응답
+            TokenResponse tokenResponse = TokenResponse.builder()
+                    .accessToken(newAccessToken)
+                    .refreshToken(newRefreshToken.getToken())
+                    .tokenType("Bearer")
+                    .expiresIn(3600L) // 1시간 (초 단위)
+                    .build();
+
+            return ResponseEntity.ok(tokenResponse);
+
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            log.warn("Token refresh failed: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    }
+
+    /**
+     * 로그아웃
+     * POST /api/v1/auth/logout
+     */
+    @PostMapping("/logout")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Void> logout(
+            @Valid @RequestBody RefreshTokenRequest request,
+            HttpServletResponse response
+    ) {
+        log.info("Logout request");
+
+        try {
+            // Refresh Token 무효화
+            refreshTokenService.revokeRefreshToken(request.getRefreshToken());
+
+            // 쿠키 삭제
+            Cookie cookie = new Cookie(REFRESH_TOKEN_COOKIE_NAME, null);
+            cookie.setHttpOnly(true);
+            cookie.setSecure(true);
+            cookie.setPath("/");
+            cookie.setMaxAge(0); // 즉시 삭제
+            response.addCookie(cookie);
+
+            return ResponseEntity.noContent().build();
+
+        } catch (Exception e) {
+            log.warn("Logout failed: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    /**
+     * 현재 로그인한 사용자 정보 조회
+     * GET /api/v1/auth/me
+     */
+    @GetMapping("/me")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<UserResponse> getCurrentUser(Authentication authentication) {
+        log.info("Get current user request");
+
+        try {
+            // Spring Security의 Authentication에서 userId 추출
+            Long userId = Long.parseLong(authentication.getName());
+
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+            UserResponse userResponse = UserResponse.builder()
+                    .id(user.getId())
+                    .email(user.getEmail())
+                    .username(user.getUsername())
+                    .provider(user.getProvider().name())
+                    .status(user.getStatus().name())
+                    .createdAt(user.getCreatedAt())
+                    .build();
+
+            return ResponseEntity.ok(userResponse);
+
+        } catch (Exception e) {
+            log.error("Failed to get current user: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     /**

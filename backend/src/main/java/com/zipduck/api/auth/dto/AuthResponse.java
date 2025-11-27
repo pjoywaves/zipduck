@@ -19,6 +19,7 @@ public class AuthResponse {
     private String accessToken;
     private String tokenType;
     private Integer expiresIn;
+    private String refreshToken; // Refresh Token 추가
     private UserInfo user;
 
     @Data
@@ -29,8 +30,8 @@ public class AuthResponse {
         private Long id;
         private String email;
         private String username;
-        private AuthProvider provider;
-        private User.UserStatus status;
+        private String provider; // String으로 변경
+        private String status; // String으로 변경
     }
 
     /**
@@ -41,12 +42,13 @@ public class AuthResponse {
                 .accessToken(serviceResponse.getAccessToken())
                 .tokenType(serviceResponse.getTokenType())
                 .expiresIn(serviceResponse.getExpiresIn())
+                .refreshToken(serviceResponse.getRefreshToken())
                 .user(UserInfo.builder()
                         .id(serviceResponse.getUserId())
                         .email(serviceResponse.getEmail())
                         .username(serviceResponse.getUsername())
-                        .provider(serviceResponse.getProvider())
-                        .status(serviceResponse.getStatus())
+                        .provider(serviceResponse.getProvider().name())
+                        .status(serviceResponse.getStatus().name())
                         .build())
                 .build();
     }
