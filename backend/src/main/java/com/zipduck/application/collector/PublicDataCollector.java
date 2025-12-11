@@ -39,8 +39,7 @@ public class PublicDataCollector {
         try {
             // Collect data from last 3 months
             LocalDate fromDate = LocalDate.now().minusMonths(3);
-            List<PublicSubscriptionDto> publicSubscriptions =
-                    publicDataClient.fetchSubscriptions(fromDate);
+            List<PublicSubscriptionDto> publicSubscriptions = publicDataClient.fetchSubscriptions(fromDate);
 
             log.info("공공데이터 {} 건 조회 완료", publicSubscriptions.size());
 
@@ -51,7 +50,8 @@ public class PublicDataCollector {
             for (PublicSubscriptionDto dto : publicSubscriptions) {
                 try {
                     // Check if already exists (FR-028: Duplicate detection)
-                    Subscription existingSubscription = subscriptionQueryService.findByPublicDataId(dto.getExternalId());
+                    Subscription existingSubscription = subscriptionQueryService
+                            .findByPublicDataId(dto.getExternalId());
 
                     if (existingSubscription == null) {
                         // Create new subscription
@@ -104,26 +104,88 @@ public class PublicDataCollector {
         // Determine housing type
         Subscription.HousingType housingType = parseHousingType(dto.getHousingType());
 
-        // Default eligibility criteria (공공데이터에서 제공하지 않는 경우 기본값 사용)
-        // 실제로는 API 응답에 포함된 경우 파싱해야 함
         return Subscription.builder()
+                // Basic information
                 .name(dto.getName())
                 .location(location)
                 .address(dto.getLocation())
                 .housingType(housingType)
+                .houseManageNo(dto.getHouseManageNo())
+                .zipCode(dto.getZipCode())
+                .housingDetailType(dto.getHousingDetailType())
+                .rentType(dto.getRentType())
+                .supplyCount(dto.getSupplyCount())
+
+                // Price information (usually not provided by public API)
+                .minPrice(null)
+                .maxPrice(null)
+
+                // Default eligibility criteria (not provided by public API)
+                .minAge(19)
+                .maxAge(null)
+                .minIncome(null)
+                .maxIncome(null)
+                .minHouseholdMembers(1)
+                .maxHouseholdMembers(null)
+                .maxHousingOwned(0)
+                .specialQualifications(null)
+                .preferenceCategories(null)
+
+                // Schedule information
+                .announcementDate(dto.getAnnouncementDate())
                 .applicationStartDate(dto.getApplicationStartDate())
                 .applicationEndDate(dto.getApplicationEndDate())
+                .specialSupplyStartDate(dto.getSpecialSupplyStartDate())
+                .specialSupplyEndDate(dto.getSpecialSupplyEndDate())
+                .winnerAnnouncementDate(dto.getWinnerAnnouncementDate())
+                .contractStartDate(dto.getContractStartDate())
+                .contractEndDate(dto.getContractEndDate())
+
+                // General supply rank 1 schedule
+                .generalRank1AreaStartDate(dto.getGeneralRank1AreaStartDate())
+                .generalRank1AreaEndDate(dto.getGeneralRank1AreaEndDate())
+                .generalRank1EtcAreaStartDate(dto.getGeneralRank1EtcAreaStartDate())
+                .generalRank1EtcAreaEndDate(dto.getGeneralRank1EtcAreaEndDate())
+                .generalRank1EtcGgStartDate(dto.getGeneralRank1EtcGgStartDate())
+                .generalRank1EtcGgEndDate(dto.getGeneralRank1EtcGgEndDate())
+
+                // General supply rank 2 schedule
+                .generalRank2AreaStartDate(dto.getGeneralRank2AreaStartDate())
+                .generalRank2AreaEndDate(dto.getGeneralRank2AreaEndDate())
+                .generalRank2EtcAreaStartDate(dto.getGeneralRank2EtcAreaStartDate())
+                .generalRank2EtcAreaEndDate(dto.getGeneralRank2EtcAreaEndDate())
+                .generalRank2EtcGgStartDate(dto.getGeneralRank2EtcGgStartDate())
+                .generalRank2EtcGgEndDate(dto.getGeneralRank2EtcGgEndDate())
+
+                // Business information
+                .constructorName(dto.getConstructorName())
+                .builderName(dto.getBuilderName())
+
+                // Contact and URL
+                .modelHousePhone(dto.getModelHousePhone())
+                .homepageUrl(dto.getHomepageUrl())
+                .detailUrl(dto.getAnnouncementUrl())
+
+                // Region information
+                .subscriptionAreaCode(dto.getSubscriptionAreaCode())
+                .subscriptionAreaName(dto.getSubscriptionAreaName())
+                .moveInYearMonth(dto.getMoveInYearMonth())
+                .newspaperName(dto.getNewspaperName())
+
+                // Characteristics
+                .isSpeculationArea(dto.getIsSpeculationArea())
+                .isAdjustmentTargetArea(dto.getIsAdjustmentTargetArea())
+                .isPublicLand(dto.getIsPublicLand())
+                .isLargeScaleLand(dto.getIsLargeScaleLand())
+                .isLoanRestricted(dto.getIsLoanRestricted())
+                .isReconstructionBusiness(dto.getIsReconstructionBusiness())
+                .isPublicHousingDistrict(dto.getIsPublicHousingDistrict())
+                .hasPublicHousingSpecialSupply(dto.getHasPublicHousingSpecialSupply())
+
+                // Data source tracking
                 .dataSource(Subscription.DataSource.PUBLIC_DB)
                 .publicDataId(dto.getExternalId())
                 .isActive(true)
-                // Default eligibility criteria - should be enhanced with actual data from API
-                .minAge(19)
-                .maxAge(null) // No upper limit
-                .minIncome(null) // No lower limit
-                .maxIncome(null) // No upper limit
-                .minHouseholdMembers(1)
-                .maxHouseholdMembers(null) // No upper limit
-                .maxHousingOwned(0) // Most subscriptions require 0 housing owned
                 .build();
     }
 
@@ -146,15 +208,24 @@ public class PublicDataCollector {
         }
 
         // Extract first part of address (e.g., "서울" from "서울시 강남구...")
-        if (fullAddress.contains("서울")) return "서울";
-        if (fullAddress.contains("경기")) return "경기";
-        if (fullAddress.contains("인천")) return "인천";
-        if (fullAddress.contains("부산")) return "부산";
-        if (fullAddress.contains("대구")) return "대구";
-        if (fullAddress.contains("대전")) return "대전";
-        if (fullAddress.contains("광주")) return "광주";
-        if (fullAddress.contains("울산")) return "울산";
-        if (fullAddress.contains("세종")) return "세종";
+        if (fullAddress.contains("서울"))
+            return "서울";
+        if (fullAddress.contains("경기"))
+            return "경기";
+        if (fullAddress.contains("인천"))
+            return "인천";
+        if (fullAddress.contains("부산"))
+            return "부산";
+        if (fullAddress.contains("대구"))
+            return "대구";
+        if (fullAddress.contains("대전"))
+            return "대전";
+        if (fullAddress.contains("광주"))
+            return "광주";
+        if (fullAddress.contains("울산"))
+            return "울산";
+        if (fullAddress.contains("세종"))
+            return "세종";
 
         // Default to first word
         String[] parts = fullAddress.split(" ");

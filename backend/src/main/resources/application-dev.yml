@@ -1,0 +1,28 @@
+# 개발 환경 설정
+# .env 파일의 환경 변수를 자동으로 로드합니다 (spring-dotenv 사용)
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create  # 개발 단계: 시작 시 테이블 재생성
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        hbm2ddl.auto: create  # 명시적 설정
+
+  flyway:
+    enabled: false  # 개발 단계: JPA가 스키마 자동 생성하므로 Flyway 비활성화
+    baseline-on-migrate: false  # Flyway 완전 비활성화
+
+  # 개발 환경 자동 재시작
+  devtools:
+    restart:
+      enabled: true
+
+logging:
+  level:
+    com.zipduck: DEBUG
+    org.springframework.security: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE

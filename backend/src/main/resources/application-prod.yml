@@ -1,0 +1,30 @@
+# 프로덕션 환경 설정
+# docker-compose나 Kubernetes 환경에서 사용
+
+spring:
+  datasource:
+    url: jdbc:mysql://mysql:3306/zipduck?useSSL=false&serverTimezone=Asia/Seoul
+    username: ${DB_USERNAME:zipduck}
+    password: ${DB_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: validate  # 프로덕션: Flyway로 마이그레이션 관리, 스키마 검증만 수행
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+
+  flyway:
+    enabled: true  # 프로덕션: Flyway 활성화
+
+  data:
+    redis:
+      host: redis
+      port: 6379
+
+logging:
+  level:
+    com.zipduck: INFO
+    org.springframework: WARN
+    org.hibernate: WARN

@@ -7,31 +7,26 @@ spring:
     include: resilience4j  # T109-T110: Enable retry and circuit breaker
 
   datasource:
-    url: jdbc:mysql://${MYSQL_HOST}:${MYSQL_PORT}/${MYSQL_DATABASE:zipduck}
-    username: zipduck
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:zipduck}
+    username: ${DB_USERNAME:zipduck}
     password: ${DB_PASSWORD:zipduck}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
     properties:
       hibernate:
-        format_sql: true
-        dialect: org.hibernate.dialect.MySQLDialect
+        dialect: org.hibernate.dialect.MySQL8Dialect  # MySQL 8.0 사용
 
   data:
     redis:
       host: ${REDIS_HOST:localhost}
       port: ${REDIS_PORT:6379}
-      password: ${REDIS_PASSWORD:}  # 빈 문자열이 기본값 (로컬 개발용)
+      password: ${REDIS_PASSWORD:}
       timeout: 3000ms
 
   flyway:
     schemas: zipduck
     default-schema: zipduck
-    enabled: true
     baseline-on-migrate: true
     locations: classpath:db/migration
 
@@ -126,22 +121,3 @@ app:
     user-profile-ttl: 86400 # User profile cache: 24 hours
     subscription-list-ttl: 1800 # Subscription lists: 30 minutes
     eligibility-ttl: 3600 # Eligibility calculations: 1 hour
-
----
-spring:
-  config:
-    activate:
-      on-profile: prod
-
-  datasource:
-    url: jdbc:mysql://mysql:3306/zipduck?useSSL=false&serverTimezone=Asia/Seoul
-    username: zipduck
-    password: ${DB_PASSWORD}
-
-  jpa:
-    show-sql: false
-
-  data:
-    redis:
-      host: redis
-      port: 6379
