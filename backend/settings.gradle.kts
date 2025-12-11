@@ -1,1 +1,1 @@
-rootProject.name = "zipduck-backend"
+rootProject.name = "Backend"

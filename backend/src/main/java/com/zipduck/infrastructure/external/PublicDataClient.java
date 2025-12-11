@@ -2,8 +2,11 @@ package com.zipduck.infrastructure.external;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zipduck.api.dto.PublicSubscriptionDto;
+import com.zipduck.api.exception.PublicDataApiException;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,6 +33,9 @@ public class PublicDataClient {
 
     private static final int TIMEOUT_SECONDS = 10;
     private static final int DEFAULT_PAGE_SIZE = 100;
+    private static final String ENDPOINT_LIST = "/ApplyhomeInfoDetailSvc/v1/getAPTLttotPblancDetail";
+    private static final DateTimeFormatter DATE_FORMAT_HYPHEN = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final DateTimeFormatter DATE_FORMAT_COMPACT = DateTimeFormatter.ofPattern("yyyyMMdd");
 
     @Value("${app.public-data.base-url}")
     private String baseUrl;
@@ -40,8 +46,22 @@ public class PublicDataClient {
     private final WebClient.Builder webClientBuilder;
     private final ObjectMapper objectMapper;
 
+    private WebClient webClient;
+
     /**
-     * 청약 목록 조회
+     * WebClient 초기화
+     */
+    @PostConstruct
+    public void init() {
+        this.webClient = webClientBuilder
+            .baseUrl(baseUrl)
+            .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+            .build();
+        log.info("PublicDataClient WebClient 초기화 완료: baseUrl={}", baseUrl);
+    }
+
+    /**
+     * 청약 목록 조회 (페이지네이션 지원)
      *
      * @param fromDate 조회 시작일
      * @return 청약 정보 목록
@@ -51,25 +71,42 @@ public class PublicDataClient {
     public List<PublicSubscriptionDto> fetchSubscriptions(LocalDate fromDate) {
         log.info("공공데이터포털에서 청약 정보 조회 시작: fromDate={}", fromDate);
 
-        WebClient webClient = webClientBuilder
-            .baseUrl(baseUrl)
-            .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-            .build();
+        List<PublicSubscriptionDto> allSubscriptions = new ArrayList<>();
+        int currentPage = 1;
+        int totalCount = 0;
 
         try {
-            String response = webClient.get()
-                .uri(uriBuilder -> uriBuilder
-                    .path("/ApplyhomeInfoDetailSvc/v1/getAPTLttotPblancDetail")
-                    .queryParam("serviceKey", apiKey)
-                    .queryParam("page", 1)
-                    .queryParam("perPage", DEFAULT_PAGE_SIZE)
-                    .build())
-                .retrieve()
-                .bodyToMono(String.class)
-                .timeout(Duration.ofSeconds(TIMEOUT_SECONDS))
-                .block();
+            // 첫 페이지 조회로 전체 건수 파악
+            String firstResponse = fetchPage(currentPage, fromDate);
+            JsonNode firstRootNode = objectMapper.readTree(firstResponse);
+            totalCount = firstRootNode.path("totalCount").asInt(0);
 
-            return parseSubscriptionResponse(response);
+            List<PublicSubscriptionDto> firstPageData = parseSubscriptionResponse(firstResponse);
+            allSubscriptions.addAll(firstPageData);
+
+            log.info("첫 페이지 조회 완료: {} 건 / 전체 {} 건", firstPageData.size(), totalCount);
+
+            // 나머지 페이지 조회
+            int totalPages = (int) Math.ceil((double) totalCount / DEFAULT_PAGE_SIZE);
+            for (currentPage = 2; currentPage <= totalPages; currentPage++) {
+                String response = fetchPage(currentPage, fromDate);
+                List<PublicSubscriptionDto> pageData = parseSubscriptionResponse(response);
+                allSubscriptions.addAll(pageData);
+
+                log.info("페이지 {} / {} 조회 완료: {} 건", currentPage, totalPages, pageData.size());
+
+                // API 부하 방지를 위한 딜레이
+                if (currentPage < totalPages) {
+                    Thread.sleep(100);
+                }
+            }
+
+            log.info("전체 청약 정보 조회 완료: {} 건", allSubscriptions.size());
+            return allSubscriptions;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            log.error("청약 정보 조회 중단됨", e);
+            throw new PublicDataApiException("청약 정보 조회가 중단되었습니다", e);
         } catch (Exception e) {
             log.error("공공데이터포털 API 호출 실패: {}", e.getMessage(), e);
             throw new PublicDataApiException("공공데이터포털에서 청약 정보를 가져오는데 실패했습니다", e);
@@ -77,43 +114,28 @@ public class PublicDataClient {
     }
 
     /**
-     * 특정 청약 상세 정보 조회
-     *
-     * @param externalId 외부 청약 ID
-     * @return 청약 상세 정보
+     * 특정 페이지 데이터 조회
      */
-    @CircuitBreaker(name = "publicData", fallbackMethod = "fetchSubscriptionDetailFallback")
-    @Retry(name = "publicData")
-    public PublicSubscriptionDto fetchSubscriptionDetail(String externalId) {
-        log.info("청약 상세 정보 조회: externalId={}", externalId);
-
-        WebClient webClient = webClientBuilder
-            .baseUrl(baseUrl)
-            .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-            .build();
-
-        try {
-            String response = webClient.get()
-                .uri(uriBuilder -> uriBuilder
-                    .path("/ApplyhomeInfoDetailSvc/getAPTLttotPblancDetail")
+    private String fetchPage(int page, LocalDate fromDate) {
+        return this.webClient.get()
+            .uri(uriBuilder -> {
+                var builder = uriBuilder
+                    .path(ENDPOINT_LIST)
                     .queryParam("serviceKey", apiKey)
-                    .queryParam("pblancNo", externalId)
-                    .queryParam("_type", "json")
-                    .build())
-                .retrieve()
-                .bodyToMono(String.class)
-                .timeout(Duration.ofSeconds(TIMEOUT_SECONDS))
-                .block();
+                    .queryParam("page", page)
+                    .queryParam("perPage", DEFAULT_PAGE_SIZE);
 
-            List<PublicSubscriptionDto> results = parseSubscriptionResponse(response);
-            if (results.isEmpty()) {
-                throw new PublicDataApiException("청약 정보를 찾을 수 없습니다: " + externalId);
-            }
-            return results.get(0);
-        } catch (Exception e) {
-            log.error("청약 상세 정보 조회 실패: {}", e.getMessage(), e);
-            throw new PublicDataApiException("청약 상세 정보를 가져오는데 실패했습니다", e);
-        }
+                // fromDate 필터 적용 (공고일 기준)
+                if (fromDate != null) {
+                    builder.queryParam("cond[RCRIT_PBLANC_DE::GTE]", fromDate.format(DATE_FORMAT_HYPHEN));
+                }
+
+                return builder.build();
+            })
+            .retrieve()
+            .bodyToMono(String.class)
+            .timeout(Duration.ofSeconds(TIMEOUT_SECONDS))
+            .block();
     }
 
     /**
@@ -148,69 +170,88 @@ public class PublicDataClient {
      * 개별 청약 항목 파싱
      */
     private PublicSubscriptionDto parseSubscriptionItem(JsonNode item) {
-        return PublicSubscriptionDto.builder()
-            // 기본 정보
-            .externalId(getTextValue(item, "PBLANC_NO"))
-            .houseManageNo(getTextValue(item, "HOUSE_MANAGE_NO"))
-            .name(getTextValue(item, "HOUSE_NM"))
-            .location(getTextValue(item, "HSSPLY_ADRES"))
-            .zipCode(getTextValue(item, "HSSPLY_ZIP"))
-            .housingType(getTextValue(item, "HOUSE_SECD_NM"))
-            .housingDetailType(getTextValue(item, "HOUSE_DTL_SECD_NM"))
-            .rentType(getTextValue(item, "RENT_SECD_NM"))
-            .supplyCount(getIntValue(item, "TOT_SUPLY_HSHLDCO"))
+        PublicSubscriptionDto.PublicSubscriptionDtoBuilder builder = PublicSubscriptionDto.builder();
 
-            // 청약 일정
-            .announcementDate(parseDate(getTextValue(item, "RCRIT_PBLANC_DE")))
-            .applicationStartDate(parseDate(getTextValue(item, "RCEPT_BGNDE")))
-            .applicationEndDate(parseDate(getTextValue(item, "RCEPT_ENDDE")))
-            .specialSupplyStartDate(parseDate(getTextValue(item, "SPSPLY_RCEPT_BGNDE")))
-            .specialSupplyEndDate(parseDate(getTextValue(item, "SPSPLY_RCEPT_ENDDE")))
-            .winnerAnnouncementDate(parseDate(getTextValue(item, "PRZWNER_PRESNATN_DE")))
-            .contractStartDate(parseDate(getTextValue(item, "CNTRCT_CNCLS_BGNDE")))
-            .contractEndDate(parseDate(getTextValue(item, "CNTRCT_CNCLS_ENDDE")))
+        parseBasicInfo(item, builder);
+        parseSchedule(item, builder);
+        parseRank1Schedule(item, builder);
+        parseRank2Schedule(item, builder);
+        parseBusinessInfo(item, builder);
+        parseContactInfo(item, builder);
+        parseAdditionalInfo(item, builder);
+        parseCharacteristics(item, builder);
 
-            // 일반공급 1순위 일정
-            .generalRank1AreaStartDate(parseDate(getTextValue(item, "GNRL_RNK1_CRSPAREA_RCPTDE")))
-            .generalRank1AreaEndDate(parseDate(getTextValue(item, "GNRL_RNK1_CRSPAREA_ENDDE")))
-            .generalRank1EtcAreaStartDate(parseDate(getTextValue(item, "GNRL_RNK1_ETC_AREA_RCPTDE")))
-            .generalRank1EtcAreaEndDate(parseDate(getTextValue(item, "GNRL_RNK1_ETC_AREA_ENDDE")))
-            .generalRank1EtcGgStartDate(parseDate(getTextValue(item, "GNRL_RNK1_ETC_GG_RCPTDE")))
-            .generalRank1EtcGgEndDate(parseDate(getTextValue(item, "GNRL_RNK1_ETC_GG_ENDDE")))
+        return builder.build();
+    }
 
-            // 일반공급 2순위 일정
-            .generalRank2AreaStartDate(parseDate(getTextValue(item, "GNRL_RNK2_CRSPAREA_RCPTDE")))
-            .generalRank2AreaEndDate(parseDate(getTextValue(item, "GNRL_RNK2_CRSPAREA_ENDDE")))
-            .generalRank2EtcAreaStartDate(parseDate(getTextValue(item, "GNRL_RNK2_ETC_AREA_RCPTDE")))
-            .generalRank2EtcAreaEndDate(parseDate(getTextValue(item, "GNRL_RNK2_ETC_AREA_ENDDE")))
-            .generalRank2EtcGgStartDate(parseDate(getTextValue(item, "GNRL_RNK2_ETC_GG_RCPTDE")))
-            .generalRank2EtcGgEndDate(parseDate(getTextValue(item, "GNRL_RNK2_ETC_GG_ENDDE")))
+    private void parseBasicInfo(JsonNode item, PublicSubscriptionDto.PublicSubscriptionDtoBuilder builder) {
+        builder.externalId(getTextValue(item, "PBLANC_NO"))
+               .houseManageNo(getTextValue(item, "HOUSE_MANAGE_NO"))
+               .name(getTextValue(item, "HOUSE_NM"))
+               .location(getTextValue(item, "HSSPLY_ADRES"))
+               .zipCode(getTextValue(item, "HSSPLY_ZIP"))
+               .housingType(getTextValue(item, "HOUSE_SECD_NM"))
+               .housingDetailType(getTextValue(item, "HOUSE_DTL_SECD_NM"))
+               .rentType(getTextValue(item, "RENT_SECD_NM"))
+               .supplyCount(getIntValue(item, "TOT_SUPLY_HSHLDCO"));
+    }
 
-            // 사업주체 정보
-            .constructorName(getTextValue(item, "BSNS_MBY_NM"))
-            .builderName(getTextValue(item, "CNSTRCT_ENTRPS_NM"))
+    private void parseSchedule(JsonNode item, PublicSubscriptionDto.PublicSubscriptionDtoBuilder builder) {
+        builder.announcementDate(parseDate(getTextValue(item, "RCRIT_PBLANC_DE")))
+               .applicationStartDate(parseDate(getTextValue(item, "RCEPT_BGNDE")))
+               .applicationEndDate(parseDate(getTextValue(item, "RCEPT_ENDDE")))
+               .specialSupplyStartDate(parseDate(getTextValue(item, "SPSPLY_RCEPT_BGNDE")))
+               .specialSupplyEndDate(parseDate(getTextValue(item, "SPSPLY_RCEPT_ENDDE")))
+               .winnerAnnouncementDate(parseDate(getTextValue(item, "PRZWNER_PRESNATN_DE")))
+               .contractStartDate(parseDate(getTextValue(item, "CNTRCT_CNCLS_BGNDE")))
+               .contractEndDate(parseDate(getTextValue(item, "CNTRCT_CNCLS_ENDDE")));
+    }
 
-            // 연락처 및 URL
-            .modelHousePhone(getTextValue(item, "MDHS_TELNO"))
-            .homepageUrl(getTextValue(item, "HMPG_ADRES"))
-            .announcementUrl(getTextValue(item, "PBLANC_URL"))
+    private void parseRank1Schedule(JsonNode item, PublicSubscriptionDto.PublicSubscriptionDtoBuilder builder) {
+        builder.generalRank1AreaStartDate(parseDate(getTextValue(item, "GNRL_RNK1_CRSPAREA_RCPTDE")))
+               .generalRank1AreaEndDate(parseDate(getTextValue(item, "GNRL_RNK1_CRSPAREA_ENDDE")))
+               .generalRank1EtcAreaStartDate(parseDate(getTextValue(item, "GNRL_RNK1_ETC_AREA_RCPTDE")))
+               .generalRank1EtcAreaEndDate(parseDate(getTextValue(item, "GNRL_RNK1_ETC_AREA_ENDDE")))
+               .generalRank1EtcGgStartDate(parseDate(getTextValue(item, "GNRL_RNK1_ETC_GG_RCPTDE")))
+               .generalRank1EtcGgEndDate(parseDate(getTextValue(item, "GNRL_RNK1_ETC_GG_ENDDE")));
+    }
 
-            // 기타 정보
-            .subscriptionAreaCode(getTextValue(item, "SUBSCRPT_AREA_CODE"))
-            .subscriptionAreaName(getTextValue(item, "SUBSCRPT_AREA_CODE_NM"))
-            .moveInYearMonth(getTextValue(item, "MVN_PREARNGE_YM"))
-            .newspaperName(getTextValue(item, "NSPRC_NM"))
+    private void parseRank2Schedule(JsonNode item, PublicSubscriptionDto.PublicSubscriptionDtoBuilder builder) {
+        builder.generalRank2AreaStartDate(parseDate(getTextValue(item, "GNRL_RNK2_CRSPAREA_RCPTDE")))
+               .generalRank2AreaEndDate(parseDate(getTextValue(item, "GNRL_RNK2_CRSPAREA_ENDDE")))
+               .generalRank2EtcAreaStartDate(parseDate(getTextValue(item, "GNRL_RNK2_ETC_AREA_RCPTDE")))
+               .generalRank2EtcAreaEndDate(parseDate(getTextValue(item, "GNRL_RNK2_ETC_AREA_ENDDE")))
+               .generalRank2EtcGgStartDate(parseDate(getTextValue(item, "GNRL_RNK2_ETC_GG_RCPTDE")))
+               .generalRank2EtcGgEndDate(parseDate(getTextValue(item, "GNRL_RNK2_ETC_GG_ENDDE")));
+    }
 
-            // 특성 정보 (Y/N)
-            .isSpeculationArea(getBooleanValue(item, "SPECLT_RDN_EARTH_AT"))
-            .isAdjustmentTargetArea(getBooleanValue(item, "MDAT_TRGET_AREA_SECD"))
-            .isPublicLand(getBooleanValue(item, "PUBLIC_HOUSE_EARTH_AT"))
-            .isLargeScaleLand(getBooleanValue(item, "LRSCL_BLDLND_AT"))
-            .isLoanRestricted(getBooleanValue(item, "PARCPRC_ULS_AT"))
-            .isReconstructionBusiness(getBooleanValue(item, "IMPRMN_BSNS_AT"))
-            .isPublicHousingDistrict(getBooleanValue(item, "NPLN_PRVOPR_PUBLIC_HOUSE_AT"))
-            .hasPublicHousingSpecialSupply(getBooleanValue(item, "PUBLIC_HOUSE_SPCLW_APPLC_AT"))
-            .build();
+    private void parseBusinessInfo(JsonNode item, PublicSubscriptionDto.PublicSubscriptionDtoBuilder builder) {
+        builder.constructorName(getTextValue(item, "BSNS_MBY_NM"))
+               .builderName(getTextValue(item, "CNSTRCT_ENTRPS_NM"));
+    }
+
+    private void parseContactInfo(JsonNode item, PublicSubscriptionDto.PublicSubscriptionDtoBuilder builder) {
+        builder.modelHousePhone(getTextValue(item, "MDHS_TELNO"))
+               .homepageUrl(getTextValue(item, "HMPG_ADRES"))
+               .announcementUrl(getTextValue(item, "PBLANC_URL"));
+    }
+
+    private void parseAdditionalInfo(JsonNode item, PublicSubscriptionDto.PublicSubscriptionDtoBuilder builder) {
+        builder.subscriptionAreaCode(getTextValue(item, "SUBSCRPT_AREA_CODE"))
+               .subscriptionAreaName(getTextValue(item, "SUBSCRPT_AREA_CODE_NM"))
+               .moveInYearMonth(getTextValue(item, "MVN_PREARNGE_YM"))
+               .newspaperName(getTextValue(item, "NSPRC_NM"));
+    }
+
+    private void parseCharacteristics(JsonNode item, PublicSubscriptionDto.PublicSubscriptionDtoBuilder builder) {
+        builder.isSpeculationArea(getBooleanValue(item, "SPECLT_RDN_EARTH_AT"))
+               .isAdjustmentTargetArea(getBooleanValue(item, "MDAT_TRGET_AREA_SECD"))
+               .isPublicLand(getBooleanValue(item, "PUBLIC_HOUSE_EARTH_AT"))
+               .isLargeScaleLand(getBooleanValue(item, "LRSCL_BLDLND_AT"))
+               .isLoanRestricted(getBooleanValue(item, "PARCPRC_ULS_AT"))
+               .isReconstructionBusiness(getBooleanValue(item, "IMPRMN_BSNS_AT"))
+               .isPublicHousingDistrict(getBooleanValue(item, "NPLN_PRVOPR_PUBLIC_HOUSE_AT"))
+               .hasPublicHousingSpecialSupply(getBooleanValue(item, "PUBLIC_HOUSE_SPCLW_APPLC_AT"));
     }
 
     private String getTextValue(JsonNode node, String fieldName) {
@@ -237,10 +278,10 @@ public class PublicDataClient {
             return null;
         }
         try {
-            return LocalDate.parse(dateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            return LocalDate.parse(dateStr, DATE_FORMAT_HYPHEN);
         } catch (Exception e) {
             try {
-                return LocalDate.parse(dateStr, DateTimeFormatter.ofPattern("yyyyMMdd"));
+                return LocalDate.parse(dateStr, DATE_FORMAT_COMPACT);
             } catch (Exception e2) {
                 log.warn("날짜 파싱 실패: {}", dateStr);
                 return null;
@@ -252,7 +293,8 @@ public class PublicDataClient {
      * Fallback: 청약 목록 조회 실패 시
      */
     private List<PublicSubscriptionDto> fetchSubscriptionsFallback(LocalDate fromDate, Exception e) {
-        log.error("공공데이터포털 API Circuit Breaker 작동: {}", e.getMessage());
+        log.error("공공데이터포털 API Circuit Breaker 작동 (목록 조회) - fromDate: {}, 사유: {}",
+                  fromDate, e.getMessage());
         return Collections.emptyList();
     }
 
@@ -260,91 +302,8 @@ public class PublicDataClient {
      * Fallback: 청약 상세 조회 실패 시
      */
     private PublicSubscriptionDto fetchSubscriptionDetailFallback(String externalId, Exception e) {
-        log.error("공공데이터포털 API Circuit Breaker 작동 (상세): {}", e.getMessage());
+        log.error("공공데이터포털 API Circuit Breaker 작동 (상세 조회) - externalId: {}, 사유: {}",
+                  externalId, e.getMessage());
         throw new PublicDataApiException("공공데이터포털 API가 현재 사용 불가능합니다. 잠시 후 다시 시도해주세요.", e);
-    }
-
-    /**
-     * 공공데이터 API 예외
-     */
-    public static class PublicDataApiException extends RuntimeException {
-        public PublicDataApiException(String message) {
-            super(message);
-        }
-
-        public PublicDataApiException(String message, Throwable cause) {
-            super(message, cause);
-        }
-    }
-
-    /**
-     * 공공데이터 청약 정보 DTO
-     */
-    @lombok.Data
-    @lombok.Builder
-    @lombok.NoArgsConstructor
-    @lombok.AllArgsConstructor
-    public static class PublicSubscriptionDto {
-        // 기본 정보
-        private String externalId;          // 공고번호 (PBLANC_NO)
-        private String houseManageNo;       // 주택관리번호 (HOUSE_MANAGE_NO)
-        private String name;                // 주택명 (HOUSE_NM)
-        private String location;            // 공급위치 (HSSPLY_ADRES)
-        private String zipCode;             // 우편번호 (HSSPLY_ZIP)
-        private String housingType;         // 주택구분 (HOUSE_SECD_NM)
-        private String housingDetailType;   // 주택상세구분 (HOUSE_DTL_SECD_NM) - 민영/국민
-        private String rentType;            // 분양구분 (RENT_SECD_NM)
-        private int supplyCount;            // 공급세대수 (TOT_SUPLY_HSHLDCO)
-
-        // 청약 일정
-        private LocalDate announcementDate;         // 공고일 (RCRIT_PBLANC_DE)
-        private LocalDate applicationStartDate;     // 청약 시작일 (RCEPT_BGNDE)
-        private LocalDate applicationEndDate;       // 청약 마감일 (RCEPT_ENDDE)
-        private LocalDate specialSupplyStartDate;   // 특별공급 시작일 (SPSPLY_RCEPT_BGNDE)
-        private LocalDate specialSupplyEndDate;     // 특별공급 마감일 (SPSPLY_RCEPT_ENDDE)
-        private LocalDate winnerAnnouncementDate;   // 당첨자발표일 (PRZWNER_PRESNATN_DE)
-        private LocalDate contractStartDate;        // 계약시작일 (CNTRCT_CNCLS_BGNDE)
-        private LocalDate contractEndDate;          // 계약종료일 (CNTRCT_CNCLS_ENDDE)
-
-        // 일반공급 1순위 일정
-        private LocalDate generalRank1AreaStartDate;    // 1순위 해당지역 시작일 (GNRL_RNK1_CRSPAREA_RCPTDE)
-        private LocalDate generalRank1AreaEndDate;      // 1순위 해당지역 마감일 (GNRL_RNK1_CRSPAREA_ENDDE)
-        private LocalDate generalRank1EtcAreaStartDate; // 1순위 기타지역 시작일 (GNRL_RNK1_ETC_AREA_RCPTDE)
-        private LocalDate generalRank1EtcAreaEndDate;   // 1순위 기타지역 마감일 (GNRL_RNK1_ETC_AREA_ENDDE)
-        private LocalDate generalRank1EtcGgStartDate;   // 1순위 기타경기 시작일 (GNRL_RNK1_ETC_GG_RCPTDE)
-        private LocalDate generalRank1EtcGgEndDate;     // 1순위 기타경기 마감일 (GNRL_RNK1_ETC_GG_ENDDE)
-
-        // 일반공급 2순위 일정
-        private LocalDate generalRank2AreaStartDate;    // 2순위 해당지역 시작일 (GNRL_RNK2_CRSPAREA_RCPTDE)
-        private LocalDate generalRank2AreaEndDate;      // 2순위 해당지역 마감일 (GNRL_RNK2_CRSPAREA_ENDDE)
-        private LocalDate generalRank2EtcAreaStartDate; // 2순위 기타지역 시작일 (GNRL_RNK2_ETC_AREA_RCPTDE)
-        private LocalDate generalRank2EtcAreaEndDate;   // 2순위 기타지역 마감일 (GNRL_RNK2_ETC_AREA_ENDDE)
-        private LocalDate generalRank2EtcGgStartDate;   // 2순위 기타경기 시작일 (GNRL_RNK2_ETC_GG_RCPTDE)
-        private LocalDate generalRank2EtcGgEndDate;     // 2순위 기타경기 마감일 (GNRL_RNK2_ETC_GG_ENDDE)
-
-        // 사업주체 정보
-        private String constructorName;     // 시행사 (BSNS_MBY_NM)
-        private String builderName;         // 건설업체 (CNSTRCT_ENTRPS_NM)
-
-        // 연락처 및 URL
-        private String modelHousePhone;     // 모델하우스 전화번호 (MDHS_TELNO)
-        private String homepageUrl;         // 홈페이지 주소 (HMPG_ADRES)
-        private String announcementUrl;     // 청약홈 공고 URL (PBLANC_URL)
-
-        // 기타 정보
-        private String subscriptionAreaCode;    // 청약지역코드 (SUBSCRPT_AREA_CODE)
-        private String subscriptionAreaName;    // 청약지역명 (SUBSCRPT_AREA_CODE_NM)
-        private String moveInYearMonth;         // 입주예정년월 (MVN_PREARNGE_YM)
-        private String newspaperName;           // 신문사 (NSPRC_NM)
-
-        // 특성 정보 (Y/N)
-        private Boolean isSpeculationArea;      // 투기과열지구 (SPECLT_RDN_EARTH_AT)
-        private Boolean isAdjustmentTargetArea; // 조정대상지역 (MDAT_TRGET_AREA_SECD)
-        private Boolean isPublicLand;           // 공공택지 (PUBLIC_HOUSE_EARTH_AT)
-        private Boolean isLargeScaleLand;       // 대규모택지 (LRSCL_BLDLND_AT)
-        private Boolean isLoanRestricted;       // 분양가상한제 (PARCPRC_ULS_AT)
-        private Boolean isReconstructionBusiness; // 정비사업 (IMPRMN_BSNS_AT)
-        private Boolean isPublicHousingDistrict;  // 공공주택지구 (NPLN_PRVOPR_PUBLIC_HOUSE_AT)
-        private Boolean hasPublicHousingSpecialSupply; // 공공주택 특별공급 (PUBLIC_HOUSE_SPCLW_APPLC_AT)
     }
 }

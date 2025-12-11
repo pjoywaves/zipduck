@@ -1,5 +1,6 @@
 package com.zipduck.application.collector;
 
+import com.zipduck.api.dto.PublicSubscriptionDto;
 import com.zipduck.domain.subscription.Subscription;
 import com.zipduck.domain.subscription.SubscriptionCommandService;
 import com.zipduck.domain.subscription.SubscriptionQueryService;
@@ -38,7 +39,7 @@ public class PublicDataCollector {
         try {
             // Collect data from last 3 months
             LocalDate fromDate = LocalDate.now().minusMonths(3);
-            List<PublicDataClient.PublicSubscriptionDto> publicSubscriptions =
+            List<PublicSubscriptionDto> publicSubscriptions =
                     publicDataClient.fetchSubscriptions(fromDate);
 
             log.info("공공데이터 {} 건 조회 완료", publicSubscriptions.size());
@@ -47,7 +48,7 @@ public class PublicDataCollector {
             int updatedCount = 0;
             int skippedCount = 0;
 
-            for (PublicDataClient.PublicSubscriptionDto dto : publicSubscriptions) {
+            for (PublicSubscriptionDto dto : publicSubscriptions) {
                 try {
                     // Check if already exists (FR-028: Duplicate detection)
                     Subscription existingSubscription = subscriptionQueryService.findByPublicDataId(dto.getExternalId());
@@ -96,7 +97,7 @@ public class PublicDataCollector {
      * Convert PublicSubscriptionDto to Subscription entity
      * T040: Transform and save subscriptions
      */
-    private Subscription convertToSubscription(PublicDataClient.PublicSubscriptionDto dto) {
+    private Subscription convertToSubscription(PublicSubscriptionDto dto) {
         // Parse location from address (simplified - extract first part)
         String location = extractLocation(dto.getLocation());
 
@@ -129,7 +130,7 @@ public class PublicDataCollector {
     /**
      * Update existing subscription with new data
      */
-    private void updateSubscription(Subscription existing, PublicDataClient.PublicSubscriptionDto dto) {
+    private void updateSubscription(Subscription existing, PublicSubscriptionDto dto) {
         // Update only if application dates have changed or other critical fields
         // This is simplified - in production, you might want to track more changes
         log.debug("청약 정보 업데이트: externalId={}", dto.getExternalId());

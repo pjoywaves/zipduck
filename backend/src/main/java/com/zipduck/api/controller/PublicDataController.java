@@ -1,5 +1,6 @@
 package com.zipduck.api.controller;
 
+import com.zipduck.api.dto.PublicSubscriptionDto;
 import com.zipduck.infrastructure.external.PublicDataClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -17,14 +18,8 @@ public class PublicDataController {
 
     // 청약 목록 조회
     @GetMapping("/subscriptions")
-    public List<PublicDataClient.PublicSubscriptionDto> getSubscriptions(
+    public List<PublicSubscriptionDto> getSubscriptions(
             @RequestParam("fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate) {
         return publicDataClient.fetchSubscriptions(fromDate);
-    }
-
-    // 청약 상세 조회
-    @GetMapping("/subscriptions/{externalId}")
-    public PublicDataClient.PublicSubscriptionDto getSubscriptionDetail(@PathVariable String externalId) {
-        return publicDataClient.fetchSubscriptionDetail(externalId);
     }
 }
